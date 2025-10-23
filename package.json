@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@rslib/core": "^0.15.1",
+    "@rslib/core": "^0.16.1",
     "@tiptap/core": "^3.7.2",
     "@tiptap/extension-blockquote": "^3.7.2",
     "@tiptap/extension-bold": "^3.7.2",
@@ -39,6 +39,7 @@
     "prosemirror-keymap": "^1.2.3",
     "prosemirror-menu": "^1.2.5",
     "prosemirror-model": "^1.25.4",
+    "prosemirror-state": "^1.4.4",
     "prosemirror-tables": "^1.8.1",
     "prosemirror-transform": "^1.10.4",
     "prosemirror-view": "^1.41.3"
