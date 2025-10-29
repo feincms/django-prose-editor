@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.19 (2025-10-29)
+~~~~~~~~~~~~~~~~~
+
 - Updated the documentation to provide working examples by including the
   necessary dependencies. Thanks @benopotamus and @j4lib!
 - Updated the sanitization documentation to correctly say which HTML tags and
