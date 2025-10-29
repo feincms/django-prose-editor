@@ -16,6 +16,8 @@ Next version
   the font weight.
 - Added a description to the HTML extension's textarea which explains that the
   HTML is restricted by the editor schema.
+- Added an easier way to define the menu structure without having to go to the
+  low level menu creator function and copy pasting the default menu groups.
 
 
 0.18 (2025-08-27)

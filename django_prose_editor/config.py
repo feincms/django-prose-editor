@@ -12,6 +12,21 @@ from django.conf import settings
 from django.utils.module_loading import import_string
 
 
+DEFAULT_MENU_GROUPS = [
+    {"group": "blockType -lists", "type": "dropdown", "minItems": 2},
+    {"group": "lists"},
+    {"group": "nodes -blockType -lists"},
+    {"group": "marks"},
+    {"group": "nodeClass", "type": "dropdown"},
+    {"group": "textClass", "type": "dropdown"},
+    {"group": "link"},
+    {"group": "textAlign"},
+    {"group": "table"},
+    {"group": "history"},
+    {"group": "utility"},
+]
+
+
 def add_tags_and_attributes(shared_config, tags, attributes):
     # Add tags to the config
     shared_config["tags"].update(tags)
@@ -278,7 +293,9 @@ def expand_extensions(extensions: dict[str, Any]) -> dict[str, Any]:
         "Gapcursor": True,
         "Paragraph": True,
         "Text": True,
-        "Menu": True,
+        "Menu": getattr(
+            settings, "DJANGO_PROSE_EDITOR_MENU_GROUPS", DEFAULT_MENU_GROUPS
+        ),
         "NoSpellCheck": True,
         # Enable history by default unless explicitly disabled
         "History": True,

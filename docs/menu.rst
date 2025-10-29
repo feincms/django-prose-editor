@@ -48,10 +48,38 @@ Menu items can be organized and displayed using button groups and dropdowns:
     // blockType:
     const group = menu.buttonGroup({ editor, buttons }, menu.items("nodes -blockType"))
 
+Defining button groups and dropdowns
+------------------------------------
+
+The Menu extension accepts a ``groups`` option which allows defining the menu
+structure. The default is:
+
+.. code-block:: javascript
+
+    const defaultGroups = [
+      { group: "blockType -lists", type: "dropdown", minItems: 2 },
+      { group: "lists" },
+      { group: "nodes -blockType -lists" },
+      { group: "marks" },
+      { group: "nodeClass", type: "dropdown" },
+      { group: "textClass", type: "dropdown" },
+      { group: "link" },
+      { group: "textAlign" },
+      { group: "table" },
+      { group: "history" },
+      { group: "utility" },
+    ]
+
+The same default value is available at
+``django_prose_editor.config.DEFAULT_MENU_GROUPS``.
+
 Menu Creator Functions
 ----------------------
 
-The Menu extension accepts an ``items`` option which should be a function that creates the complete menu structure. This function receives ``{ editor, buttons, menu }`` and should return an array of DOM elements:
+If you need more control, you can use the menu creator function. The Menu
+extension accepts an ``items`` option which should be a function that creates
+the complete menu structure. This function receives ``{ editor, buttons, menu
+}`` and should return an array of DOM elements:
 
 .. code-block:: javascript
 

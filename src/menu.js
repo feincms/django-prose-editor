@@ -222,6 +222,20 @@ export const createMenuFromGroups = (groups) => {
   }
 }
 
+const defaultGroups = [
+  { group: "blockType -lists", type: "dropdown", minItems: 2 },
+  { group: "lists" },
+  { group: "nodes -blockType -lists" },
+  { group: "marks" },
+  { group: "nodeClass", type: "dropdown" },
+  { group: "textClass", type: "dropdown" },
+  { group: "link" },
+  { group: "textAlign" },
+  { group: "table" },
+  { group: "history" },
+  { group: "utility" },
+]
+
 export const Menu = Extension.create({
   name: "menu",
 
@@ -229,19 +243,8 @@ export const Menu = Extension.create({
     return {
       defaultItems: true,
       cssClass: "prose-menubar",
-      items: createMenuFromGroups([
-        { group: "blockType -lists", type: "dropdown", minItems: 2 },
-        { group: "lists" },
-        { group: "nodes -blockType -lists" },
-        { group: "marks" },
-        { group: "nodeClass", type: "dropdown" },
-        { group: "textClass", type: "dropdown" },
-        { group: "link" },
-        { group: "textAlign" },
-        { group: "table" },
-        { group: "history" },
-        { group: "utility" },
-      ]),
+      groups: null,
+      items: null,
     }
   },
 
@@ -351,8 +354,11 @@ export const Menu = Extension.create({
     // Create menubar element
     const menuDOM = crel("div", { className: cssClass })
 
-    // Use the items creator function to build the menu
-    const menuItems = this.options.items({ editor, buttons, menu })
+    // Build the menu
+    const creator =
+      this.options.items ||
+      createMenuFromGroups(this.options.groups || defaultGroups)
+    const menuItems = creator({ editor, buttons, menu })
     for (const item of menuItems) {
       menuDOM.append(item)
     }
