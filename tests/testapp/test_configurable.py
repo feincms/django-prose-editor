@@ -5,6 +5,7 @@ import json
 from django.forms.models import ModelForm
 from django.test import TestCase
 
+from django_prose_editor.config import DEFAULT_MENU_GROUPS
 from testapp.models import ConfigurableProseEditorModel
 
 
@@ -76,7 +77,7 @@ class ConfigurableFormTestCase(TestCase):
             "Gapcursor": True,
             "Paragraph": True,
             "Text": True,
-            "Menu": True,
+            "Menu": {"groups": DEFAULT_MENU_GROUPS},
             "NoSpellCheck": True,
             # Enable history by default unless explicitly disabled
             "History": True,

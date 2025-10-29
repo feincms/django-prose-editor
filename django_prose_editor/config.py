@@ -293,9 +293,11 @@ def expand_extensions(extensions: dict[str, Any]) -> dict[str, Any]:
         "Gapcursor": True,
         "Paragraph": True,
         "Text": True,
-        "Menu": getattr(
-            settings, "DJANGO_PROSE_EDITOR_MENU_GROUPS", DEFAULT_MENU_GROUPS
-        ),
+        "Menu": {
+            "groups": getattr(
+                settings, "DJANGO_PROSE_EDITOR_MENU_GROUPS", DEFAULT_MENU_GROUPS
+            )
+        },
         "NoSpellCheck": True,
         # Enable history by default unless explicitly disabled
         "History": True,
