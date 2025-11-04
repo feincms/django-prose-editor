@@ -29,6 +29,13 @@ The project uses:
 
 JavaScript source files are in `src/` and get built into `django_prose_editor/static/`.
 
+**IMPORTANT**: After modifying JavaScript files in `src/`, you MUST rebuild with:
+```bash
+yarn prod
+```
+
+The tests run against the compiled JavaScript in `django_prose_editor/static/`, not the source files.
+
 ## Documentation
 
 Documentation is written in ReStructuredText (`.rst`) format in the `docs/` directory.
@@ -69,10 +76,11 @@ const isNodeType = (editor, typeName) => {
 ## Testing Workflow
 
 1. Make code changes
-2. Run linting/formatting: `prek run --all-files` (or let it run on commit)
-3. Run tests: `tox -e py313-dj52`
-4. Verify all tests pass (32 tests expected)
-5. Update documentation if needed
+2. **If you modified JavaScript**: Run `yarn prod` to rebuild
+3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
+4. Run tests: `tox -e py313-dj52`
+5. Verify all tests pass (35 tests expected as of 2025-11-04)
+6. Update documentation if needed
 
 ## Common Tasks
 
@@ -93,3 +101,50 @@ Extensions are configured in two ways:
 - **JavaScript**: Via `Extension.configure({...})`
 
 Keep both configuration methods documented and in sync.
+
+## ProseMirror/Tiptap Patterns
+
+### Modifying Mark Attributes
+
+**Important**: Use Tiptap's `updateAttributes()` command to modify mark attributes. This preserves all other attributes automatically:
+
+```javascript
+// ✅ CORRECT - Updates only the specified attribute, preserves others
+editor.chain()
+  .extendMarkRange(typeName)
+  .updateAttributes(typeName, { class: 'newValue' })
+  .run()
+
+// To remove an attribute, set it to null
+editor.chain()
+  .extendMarkRange(typeName)
+  .updateAttributes(typeName, { class: null })
+  .run()
+```
+
+This automatically preserves other attributes like `href` on links, `src` on images, etc. without needing to manually spread existing attributes.
+
+### Extending Mark Range
+
+When working with marks at a collapsed selection (cursor position), use `extendMarkRange()` to select the entire mark:
+
+```javascript
+editor.chain()
+  .extendMarkRange('bold')  // Selects entire bold region
+  .setMark('bold', { class: 'emphasis' })
+  .run()
+```
+
+### Checking Active Marks
+
+To check if a mark exists at the cursor position, use the resolved position's marks, not just `isActive()`:
+
+```javascript
+const { state } = editor
+const { $from } = state.selection
+const markType = state.schema.marks[typeName]
+const marks = $from.marks()
+const hasMark = marks.some(mark => mark.type === markType)
+```
+
+The `isActive()` method can be unreliable at mark boundaries or with collapsed selections.

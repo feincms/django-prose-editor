@@ -68,7 +68,12 @@ class ConfigurableProseEditorModel(models.Model):
                 "OrderedList": True,
                 "ListItem": True,
                 "TextClass": {"cssClasses": ["highlight"]},
-                "NodeClass": {"cssClasses": {"paragraph": ["highlight"]}},
+                "NodeClass": {
+                    "cssClasses": {
+                        "paragraph": ["highlight"],
+                        "bold": ["emphasis", "important"],
+                    }
+                },
             }
         },
         sanitize=True,
