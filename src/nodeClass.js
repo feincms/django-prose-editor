@@ -45,6 +45,9 @@ const getApplicableMarks = (state, cssClasses) => {
   return applicableMarks
 }
 
+// NodeClass extension: Applies CSS classes to both nodes and marks
+// Note: Despite the name, this extension supports both nodes (paragraphs, tables, etc.)
+// and marks (bold, italic, links, etc.). The name is kept for backward compatibility.
 export const NodeClass = Extension.create({
   name: "nodeClass",
 

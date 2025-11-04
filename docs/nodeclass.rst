@@ -5,6 +5,9 @@ The NodeClass extension allows you to apply arbitrary CSS classes to both block-
 
 Unlike TextClass which applies to inline text using ``<span>`` tags, NodeClass works with both block-level elements and marks by adding CSS classes directly to their HTML tags (e.g., ``<p class="highlight">``, ``<table class="bordered">``, ``<strong class="emphasis">``).
 
+.. note::
+   Despite its name, the NodeClass extension supports both **nodes** and **marks**. The name is kept for backward compatibility with existing configurations.
+
 Basic Usage
 -----------
 
