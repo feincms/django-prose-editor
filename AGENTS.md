@@ -106,23 +106,23 @@ Keep both configuration methods documented and in sync.
 
 ### Modifying Mark Attributes
 
-**Important**: Mark attributes cannot be modified in place in ProseMirror. You must use the unsetMark/setMark pattern:
+**Important**: Use Tiptap's `updateAttributes()` command to modify mark attributes. This preserves all other attributes automatically:
 
 ```javascript
-// ❌ WRONG - This doesn't work
-tr.setMarkAttribute(from, to, markType, 'class', 'newValue')
-
-// ✅ CORRECT - Unset and reapply with new attributes
-const currentMark = markType.isInSet($pos.marks())
-const newAttrs = { ...currentMark.attrs, class: 'newValue' }
+// ✅ CORRECT - Updates only the specified attribute, preserves others
 editor.chain()
   .extendMarkRange(typeName)
-  .unsetMark(typeName)
-  .setMark(typeName, newAttrs)
+  .updateAttributes(typeName, { class: 'newValue' })
+  .run()
+
+// To remove an attribute, set it to null
+editor.chain()
+  .extendMarkRange(typeName)
+  .updateAttributes(typeName, { class: null })
   .run()
 ```
 
-Always preserve existing attributes when modifying marks to avoid losing data like `href` on links, `src` on images, etc.
+This automatically preserves other attributes like `href` on links, `src` on images, etc. without needing to manually spread existing attributes.
 
 ### Extending Mark Range
 

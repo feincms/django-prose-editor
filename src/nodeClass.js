@@ -143,20 +143,13 @@ export const NodeClass = Extension.create({
           })
         }
 
-        // Reset mark classes by extending range, unsetting, and reapplying without class
-        for (const { markType, mark } of applicableMarks) {
-          const markTypeObj = editor.state.schema.marks[markType]
-          if (!markTypeObj) continue
-
-          // Preserve all attributes except class
-          const { class: _, ...attrsWithoutClass } = mark.attrs
-
+        // Reset mark classes by extending range and removing class attribute
+        for (const { markType } of applicableMarks) {
           editor
             .chain()
             .focus()
             .extendMarkRange(markType)
-            .unsetMark(markType)
-            .setMark(markType, attrsWithoutClass)
+            .updateAttributes(markType, { class: null })
             .run()
         }
       },
@@ -183,7 +176,10 @@ export const NodeClass = Extension.create({
           active(editor) {
             if (isNodeType(editor, typeName)) {
               // Active when this specific node type has this class
-              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              const applicableNodes = getApplicableNodes(
+                editor.state,
+                cssClasses,
+              )
               const targetNode = applicableNodes.find(
                 (n) => n.nodeType === typeName,
               )
@@ -195,7 +191,10 @@ export const NodeClass = Extension.create({
           },
           hidden(editor) {
             if (isNodeType(editor, typeName)) {
-              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              const applicableNodes = getApplicableNodes(
+                editor.state,
+                cssClasses,
+              )
               return !applicableNodes.some((n) => n.nodeType === typeName)
             } else {
               // For marks: check if mark type exists at current position
@@ -207,7 +206,7 @@ export const NodeClass = Extension.create({
 
               // Check marks at the resolved position
               const marks = $from.marks()
-              const hasMark = marks.some(mark => mark.type === markType)
+              const hasMark = marks.some((mark) => mark.type === markType)
 
               return !hasMark
             }
@@ -215,7 +214,10 @@ export const NodeClass = Extension.create({
           command(editor) {
             if (isNodeType(editor, typeName)) {
               // Handle node
-              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              const applicableNodes = getApplicableNodes(
+                editor.state,
+                cssClasses,
+              )
               for (const { node, pos } of applicableNodes) {
                 if (node.type.name === typeName) {
                   editor
