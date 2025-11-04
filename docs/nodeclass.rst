@@ -1,14 +1,14 @@
 NodeClass Extension
 ===================
 
-The NodeClass extension allows you to apply arbitrary CSS classes to block-level nodes (paragraphs, tables, table cells, etc.) using global attributes. This provides a clean, semantic way to style entire elements without requiring individual node type extensions.
+The NodeClass extension allows you to apply arbitrary CSS classes to both block-level nodes (paragraphs, tables, table cells, etc.) and marks (bold, italic, links, etc.) using global attributes. This provides a clean, semantic way to style elements without requiring individual node or mark type extensions.
 
-Unlike TextClass which applies to inline text using ``<span>`` tags, NodeClass works with block-level elements by adding CSS classes directly to their HTML tags (e.g., ``<p class="highlight">``, ``<table class="bordered">``).
+Unlike TextClass which applies to inline text using ``<span>`` tags, NodeClass works with both block-level elements and marks by adding CSS classes directly to their HTML tags (e.g., ``<p class="highlight">``, ``<table class="bordered">``, ``<strong class="emphasis">``).
 
 Basic Usage
 -----------
 
-To use the NodeClass extension, configure it with CSS classes organized by node type. Each class can be specified as:
+To use the NodeClass extension, configure it with CSS classes organized by node or mark type. Each class can be specified as:
 
 - A string (class name and display title will be the same)
 - An object with ``className`` and ``title`` properties for custom display names
@@ -25,6 +25,7 @@ To use the NodeClass extension, configure it with CSS classes organized by node 
                 "Table": True,
                 "NodeClass": {
                     "cssClasses": {
+                        # Node types
                         "paragraph": {
                             "title": "Paragraph",
                             "cssClasses": [
@@ -56,20 +57,20 @@ To use the NodeClass extension, configure it with CSS classes organized by node 
                                 {"className": "accent", "title": "Accent Heading"}
                             ]
                         },
-                        "bulletList": {
-                            "title": "List",
+                        # Mark types
+                        "bold": {
+                            "title": "Bold",
                             "cssClasses": [
-                                "checklist",
-                                "no-bullets",
-                                {"className": "spaced", "title": "Spaced List"}
+                                "emphasis",
+                                {"className": "important", "title": "Important"}
                             ]
                         },
-                        "orderedList": {
-                            "title": "Numbered List",
+                        "link": {
+                            "title": "Link",
                             "cssClasses": [
-                                "alpha",
-                                "roman",
-                                {"className": "outline", "title": "Outline Style"}
+                                "external",
+                                "download",
+                                {"className": "button", "title": "Button Link"}
                             ]
                         }
                     }
@@ -89,11 +90,14 @@ For simpler use cases, you can still use the array format without custom titles:
             extensions={
                 "NodeClass": {
                     "cssClasses": {
+                        # Node types
                         "paragraph": ["highlight", "callout", "centered"],
                         "table": ["bordered", "striped", "compact"],
                         "tableCell": ["centered", "right-aligned", "numeric"],
                         "bulletList": ["checklist", "no-bullets", "spaced"],
-                        "orderedList": ["alpha", "roman", "outline"]
+                        # Mark types
+                        "bold": ["emphasis", "important"],
+                        "link": ["external", "download", "button"]
                     }
                 }
             }
@@ -108,13 +112,17 @@ When creating custom presets, you can configure the NodeClass extension in JavaS
 
     import { NodeClass } from "django-prose-editor/editor"
 
-    // Per-node configuration
+    // Configuration for nodes and marks
     NodeClass.configure({
         cssClasses: {
+            // Node types
             paragraph: ["highlight", "callout", "centered"],
             table: ["bordered", "striped", "compact"],
             tableCell: ["centered", "right-aligned", "numeric"],
-            heading: ["section-title", "accent"]
+            heading: ["section-title", "accent"],
+            // Mark types
+            bold: ["emphasis", "important"],
+            link: ["external", "download", "button"]
         }
     })
 
@@ -128,14 +136,20 @@ When creating custom presets, you can configure the NodeClass extension in JavaS
             table: [
                 { className: "bordered", title: "Bordered Table" },
                 { className: "striped", title: "Striped Rows" }
+            ],
+            bold: [
+                { className: "emphasis", title: "Emphasis" },
+                { className: "important", title: "Important" }
             ]
         }
     })
 
-Supported Node Types
---------------------
+Supported Types
+---------------
 
-The following node types are supported for CSS class application:
+The following node and mark types are supported for CSS class application:
+
+**Node Types:**
 
 - **paragraph**: Paragraph elements (``<p>``)
 - **table**: Table elements (``<table>``)
@@ -148,45 +162,58 @@ The following node types are supported for CSS class application:
 - **blockquote**: Blockquote elements (``<blockquote>``)
 - **codeBlock**: Code block elements (``<pre>``)
 
+**Mark Types:**
+
+- **bold**: Bold text (``<strong>``)
+- **italic**: Italic text (``<em>``)
+- **link**: Links (``<a>``)
+- **code**: Inline code (``<code>``)
+- **strike**: Strikethrough text (``<s>``)
+- **underline**: Underlined text (``<u>``)
+
 Menu Integration
 ----------------
 
-When configured with CSS classes, NodeClass automatically adds context-sensitive dropdown menus to the editor. The menu options change based on the currently selected node type:
+When configured with CSS classes, NodeClass automatically adds context-sensitive dropdown menus to the editor. The menu options change based on the currently selected node or mark type:
 
 - When a paragraph is selected, only paragraph classes are shown
 - When a table is selected, only table classes are shown
-- When a table cell is selected, only table cell classes are shown
+- When text with a bold mark is selected, bold classes are shown
+- When a link is selected, link classes are shown
 
 Each dropdown includes:
 
-- **default**: Removes any applied node class (returns to normal styling)
-- Each configured CSS class for that node type as a selectable option
+- **Reset classes**: Removes any applied classes from nodes and marks (returns to normal styling)
+- Each configured CSS class for the applicable types as a selectable option
 
-The menu items appear in the ``nodeClass`` group and are contextually filtered.
+The menu items appear in the ``nodeClass`` group and are contextually filtered. Mark class options are hidden when the selection is empty or when the mark type is not active in the current selection.
 
 Commands
 --------
 
-The NodeClass extension provides these commands:
+The NodeClass extension works automatically through menu integration. For marks, classes are applied using the standard mark commands:
 
 .. code-block:: javascript
 
-    // Apply a CSS class to the current node
-    editor.commands.setNodeClass("highlight")
+    // For marks: Apply a mark with a specific class
+    editor.commands.setMark("bold", { class: "emphasis" })
+    editor.commands.setMark("link", { class: "external" })
 
-    // Remove node class from the current node
-    editor.commands.unsetNodeClass()
+    // Check if a mark with a specific class is active
+    editor.isActive("bold", { class: "emphasis" })
+    editor.isActive("link", { class: "external" })
 
-    // Check if current node has a specific class applied
-    editor.isActive("nodeClass", { class: "highlight" })
+    // Remove marks (which removes their classes)
+    editor.commands.unsetMark("bold")
 
 HTML Output
 -----------
 
-The extension adds CSS classes directly to block-level elements:
+The extension adds CSS classes directly to both block-level elements and marks:
 
 .. code-block:: html
 
+    <!-- Node classes -->
     <p class="highlight">This paragraph has highlighting applied.</p>
 
     <table class="bordered striped">
@@ -202,15 +229,22 @@ The extension adds CSS classes directly to block-level elements:
         <p>Important quote or callout text.</p>
     </blockquote>
 
+    <!-- Mark classes -->
+    <p>This is <strong class="emphasis">emphasized bold text</strong>.</p>
+
+    <p>Visit our <a href="https://example.com" class="external">website</a>.</p>
+
+    <p>This is <strong class="important">very important</strong> information.</p>
+
 Sanitization
 ------------
 
-When using server-side sanitization, the NodeClass extension automatically configures the sanitizer to allow ``class`` attributes on all supported block-level elements.
+When using server-side sanitization, the NodeClass extension automatically configures the sanitizer to allow ``class`` attributes on all supported block-level elements and marks.
 
 Styling Examples
 ----------------
 
-Define CSS rules in your stylesheet to style the configured classes:
+Define CSS rules in your stylesheet to style the configured classes for both nodes and marks:
 
 .. code-block:: css
 
@@ -286,6 +320,36 @@ Define CSS rules in your stylesheet to style the configured classes:
         color: #6f42c1;
         border-left: 4px solid #6f42c1;
         padding-left: 1rem;
+    }
+
+    /* Mark classes */
+    .ProseMirror strong.emphasis {
+        color: #d32f2f;
+        font-weight: 700;
+    }
+
+    .ProseMirror strong.important {
+        background-color: #fff176;
+        padding: 0 0.25rem;
+        font-weight: 900;
+    }
+
+    .ProseMirror a.external::after {
+        content: " ↗";
+        font-size: 0.8em;
+    }
+
+    .ProseMirror a.button {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #2196f3;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .ProseMirror a.button:hover {
+        background-color: #1976d2;
     }
 
     /* List classes */
@@ -404,7 +468,12 @@ Comparison with TextClass
 
 NodeClass complements TextClass by targeting different content levels:
 
-- **TextClass**: Applies to inline text spans within content (``<span class="...">``)
-- **NodeClass**: Applies to entire block-level elements (``<p class="...">``, ``<table class="...">``)
+- **TextClass**: Applies to inline text spans using ``<span>`` tags (``<span class="...">``)
+- **NodeClass**: Applies to both:
 
-Use TextClass for styling words or phrases within paragraphs, and NodeClass for styling entire structural elements. They can be used together for comprehensive styling control.
+  - Entire block-level elements (``<p class="...">``, ``<table class="...">``)
+  - Inline marks using their native tags (``<strong class="...">``, ``<a class="...">``)
+
+Use TextClass when you need a generic ``<span>`` wrapper for styling arbitrary text, and NodeClass when you want to style specific nodes or marks with their semantic HTML tags. They can be used together for comprehensive styling control.
+
+**Note**: If you use the same name for both a node type and a mark type in ``cssClasses``, only the node type configuration will be recognized by the NodeClass extension.

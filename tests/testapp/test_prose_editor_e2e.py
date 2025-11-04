@@ -624,6 +624,128 @@ def test_nodeclass_textclass(live_server, page):
     )
 
 
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_nodeclass_mark_css_class(live_server, page):
+    """Test NodeClass extension with mark CSS classes (e.g., bold with emphasis class)."""
+    User.objects.create_superuser("admin", "admin@example.com", "password")
+
+    page.goto(f"{live_server.url}/admin/login/")
+    page.fill("#id_username", "admin")
+    page.fill("#id_password", "password")
+    page.click("input[type=submit]")
+
+    page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Important text")
+
+    # Select all and make bold
+    editor.press("ControlOrMeta+a")
+    page.locator(".prose-menubar__button[title='bold']").click()
+
+    # Click on the bold text in the editor to place cursor inside
+    page.locator(".prose-editor strong").click()
+
+    # Apply emphasis class to the bold mark at cursor position
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("bold: emphasis").click()
+
+    page.click("input[name='_save']")
+
+    # Verify saved content
+    model = ConfigurableProseEditorModel.objects.first()
+    assert model is not None
+    assert '<strong class="emphasis">Important text</strong>' in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_nodeclass_mark_switch_class(live_server, page):
+    """Test switching between different CSS classes on the same mark."""
+    User.objects.create_superuser("admin", "admin@example.com", "password")
+
+    page.goto(f"{live_server.url}/admin/login/")
+    page.fill("#id_username", "admin")
+    page.fill("#id_password", "password")
+    page.click("input[type=submit]")
+
+    page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Important text")
+
+    # Select all and make bold
+    editor.press("ControlOrMeta+a")
+    page.locator(".prose-menubar__button[title='bold']").click()
+
+    # Click on the bold text and apply emphasis class
+    page.locator(".prose-editor strong").click()
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("bold: emphasis").click()
+
+    # Now switch to important class
+    page.locator(".prose-editor strong").click()
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("bold: important").click()
+
+    page.click("input[name='_save']")
+
+    # Verify the class was switched to important
+    model = ConfigurableProseEditorModel.objects.first()
+    assert model is not None
+    assert '<strong class="important">Important text</strong>' in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_nodeclass_reset_classes(live_server, page):
+    """Test the reset classes functionality for both nodes and marks."""
+    User.objects.create_superuser("admin", "admin@example.com", "password")
+
+    page.goto(f"{live_server.url}/admin/login/")
+    page.fill("#id_username", "admin")
+    page.fill("#id_password", "password")
+    page.click("input[type=submit]")
+
+    page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Important text")
+
+    # Apply paragraph highlight class (without selection, just click in paragraph)
+    editor.click()
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("paragraph: highlight").click()
+
+    # Make text bold and apply emphasis class
+    editor.press("ControlOrMeta+a")
+    page.locator(".prose-menubar__button[title='bold']").click()
+    page.locator(".prose-editor strong").click()
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("bold: emphasis").click()
+
+    # Now reset all classes
+    page.locator(".prose-editor strong").click()
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("Reset classes").click()
+
+    page.click("input[name='_save']")
+
+    # Verify both classes were removed
+    model = ConfigurableProseEditorModel.objects.first()
+    assert model is not None
+    # Should have bold but no classes
+    assert "<strong>Important text</strong>" in model.description
+    # Should not have emphasis class
+    assert 'class="emphasis"' not in model.description
+    # Should not have highlight class
+    assert 'class="highlight"' not in model.description
+
+
 """
 def test_codegen_helper(live_server):
     print(f"Live server URL: {live_server.url}")

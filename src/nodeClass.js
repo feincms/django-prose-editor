@@ -25,6 +25,26 @@ const getApplicableNodes = (state, cssClasses) => {
   return applicableNodes
 }
 
+const getApplicableMarks = (state, cssClasses) => {
+  const { selection } = state
+  const { $from, $to } = selection
+  const applicableMarks = []
+
+  // Get marks at the current selection
+  const marks = $from.marks()
+
+  for (const mark of marks) {
+    if (cssClasses[mark.type.name]) {
+      applicableMarks.push({
+        markType: mark.type.name,
+        mark: mark,
+      })
+    }
+  }
+
+  return applicableMarks
+}
+
 export const NodeClass = Extension.create({
   name: "nodeClass",
 
@@ -45,8 +65,6 @@ export const NodeClass = Extension.create({
               const className = element.className?.trim()
               if (!className) return null
 
-              // The node type will be determined by Tiptap based on the element
-              // We'll validate it in the parseHTML of each specific node type
               return className
             },
             renderHTML: (attributes) => {
@@ -67,33 +85,36 @@ export const NodeClass = Extension.create({
   addMenuItems({ buttons, menu }) {
     const cssClasses = this.options.cssClasses
 
-    // Helper function to get the display title for a node type
-    const getNodeTypeTitle = (nodeType) => {
-      const nodeConfig = cssClasses[nodeType]
+    // Helper function to get the display title
+    const getTypeTitle = (typeConfig, typeName) => {
       if (
-        typeof nodeConfig === "object" &&
-        nodeConfig.title &&
-        !Array.isArray(nodeConfig)
+        typeof typeConfig === "object" &&
+        typeConfig.title &&
+        !Array.isArray(typeConfig)
       ) {
-        return nodeConfig.title
+        return typeConfig.title
       }
-      return nodeType
+      return typeName
     }
 
-    // Helper function to get the classes for a node type
-    const getNodeTypeClasses = (nodeType) => {
-      const nodeConfig = cssClasses[nodeType]
+    // Helper function to get the classes
+    const getTypeClasses = (typeConfig) => {
       if (
-        typeof nodeConfig === "object" &&
-        nodeConfig.cssClasses &&
-        !Array.isArray(nodeConfig)
+        typeof typeConfig === "object" &&
+        typeConfig.cssClasses &&
+        !Array.isArray(typeConfig)
       ) {
-        return nodeConfig.cssClasses
+        return typeConfig.cssClasses
       }
-      return Array.isArray(nodeConfig) ? nodeConfig : []
+      return Array.isArray(typeConfig) ? typeConfig : []
     }
 
-    // Add a global "Reset classes" option that clears all node classes
+    // Helper function to check if a type is a node or mark
+    const isNodeType = (editor, typeName) => {
+      return !!editor.state.schema.nodes[typeName]
+    }
+
+    // Add a global "Reset classes" option that clears all node and mark classes
     menu.defineItem({
       name: `${this.name}:global:reset`,
       groups: this.name,
@@ -110,65 +131,112 @@ export const NodeClass = Extension.create({
         return false
       },
       command(editor) {
-        // Remove classes from all applicable ancestor nodes
+        // Remove classes from all applicable ancestor nodes and marks
         const applicableNodes = getApplicableNodes(editor.state, cssClasses)
-        editor
-          .chain()
-          .focus()
-          .command(({ tr }) => {
-            for (const { pos } of applicableNodes) {
-              tr.setNodeAttribute(pos, "class", null)
-            }
+        const applicableMarks = getApplicableMarks(editor.state, cssClasses)
+
+        // Reset node classes
+        for (const { pos } of applicableNodes) {
+          editor.commands.command(({ tr }) => {
+            tr.setNodeAttribute(pos, "class", null)
             return true
           })
-          .run()
+        }
+
+        // Reset mark classes by extending range, unsetting, and reapplying without class
+        for (const { markType, mark } of applicableMarks) {
+          const markTypeObj = editor.state.schema.marks[markType]
+          if (!markTypeObj) continue
+
+          // Preserve all attributes except class
+          const { class: _, ...attrsWithoutClass } = mark.attrs
+
+          editor
+            .chain()
+            .focus()
+            .extendMarkRange(markType)
+            .unsetMark(markType)
+            .setMark(markType, attrsWithoutClass)
+            .run()
+        }
       },
     })
 
-    // Create separate menu items for each node type and its classes
-    for (const nodeType of Object.keys(cssClasses)) {
-      const classes = getNodeTypeClasses(nodeType)
+    // Create menu items for each type and its classes
+    for (const typeName of Object.keys(cssClasses)) {
+      const classes = getTypeClasses(cssClasses[typeName])
       if (!classes || classes.length === 0) continue
 
-      // Add class options for this node type
+      // Add class options for this type
       for (const cls of classes) {
         const { className, title } = cssClass(cls)
-        const nodeTypeTitle = getNodeTypeTitle(nodeType)
+        const typeTitle = getTypeTitle(cssClasses[typeName], typeName)
 
         menu.defineItem({
-          name: `${this.name}:${nodeType}:${className}`,
+          name: `${this.name}:${typeName}:${className}`,
           groups: this.name,
-          button: buttons.text(`${nodeTypeTitle}: ${title}`),
+          button: buttons.text(`${typeTitle}: ${title}`),
           option: crel("p", {
             className: className,
-            textContent: `${nodeTypeTitle}: ${title}`,
+            textContent: `${typeTitle}: ${title}`,
           }),
           active(editor) {
-            // Active when this specific node type has this class
-            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
-            const targetNode = applicableNodes.find(
-              (n) => n.nodeType === nodeType,
-            )
-            return targetNode && targetNode.node.attrs.class === className
+            if (isNodeType(editor, typeName)) {
+              // Active when this specific node type has this class
+              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              const targetNode = applicableNodes.find(
+                (n) => n.nodeType === typeName,
+              )
+              return targetNode && targetNode.node.attrs.class === className
+            } else {
+              // Active when this specific mark type has this class
+              return editor.isActive(typeName, { class: className })
+            }
           },
           hidden(editor) {
-            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
-            return !applicableNodes.some((n) => n.nodeType === nodeType)
+            if (isNodeType(editor, typeName)) {
+              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              return !applicableNodes.some((n) => n.nodeType === typeName)
+            } else {
+              // For marks: check if mark type exists at current position
+              const { state } = editor
+              const { from, $from } = state.selection
+              const markType = state.schema.marks[typeName]
+
+              if (!markType) return true
+
+              // Check marks at the resolved position
+              const marks = $from.marks()
+              const hasMark = marks.some(mark => mark.type === markType)
+
+              return !hasMark
+            }
           },
           command(editor) {
-            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
-            for (const { node, pos } of applicableNodes) {
-              if (node.type.name === nodeType) {
-                editor
-                  .chain()
-                  .focus()
-                  .command(({ tr }) => {
-                    tr.setNodeAttribute(pos, "class", className)
-                    return true
-                  })
-                  .run()
-                return
+            if (isNodeType(editor, typeName)) {
+              // Handle node
+              const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+              for (const { node, pos } of applicableNodes) {
+                if (node.type.name === typeName) {
+                  editor
+                    .chain()
+                    .focus()
+                    .command(({ tr }) => {
+                      tr.setNodeAttribute(pos, "class", className)
+                      return true
+                    })
+                    .run()
+                  return
+                }
               }
+            } else {
+              // Handle mark: extend mark range and update attributes
+              editor
+                .chain()
+                .focus()
+                .extendMarkRange(typeName)
+                .updateAttributes(typeName, { class: className })
+                .run()
             }
           },
         })
