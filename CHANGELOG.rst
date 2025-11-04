@@ -4,6 +4,13 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Extended the ``NodeClass`` extension to support marks (bold, italic, links,
+  etc.) in addition to nodes. CSS classes can now be applied to marks by
+  including them in the ``cssClasses`` configuration alongside nodes.
+- Refactored the ``NodeClass`` and ``Link`` extensions to use Tiptap's
+  ``updateAttributes()`` command instead of the unsetMark/setMark pattern,
+  which automatically preserves other mark attributes.
+
 0.19 (2025-10-29)
 ~~~~~~~~~~~~~~~~~
 
