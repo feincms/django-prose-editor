@@ -27,7 +27,7 @@ const getApplicableNodes = (state, cssClasses) => {
 
 const getApplicableMarks = (state, cssClasses) => {
   const { selection } = state
-  const { $from, $to } = selection
+  const { $from } = selection
   const applicableMarks = []
 
   // Get marks at the current selection
@@ -203,7 +203,7 @@ export const NodeClass = Extension.create({
             } else {
               // For marks: check if mark type exists at current position
               const { state } = editor
-              const { from, $from } = state.selection
+              const { $from } = state.selection
               const markType = state.schema.marks[typeName]
 
               if (!markType) return true
