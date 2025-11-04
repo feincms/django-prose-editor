@@ -174,13 +174,15 @@ The following node and mark types are supported for CSS class application:
 - **strike**: Strikethrough text (``<s>``)
 - **underline**: Underlined text (``<u>``)
 
+More types may be supported but your mileage may vary.
+
 Menu Integration
 ----------------
 
 When configured with CSS classes, NodeClass automatically adds context-sensitive dropdown menus to the editor. The menu options change based on the currently selected node or mark type:
 
-- When a paragraph is selected, only paragraph classes are shown
-- When a table is selected, only table classes are shown
+- When a paragraph is selected, paragraph classes are shown
+- When a table cell is selected, table cell, table row and table classes are shown, and possibly also paragraph classes (since table cells may themselves contain paragraphs)
 - When text with a bold mark is selected, bold classes are shown
 - When a link is selected, link classes are shown
 
@@ -189,12 +191,12 @@ Each dropdown includes:
 - **Reset classes**: Removes any applied classes from nodes and marks (returns to normal styling)
 - Each configured CSS class for the applicable types as a selectable option
 
-The menu items appear in the ``nodeClass`` group and are contextually filtered. Mark class options are hidden when the selection is empty or when the mark type is not active in the current selection.
+The menu items appear in the ``nodeClass`` group and are contextually filtered.
 
 Commands
 --------
 
-The NodeClass extension works automatically through menu integration. For marks, classes are applied using the standard mark commands:
+The NodeClass extension works automatically through menu integration. The NodeClass extension currently doesn't offer any commands. For marks, classes are applied using the standard mark commands:
 
 .. code-block:: javascript
 

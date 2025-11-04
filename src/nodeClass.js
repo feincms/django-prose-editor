@@ -138,23 +138,24 @@ export const NodeClass = Extension.create({
         const applicableNodes = getApplicableNodes(editor.state, cssClasses)
         const applicableMarks = getApplicableMarks(editor.state, cssClasses)
 
+        let chain = editor.chain().focus()
+
         // Reset node classes
-        for (const { pos } of applicableNodes) {
-          editor.commands.command(({ tr }) => {
+        chain = chain.command(({ tr }) => {
+          for (const { pos } of applicableNodes) {
             tr.setNodeAttribute(pos, "class", null)
             return true
-          })
-        }
+          }
+        })
 
         // Reset mark classes by extending range and removing class attribute
         for (const { markType } of applicableMarks) {
-          editor
-            .chain()
-            .focus()
+          chain = chain
             .extendMarkRange(markType)
             .updateAttributes(markType, { class: null })
-            .run()
         }
+
+        chain.run()
       },
     })
 
