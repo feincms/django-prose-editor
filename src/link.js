@@ -104,12 +104,16 @@ export const Link = BaseLink.extend({
 
             linkDialog(editor, attrs, this.options).then((attrs) => {
               if (attrs) {
-                editor
-                  .chain()
-                  .focus()
-                  .extendMarkRange(this.name)
-                  .updateAttributes(this.name, attrs)
-                  .run()
+                if (editor.isActive("link")) {
+                  editor
+                    .chain()
+                    .focus()
+                    .extendMarkRange(this.name)
+                    .updateAttributes(this.name, attrs)
+                    .run()
+                } else {
+                  editor.chain().focus().setMark(this.name, attrs).run()
+                }
               }
             })
           }
