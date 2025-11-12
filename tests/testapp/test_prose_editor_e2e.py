@@ -252,6 +252,7 @@ def test_prose_editor_ordered_list_attributes(page, live_server):
     # Verify the list has been updated with the new attributes
     updated_ol = editor.locator("ol")
     expect(updated_ol).to_have_attribute("type", "A")
+    expect(updated_ol).to_have_attribute("data-type", "upper-alpha")
     expect(updated_ol).to_have_attribute("start", "5")
 
     # Save the form
@@ -265,6 +266,7 @@ def test_prose_editor_ordered_list_attributes(page, live_server):
     # Verify the saved content has the ordered list with the attributes we set
     assert "<ol" in html_content
     assert 'type="A"' in html_content
+    assert 'data-type="upper-alpha"' in html_content
     assert 'start="5"' in html_content
     assert "<li>" in html_content
     assert "First item" in html_content
