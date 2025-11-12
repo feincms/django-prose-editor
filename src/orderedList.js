@@ -7,26 +7,31 @@ const LIST_TYPES = [
   {
     label: "1, 2, 3, ...",
     htmlType: "1",
+    cssType: "decimal",
     description: gettext("Decimal numbers"),
   },
   {
     label: "a, b, c, ...",
     htmlType: "a",
+    cssType: "lower-alpha",
     description: gettext("Lowercase letters"),
   },
   {
     label: "A, B, C, ...",
     htmlType: "A",
+    cssType: "upper-alpha",
     description: gettext("Uppercase letters"),
   },
   {
     label: "i, ii, iii, ...",
     htmlType: "i",
+    cssType: "lower-roman",
     description: gettext("Lowercase Roman numerals"),
   },
   {
     label: "I, II, III, ...",
     htmlType: "I",
+    cssType: "upper-roman",
     description: gettext("Uppercase Roman numerals"),
   },
 ]
@@ -35,6 +40,11 @@ const LIST_TYPES = [
 const listTypeToHTMLType = (typeLabel) => {
   const found = LIST_TYPES.find((item) => item.label === typeLabel)
   return found ? found.htmlType : "1" // Default to decimal
+}
+
+const htmlTypeToCSSType = (type) => {
+  const found = LIST_TYPES.find((item) => item.htmlType === type)
+  return found ? found.cssType : "decimal" // Default to decimal
 }
 
 // Helper to convert HTML type attribute to list type label
@@ -85,6 +95,20 @@ export const OrderedList = TiptapOrderedList.configure({
       ...this.parent?.(),
       // Option to enable/disable list attributes dialog and menu
       enableListAttributes: true,
+    }
+  },
+
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      type: {
+        default: null,
+        parseHTML: (element) => element.getAttribute("type"),
+        renderHTML: (attributes) => ({
+          type: attributes.type,
+          "data-type": htmlTypeToCSSType(attributes.type),
+        }),
+      },
     }
   },
 

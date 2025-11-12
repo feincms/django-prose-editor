@@ -227,7 +227,7 @@ EXTENSION_MAPPING = {
     "Paragraph": html_tags(["p"]),
     "HardBreak": html_tags(["br"]),
     "BulletList": html_tags(["ul"]),
-    "OrderedList": html_tags(["ol"], {"ol": ["start", "type"]}),
+    "OrderedList": html_tags(["ol"], {"ol": ["start", "type", "data-type"]}),
     "ListItem": html_tags(["li"]),
     "Blockquote": html_tags(["blockquote"]),
     "HorizontalRule": html_tags(["hr"]),

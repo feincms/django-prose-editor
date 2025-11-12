@@ -82,19 +82,21 @@
   list-style-type: decimal !important;
 }
 
-.ProseMirror ol[type="a" s] {
+.ProseMirror ol[type="a"],
+.ProseMirror ol[data-type="lower-alpha"] {
   list-style-type: lower-alpha !important;
 }
 
-.ProseMirror ol[type="A" s] {
+.ProseMirror ol[data-type="upper-alpha"] {
   list-style-type: upper-alpha !important;
 }
 
-.ProseMirror ol[type="i" s] {
+.ProseMirror ol[type="i"],
+.ProseMirror ol[data-type="lower-roman"] {
   list-style-type: lower-roman !important;
 }
 
-.ProseMirror ol[type="I" s] {
+.ProseMirror ol[data-type="upper-roman"] {
   list-style-type: upper-roman !important;
 }
 
