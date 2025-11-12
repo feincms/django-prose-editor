@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+
+0.21 (2025-11-12)
+~~~~~~~~~~~~~~~~~
+
 - Modified our ``OrderedList`` extension to also set a ``data-type`` attribute
   on the ``<ol>`` element with one of the CSS values for the
   ``list-style-type`` property. This is necessary because Chromium-based
