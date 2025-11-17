@@ -113,10 +113,8 @@ export const NodeClass = Extension.create({
             return false
           } else {
             // Handle mark: extend mark range and update attributes
-            return commands
-              .chain()
-              .extendMarkRange(type)
-              .updateAttributes(type, { class: className })
+            commands.extendMarkRange(type)
+            return commands.updateAttributes(type, { class: className })
           }
         },
 
@@ -127,30 +125,26 @@ export const NodeClass = Extension.create({
           const cssClasses = this.options.cssClasses
 
           if (!type) {
-            // Clear all classes from all types
+            // Clear all classes from all types - execute each clear operation
             const applicableNodes = getApplicableNodes(state, cssClasses)
             const applicableMarks = getApplicableMarks(state, cssClasses)
 
-            let chain = commands.chain()
+            // Collect all unique types to clear
+            const typesToClear = new Set()
+            applicableNodes.forEach(({ nodeType }) => {
+              typesToClear.add(nodeType)
+            })
+            applicableMarks.forEach(({ markType }) => {
+              typesToClear.add(markType.name)
+            })
 
-            // Reset node classes
-            if (applicableNodes.length > 0) {
-              chain = chain.command(({ tr }) => {
-                for (const { pos } of applicableNodes) {
-                  tr.setNodeAttribute(pos, "class", null)
-                }
-                return true
-              })
-            }
+            // Clear each type using this same command recursively
+            let success = true
+            typesToClear.forEach((typeName) => {
+              success = success && commands.unsetNodeClass(typeName)
+            })
 
-            // Reset mark classes
-            for (const { markType } of applicableMarks) {
-              chain = chain
-                .extendMarkRange(markType)
-                .updateAttributes(markType, { class: null })
-            }
-
-            return chain.run()
+            return success
           }
 
           // Clear classes from specific type
@@ -175,10 +169,8 @@ export const NodeClass = Extension.create({
             return false
           } else {
             // Handle mark
-            return commands
-              .chain()
-              .extendMarkRange(type)
-              .updateAttributes(type, { class: null })
+            commands.extendMarkRange(type)
+            return commands.updateAttributes(type, { class: null })
           }
         },
     }
