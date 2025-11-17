@@ -51,6 +51,11 @@ export * from "./utils.js"
 import { Editor } from "@tiptap/core"
 import { crel } from "./utils.js"
 
+function actuallyEmpty(html) {
+  const re = /^<(\w+)(\s[^>]*)?><\/\1>$/i
+  return re.test(html) ? "" : html
+}
+
 export function createTextareaEditor(textarea, extensions) {
   const disabled = textarea.hasAttribute("disabled")
 
@@ -66,7 +71,7 @@ export function createTextareaEditor(textarea, extensions) {
     extensions,
     content: textarea.value,
     onUpdate({ editor }) {
-      textarea.value = editor.getHTML()
+      textarea.value = actuallyEmpty(editor.getHTML())
       textarea.dispatchEvent(new Event("input", { bubbles: true }))
     },
     onDestroy() {

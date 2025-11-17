@@ -748,6 +748,29 @@ def test_nodeclass_reset_classes(live_server, page):
     assert 'class="highlight"' not in model.description
 
 
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_actually_empty(live_server, page):
+    User.objects.create_superuser("admin", "admin@example.com", "password")
+
+    page.goto(f"{live_server.url}/admin/login/")
+    page.fill("#id_username", "admin")
+    page.fill("#id_password", "password")
+    page.click("input[type=submit]")
+
+    page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    element = page.locator("#id_description")
+
+    editor.click()
+    editor.type("Hello, Playwright!")
+    expect(element).to_have_value("<p>Hello, Playwright!</p>")
+    editor.press("ControlOrMeta+a")
+    editor.press("Delete")
+    expect(element).to_have_value("")
+
+
 """
 def test_codegen_helper(live_server):
     print(f"Live server URL: {live_server.url}")

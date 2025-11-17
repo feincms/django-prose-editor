@@ -4,6 +4,13 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Also apply the "actually empty" behavior in the frontend code. ProseMirror
+  always produces at least one empty block-level element (for example
+  ``<p></p>``). We prefer the editor to produce an empty string in this case
+  instead. This may be a visible behavior change if you're only using the
+  frontend code and not the backend code; the backend code already applied the
+  same transformation since django-prose-editor 0.4.
+
 
 0.21 (2025-11-12)
 ~~~~~~~~~~~~~~~~~
