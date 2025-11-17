@@ -4,6 +4,10 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+
+0.22 (2025-11-17)
+~~~~~~~~~~~~~~~~~
+
 - Also apply the "actually empty" behavior in the frontend code. ProseMirror
   always produces at least one empty block-level element (for example
   ``<p></p>``). We prefer the editor to produce an empty string in this case
