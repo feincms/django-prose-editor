@@ -85,6 +85,105 @@ export const NodeClass = Extension.create({
     ]
   },
 
+  addCommands() {
+    return {
+      // Set the class for a specific node or mark type (replaces existing class)
+      setNodeClass:
+        (type, className) =>
+        ({ commands, state }) => {
+          const cssClasses = this.options.cssClasses
+          if (!cssClasses[type]) {
+            console.warn(`NodeClass: Type "${type}" not configured`)
+            return false
+          }
+
+          const isNode = !!state.schema.nodes[type]
+
+          if (isNode) {
+            // Handle node
+            const applicableNodes = getApplicableNodes(state, cssClasses)
+            for (const { node, pos } of applicableNodes) {
+              if (node.type.name === type) {
+                return commands.command(({ tr }) => {
+                  tr.setNodeAttribute(pos, "class", className)
+                  return true
+                })
+              }
+            }
+            return false
+          } else {
+            // Handle mark: extend mark range and update attributes
+            return commands
+              .chain()
+              .extendMarkRange(type)
+              .updateAttributes(type, { class: className })
+          }
+        },
+
+      // Clear classes from a specific type, or all types if no type given
+      unsetNodeClass:
+        (type) =>
+        ({ commands, state }) => {
+          const cssClasses = this.options.cssClasses
+
+          if (!type) {
+            // Clear all classes from all types
+            const applicableNodes = getApplicableNodes(state, cssClasses)
+            const applicableMarks = getApplicableMarks(state, cssClasses)
+
+            let chain = commands.chain()
+
+            // Reset node classes
+            if (applicableNodes.length > 0) {
+              chain = chain.command(({ tr }) => {
+                for (const { pos } of applicableNodes) {
+                  tr.setNodeAttribute(pos, "class", null)
+                }
+                return true
+              })
+            }
+
+            // Reset mark classes
+            for (const { markType } of applicableMarks) {
+              chain = chain
+                .extendMarkRange(markType)
+                .updateAttributes(markType, { class: null })
+            }
+
+            return chain.run()
+          }
+
+          // Clear classes from specific type
+          if (!cssClasses[type]) {
+            console.warn(`NodeClass: Type "${type}" not configured`)
+            return false
+          }
+
+          const isNode = !!state.schema.nodes[type]
+
+          if (isNode) {
+            // Handle node
+            const applicableNodes = getApplicableNodes(state, cssClasses)
+            for (const { node, pos } of applicableNodes) {
+              if (node.type.name === type) {
+                return commands.command(({ tr }) => {
+                  tr.setNodeAttribute(pos, "class", null)
+                  return true
+                })
+              }
+            }
+            return false
+          } else {
+            // Handle mark
+            return commands
+              .chain()
+              .extendMarkRange(type)
+              .updateAttributes(type, { class: null })
+          }
+        },
+    }
+  },
+
   addMenuItems({ buttons, menu }) {
     const cssClasses = this.options.cssClasses
 
@@ -117,45 +216,20 @@ export const NodeClass = Extension.create({
       return !!editor.state.schema.nodes[typeName]
     }
 
-    // Add a global "Reset classes" option that clears all node and mark classes
+    // Add a global "Reset all classes" option
     menu.defineItem({
       name: `${this.name}:global:reset`,
       groups: this.name,
       button: buttons.text("Block style"),
       option: crel("p", {
-        textContent: "Reset classes",
+        textContent: "Reset all classes",
       }),
       active(_editor) {
         // Always active so this is always shown as the dropdown button
         return true
       },
-      hidden(_editor) {
-        // Never hidden so always available
-        return false
-      },
       command(editor) {
-        // Remove classes from all applicable ancestor nodes and marks
-        const applicableNodes = getApplicableNodes(editor.state, cssClasses)
-        const applicableMarks = getApplicableMarks(editor.state, cssClasses)
-
-        let chain = editor.chain().focus()
-
-        // Reset node classes
-        chain = chain.command(({ tr }) => {
-          for (const { pos } of applicableNodes) {
-            tr.setNodeAttribute(pos, "class", null)
-            return true
-          }
-        })
-
-        // Reset mark classes by extending range and removing class attribute
-        for (const { markType } of applicableMarks) {
-          chain = chain
-            .extendMarkRange(markType)
-            .updateAttributes(markType, { class: null })
-        }
-
-        chain.run()
+        editor.chain().focus().unsetNodeClass().run()
       },
     })
 
@@ -164,10 +238,79 @@ export const NodeClass = Extension.create({
       const classes = getTypeClasses(cssClasses[typeName])
       if (!classes || classes.length === 0) continue
 
+      const typeTitle = getTypeTitle(cssClasses[typeName], typeName)
+
+      // Add a "Clear [Type]" button for this specific type
+      menu.defineItem({
+        name: `${this.name}:${typeName}:clear`,
+        groups: this.name,
+        button: buttons.text(`${typeTitle}: default`),
+        option: crel("p", {
+          textContent: `${typeTitle}: default`,
+        }),
+        active(editor) {
+          // Show as active (dropdown button) when type is applicable
+          if (isNodeType(editor, typeName)) {
+            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+            return applicableNodes.some((n) => n.nodeType === typeName)
+          } else {
+            // For marks: check if mark type exists at current position
+            const { state } = editor
+            const { $from } = state.selection
+            const markType = state.schema.marks[typeName]
+            if (!markType) return false
+            const marks = $from.marks()
+            return marks.some((mark) => mark.type === markType)
+          }
+        },
+        hidden(editor) {
+          // Hide when type is not applicable
+          if (isNodeType(editor, typeName)) {
+            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+            return !applicableNodes.some((n) => n.nodeType === typeName)
+          } else {
+            // For marks: check if mark type exists at current position
+            const { state } = editor
+            const { $from } = state.selection
+            const markType = state.schema.marks[typeName]
+            if (!markType) return true
+            const marks = $from.marks()
+            const hasMark = marks.some((mark) => mark.type === markType)
+            return !hasMark
+          }
+        },
+        command(editor) {
+          if (isNodeType(editor, typeName)) {
+            // Handle node
+            const applicableNodes = getApplicableNodes(editor.state, cssClasses)
+            for (const { node, pos } of applicableNodes) {
+              if (node.type.name === typeName) {
+                editor
+                  .chain()
+                  .focus()
+                  .command(({ tr }) => {
+                    tr.setNodeAttribute(pos, "class", null)
+                    return true
+                  })
+                  .run()
+                return
+              }
+            }
+          } else {
+            // Handle mark
+            editor
+              .chain()
+              .focus()
+              .extendMarkRange(typeName)
+              .updateAttributes(typeName, { class: null })
+              .run()
+          }
+        },
+      })
+
       // Add class options for this type
       for (const cls of classes) {
         const { className, title } = cssClass(cls)
-        const typeTitle = getTypeTitle(cssClasses[typeName], typeName)
 
         menu.defineItem({
           name: `${this.name}:${typeName}:${className}`,

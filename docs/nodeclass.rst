@@ -186,30 +186,61 @@ When configured with CSS classes, NodeClass automatically adds context-sensitive
 - When text with a bold mark is selected, bold classes are shown
 - When a link is selected, link classes are shown
 
-Each dropdown includes:
+Each node or mark type gets its own dropdown with:
 
-- **Reset classes**: Removes any applied classes from nodes and marks (returns to normal styling)
-- Each configured CSS class for the applicable types as a selectable option
+- **Clear [Type]**: Removes any applied classes from that specific type (e.g., "Clear Paragraph", "Clear Bold")
+- Each configured CSS class for that type as a selectable option
 
-The menu items appear in the ``nodeClass`` group and are contextually filtered.
+The menu items appear in the ``nodeClass`` group and are contextually filtered. Each configured type gets its own button, making it clear which element you're styling.
 
 Commands
 --------
 
-The NodeClass extension works automatically through menu integration. The NodeClass extension currently doesn't offer any commands. For marks, classes are applied using the standard mark commands:
+The NodeClass extension provides two commands for programmatic control:
 
-.. code-block:: javascript
+**setNodeClass**
+    Set the CSS class for a specific node or mark type (replaces any existing class).
 
-    // For marks: Apply a mark with a specific class
-    editor.commands.setMark("bold", { class: "emphasis" })
-    editor.commands.setMark("link", { class: "external" })
+    .. code-block:: javascript
 
-    // Check if a mark with a specific class is active
-    editor.isActive("bold", { class: "emphasis" })
-    editor.isActive("link", { class: "external" })
+        // Set class on a node
+        editor.chain().focus().setNodeClass('paragraph', 'highlight').run()
 
-    // Remove marks (which removes their classes)
-    editor.commands.unsetMark("bold")
+        // Set class on a mark
+        editor.chain().focus().setNodeClass('bold', 'emphasis').run()
+        editor.chain().focus().setNodeClass('link', 'external').run()
+
+    Parameters:
+        - ``type`` (string): The node or mark type name (e.g., 'paragraph', 'bold', 'link')
+        - ``className`` (string): The CSS class to set (replaces existing class)
+
+**unsetNodeClass**
+    Remove CSS classes from a specific type or all types.
+
+    .. code-block:: javascript
+
+        // Clear classes from a specific type
+        editor.chain().focus().unsetNodeClass('paragraph').run()
+        editor.chain().focus().unsetNodeClass('bold').run()
+
+        // Clear classes from all configured types
+        editor.chain().focus().unsetNodeClass().run()
+
+    Parameters:
+        - ``type`` (string, optional): The node or mark type name. If not provided, clears classes from all applicable types.
+
+**Checking Active Classes**
+
+    Use the standard ``isActive()`` method to check if a class is applied:
+
+    .. code-block:: javascript
+
+        // Check if a node has a class
+        editor.isActive('paragraph', { class: 'highlight' })
+
+        // Check if a mark has a class
+        editor.isActive('bold', { class: 'emphasis' })
+        editor.isActive('link', { class: 'external' })
 
 HTML Output
 -----------

@@ -730,10 +730,14 @@ def test_nodeclass_reset_classes(live_server, page):
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
     page.get_by_text("bold: emphasis").click()
 
-    # Now reset all classes
+    # Now clear paragraph class
     page.locator(".prose-editor strong").click()
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
-    page.get_by_text("Reset classes").click()
+    page.get_by_text("paragraph: default").click()
+
+    # Clear bold class
+    page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
+    page.get_by_text("bold: default").click()
 
     page.click("input[name='_save']")
 
