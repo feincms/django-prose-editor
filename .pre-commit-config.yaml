@@ -19,19 +19,19 @@ repos:
       - id: django-upgrade
         args: [--target-version, "4.2"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.3
+    rev: v0.14.5
     hooks:
       - id: ruff-check
         args: [--unsafe-fixes]
       - id: ruff-format
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.3.2
+    rev: v2.3.5
     hooks:
       - id: biome-check
         args: [--unsafe]
         verbose: true
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.11.0
+    rev: v2.11.1
     hooks:
       - id: pyproject-fmt
   - repo: https://github.com/abravalheri/validate-pyproject
