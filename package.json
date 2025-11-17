@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@rslib/core": "^0.17.2",
+    "@rslib/core": "^0.18.0",
     "@tiptap/core": "^3.10.7",
     "@tiptap/extension-blockquote": "^3.10.7",
     "@tiptap/extension-bold": "^3.10.7",
