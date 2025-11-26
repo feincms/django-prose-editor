@@ -21,7 +21,9 @@ const createMenuObject = (cssClass, _definedItems, buttons) => {
 
       _definedItems[name] = {
         name,
-        groups: typeof groups === "string" ? groups.split(/\s+/) : groups,
+        groups: new Set(
+          typeof groups === "string" ? groups.split(/\s+/) : groups,
+        ),
         priority,
         ...itemDefaults,
         ...rest,
@@ -43,9 +45,8 @@ const createMenuObject = (cssClass, _definedItems, buttons) => {
 
       return Object.values(_definedItems)
         .filter((item) => {
-          const itemGroups = new Set(item.groups)
-          const hasIncluded = [...include].some((g) => itemGroups.has(g))
-          const hasExcluded = [...exclude].some((g) => itemGroups.has(g))
+          const hasIncluded = [...include].some((g) => item.groups.has(g))
+          const hasExcluded = [...exclude].some((g) => item.groups.has(g))
           return hasIncluded && !hasExcluded
         })
         .toSorted((a, b) => b.priority - a.priority)
