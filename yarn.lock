@@ -142,9 +142,9 @@
   integrity sha512-42aWfPrimMfDKDi4YegyS7x+/0tlzaqwPQCULLanv3DMIlu96KTJR0fM5isWX2UViOqlGnX6YFgqWepcX+XMNg==
 
 "@rsbuild/core@~1.6.9":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-1.6.9.tgz#9a78d1e66c1ee19ed6bb14ca07a9bb98ce4df979"
-  integrity sha512-wf41bbFIzqQsGkrDal2eVC4cxN6II1k4bUo1g7OFuvWeEOJzjoeK4R5xxKM9g5hRjbGAJs6OiQaGpASvUnDrsw==
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-1.6.11.tgz#989ddb557e3c1b9d0c960f1e784b4b04248fb1e5"
+  integrity sha512-H/OAavDKfa/10prrn++bNbe2KGBo1opglQIq6+G38Mzb+44BM0sv/kn78K2sk2wpfmv4MwljeF1NvczFq2ttzQ==
   dependencies:
     "@rspack/core" "1.6.5"
     "@rspack/lite-tapable" "~1.1.0"
