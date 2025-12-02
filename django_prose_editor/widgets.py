@@ -110,6 +110,10 @@ class ProseEditorWidget(forms.Textarea):
         )
         return context
 
+    def use_required_attribute(self, _initial):
+        # See github.com/feincms/django-prose-editor/issues/66
+        return False
+
 
 class AdminProseEditorWidget(ProseEditorWidget):
     @property
