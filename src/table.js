@@ -10,7 +10,7 @@ const tableDialog = updateAttrsDialog(
       format: "number",
       default: "3",
       min: "1",
-      max: "20",
+      max: "100",
     },
     cols: {
       type: "number",
@@ -18,7 +18,7 @@ const tableDialog = updateAttrsDialog(
       format: "number",
       default: "3",
       min: "1",
-      max: "10",
+      max: "100",
     },
     withHeaderRow: {
       title: gettext("Include header row"),
