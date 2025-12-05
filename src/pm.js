@@ -3,6 +3,7 @@ export * as history from "@tiptap/pm/history"
 export * as keymap from "@tiptap/pm/keymap"
 export * as model from "@tiptap/pm/model"
 export * as state from "@tiptap/pm/state"
+export * as tables from "@tiptap/pm/tables"
 export * as transform from "@tiptap/pm/transform"
 export * as view from "@tiptap/pm/view"
 
@@ -12,7 +13,6 @@ export * as view from "@tiptap/pm/view"
 // Already included as extensions
 // export * as dropcursor from "@tiptap/pm/dropcursor"
 // export * as gapcursor from "@tiptap/pm/gapcursor"
-// export * as tables from "@tiptap/pm/tables"
 //
 // Not necessary, we have the schema
 // export * as schema-basic from "@tiptap/pm/schema-basic"
