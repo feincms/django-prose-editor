@@ -10,6 +10,7 @@ Next version
 - Raised the misleading low limits for columns and rows when inserting a new
   table.
 - Started exposing the ``prosemirror-tables`` exports.
+- Added polish translations. Thanks @kgunia!
 
 
 0.22 (2025-11-17)
