@@ -1,0 +1,137 @@
+# Polish translations for django-prose-editor.
+# Copyright (C) 2024 Matthias Kestenholz
+# This file is distributed under the same license as the django-prose-editor package.
+# Karol Gunia <kgunia@gmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-prose-editor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 22:06+0200\n"
+"PO-Revision-Date: 2025-12-05 14:30+0100\n"
+"Last-Translator: Karol Gunia <kgunia@gmail.com>\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: src/figure.js:134
+msgid "Image URL"
+msgstr "Adres URL obrazu"
+
+#: src/figure.js:140
+msgid "Alternative Text"
+msgstr "Tekst alternatywny"
+
+#: src/figure.js:144
+msgid "Caption"
+msgstr "Podpis"
+
+#: src/figure.js:151
+msgid "Edit Figure"
+msgstr "Edytuj obraz"
+
+#: src/figure.js:152
+msgid "Insert Figure"
+msgstr "Wstaw obraz"
+
+#: src/figure.js:153 src/orderedList.js:63 src/utils.js:95
+msgid "Update"
+msgstr "Aktualizuj"
+
+#: src/figure.js:153
+msgid "Insert"
+msgstr "Wstaw"
+
+#: src/html.js:11
+msgid ""
+"The HTML contents of the editor. Note that the allowed HTML is restricted by "
+"the editor schema."
+msgstr ""
+"Zawartość HTML edytora. Kod HTML jest ograniczony przez schemat edytora."
+
+#: src/html.js:17
+msgid "Edit HTML"
+msgstr "Edytuj HTML"
+
+#: src/html.js:20
+msgid "Prettify"
+msgstr "Upiększ"
+
+#: src/link.js:9
+msgid "URL"
+msgstr "URL"
+
+#: src/link.js:13
+msgid "Title"
+msgstr "Tytuł"
+
+#: src/link.js:20
+msgid "Open in new window"
+msgstr "Otwórz w nowym oknie"
+
+#: src/link.js:24
+msgid "Edit Link"
+msgstr "Edytuj link"
+
+#: src/menu.js:478 src/orderedList.js:62
+msgid "List properties"
+msgstr "Właściwości listy"
+
+#: src/menu.js:641
+msgid "Toggle fullscreen"
+msgstr "Przełącz tryb pełnoekranowy"
+
+#: src/orderedList.js:10
+msgid "Decimal numbers"
+msgstr "Liczby dziesiętne"
+
+#: src/orderedList.js:15
+msgid "Lowercase letters"
+msgstr "Małe litery"
+
+#: src/orderedList.js:20
+msgid "Uppercase letters"
+msgstr "Wielkie litery"
+
+#: src/orderedList.js:25
+msgid "Lowercase Roman numerals"
+msgstr "Małe cyfry rzymskie"
+
+#: src/orderedList.js:30
+msgid "Uppercase Roman numerals"
+msgstr "Duże cyfry rzymskie"
+
+#: src/orderedList.js:50
+msgid "Start at"
+msgstr "Zacznij od"
+
+#: src/orderedList.js:56
+msgid "List type"
+msgstr "Typ listy"
+
+#: src/table.js:9
+msgid "Rows"
+msgstr "Wiersze"
+
+#: src/table.js:17
+msgid "Columns"
+msgstr "Kolumny"
+
+#: src/table.js:24
+msgid "Include header row"
+msgstr "Dołącz wiersz nagłówka"
+
+#: src/table.js:30
+msgid "Table Properties"
+msgstr "Właściwości tabeli"
+
+#: src/table.js:31
+msgid "Insert Table"
+msgstr "Wstaw tabelę"
+
+#: src/utils.js:100
+msgid "Cancel"
+msgstr "Anuluj"
