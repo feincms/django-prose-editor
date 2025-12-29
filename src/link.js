@@ -86,7 +86,7 @@ export const Link = BaseLink.extend({
       command(editor) {
         editor.chain().focus().unsetLink().run()
       },
-      dom: buttons.material("link_off", "remove link"),
+      button: buttons.material("link_off", "remove link"),
       hidden(editor) {
         return !editor.isActive("link")
       },

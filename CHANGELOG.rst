@@ -13,6 +13,7 @@ Next version
 - Added polish translations. Thanks @kgunia!
 - Updated Tiptap.
 - Added Django 6.0 and Python 3.14 to the CI list.
+- Fixed a bug where the unlink menu button was unavailable.
 
 
 0.22 (2025-11-17)
