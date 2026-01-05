@@ -29,6 +29,9 @@ const commonConfig = {
   autoExternal: false,
   bundle: true,
   format: "esm",
+  experiments: {
+    advancedEsm: false,
+  },
   syntax: "es6",
   output: {
     distPath: {
