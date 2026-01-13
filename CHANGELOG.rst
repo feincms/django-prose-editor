@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.23 (2026-01-13)
+~~~~~~~~~~~~~~~~~
+
 - Fixed the prose editor textarea widget to not use the HTML5 ``required``
   attribute. Thanks to @undefined-landmark for the report and the help testing
   the fix!
