@@ -14,6 +14,8 @@ Next version
 - Updated Tiptap.
 - Added Django 6.0 and Python 3.14 to the CI list.
 - Fixed a bug where the unlink menu button was unavailable.
+- Changed the Django admin table styling overrides to be less opinionated and
+  closer to the defaults. Thanks @mo-we!
 
 
 0.22 (2025-11-17)
