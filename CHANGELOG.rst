@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Updated the dependencies.
+
+
 0.23 (2026-01-13)
 ~~~~~~~~~~~~~~~~~
 
