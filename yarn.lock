@@ -141,100 +141,100 @@
   resolved "https://registry.yarnpkg.com/@remirror/core-constants/-/core-constants-3.0.0.tgz#96fdb89d25c62e7b6a5d08caf0ce5114370e3b8f"
   integrity sha512-42aWfPrimMfDKDi4YegyS7x+/0tlzaqwPQCULLanv3DMIlu96KTJR0fM5isWX2UViOqlGnX6YFgqWepcX+XMNg==
 
-"@rsbuild/core@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-1.7.1.tgz#94ffae81f7b26f1848209983962eaadab0e93b92"
-  integrity sha512-ULIE/Qh+Ne80Pm/aUPbRHUvwvIzpap07jYNFB47azI8w5Q3sDEC4Gn574jsluT/42iNDsZTFADRBog9FEvtN9Q==
+"@rsbuild/core@~1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@rsbuild/core/-/core-1.7.2.tgz#4287b3392ea6de9cb466ef27350b7a0cfaf9f90a"
+  integrity sha512-VAFO6cM+cyg2ntxNW6g3tB2Jc5J5mpLjLluvm7VtW2uceNzyUlVv41o66Yp1t1ikxd3ljtqegViXem62JqzveA==
   dependencies:
-    "@rspack/core" "1.7.0"
+    "@rspack/core" "~1.7.1"
     "@rspack/lite-tapable" "~1.1.0"
     "@swc/helpers" "^0.5.18"
     core-js "~3.47.0"
     jiti "^2.6.1"
 
-"@rslib/core@^0.19.2":
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/@rslib/core/-/core-0.19.2.tgz#4c65d9df6ce8bd0ce1d4f3b39e6f66112b863562"
-  integrity sha512-eoRR1tQqkEiq3ijBT170KpxnBM7nf3/sanAUoJhyCeyLKKkGpQW6nr1cKHfZmkEizqSvLyjvLFA7fdIfK7pCMw==
+"@rslib/core@^0.19.3":
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/@rslib/core/-/core-0.19.3.tgz#979bef1fb843ecb3ba87d4ba1da093298e9e4035"
+  integrity sha512-uk20PPGL9ENTMoxLouEfHuf6pDhLIyewjLvVD2XyggSI+nkuXyafj2hQyd2r/cwkQ8+Gkbm4LXMcw0nFKvH09Q==
   dependencies:
-    "@rsbuild/core" "1.7.1"
-    rsbuild-plugin-dts "0.19.2"
+    "@rsbuild/core" "~1.7.2"
+    rsbuild-plugin-dts "0.19.3"
 
-"@rspack/binding-darwin-arm64@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-arm64/-/binding-darwin-arm64-1.7.0.tgz#c63f84b974e8cae7df78b0bbdcfe0aef75e0292e"
-  integrity sha512-HMYrhvVh3sMRBXl6cSI2JqsvlHJKQ42qX+Sw4qbj7LeZBN6Gv4GjfL3cXRLUTdO37FOC0uLEUYgxVXetx/Y4sA==
+"@rspack/binding-darwin-arm64@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-arm64/-/binding-darwin-arm64-1.7.3.tgz#4134f6b60bf04d5ee9a57ebb14242ca7f35a919a"
+  integrity sha512-sXha3xG2KDkXLVjrmnw5kGhBriH2gFd9KAyD2ZBq0sH/gNIvqEaWhAFoO1YtrKU6rCgiSBrs0frfGc6DEqWfTA==
 
-"@rspack/binding-darwin-x64@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-x64/-/binding-darwin-x64-1.7.0.tgz#44cc0f984ee2de1c2c8f7e5704860b51a6aab949"
-  integrity sha512-R/SoR04ySmHPqoIBGC+SjP9zRGjL1fS908mdwBvQ1RfFinKu7a/o/5rxH/vxUUsVQrHCyX+o7YXpfWq9xpvyQA==
+"@rspack/binding-darwin-x64@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-darwin-x64/-/binding-darwin-x64-1.7.3.tgz#4475aa12c8ddd821e79c7f55c2ee81b10c30da3c"
+  integrity sha512-AUWMBgaPo7NgpW7arlw9laj9ZQxg7EjC5pnSCRH4BVPV+8egdoPCn5DZk05M25m73crKnGl8c7CrwTRNZeaPrw==
 
-"@rspack/binding-linux-arm64-gnu@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-1.7.0.tgz#4f6767331f37bf1166bd204b0a4b865825db7f3b"
-  integrity sha512-jDCcso++qshu58+Iuo6oiL0XKuX04lDugL0qwrWHW8SS/EjZ2rc1J3yQx+XDW0PCQsfI2c9ji0IOW56PzW1hXQ==
+"@rspack/binding-linux-arm64-gnu@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-gnu/-/binding-linux-arm64-gnu-1.7.3.tgz#9d842cb1931e3bd69ec4bad1e6f2d459d6fd84c4"
+  integrity sha512-SodEX3+1/GLz0LobX9cY1QdjJ1NftSEh4C2vGpr71iA3MS9HyXuw4giqSeRQ4DpCybqpdS/3RLjVqFQEfGpcnw==
 
-"@rspack/binding-linux-arm64-musl@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.7.0.tgz#a4d8a908cc5fa2746fd0ab21743dccfd1db80680"
-  integrity sha512-0W49s0SQQhr3hZ8Zd7Auyf2pv4OTBr6wQhgWUQ6XeeMEjB16KpAVypSK5Jpn1ON0v9jAPLdod+a255rz8/f3kg==
+"@rspack/binding-linux-arm64-musl@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-arm64-musl/-/binding-linux-arm64-musl-1.7.3.tgz#c4b2a51edd81a462b88a4eb14663cad5c22619cb"
+  integrity sha512-ydD2fNdEy+G7EYJ/a3FfdFZPfrLj/UnZocCNlZTTSHEhu+jURdQk0hwV11CvL+sjnKU5e/8IVMGUzhu3Gu8Ghg==
 
-"@rspack/binding-linux-x64-gnu@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.7.0.tgz#7245be6883bdb27874f45570405b38fa253aa583"
-  integrity sha512-oFjzjTD1MmG0ucAaP0Wyg9eobrsnFwZjEHa7LwyzWDRBeC3GWAF9T04Bqd6Ba6DgASGzU0BjEJcUpjvtXxO95Q==
+"@rspack/binding-linux-x64-gnu@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.7.3.tgz#70a509c9e309279978af7e43a879150279fbf87c"
+  integrity sha512-adnDbUqafSAI6/N6vZ+iONSo1W3yUpnNtJqP3rVp7+YdABhUpbOhtaY37qpIJ3uFajXctYFyISPrb4MWl1M9Yg==
 
-"@rspack/binding-linux-x64-musl@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-musl/-/binding-linux-x64-musl-1.7.0.tgz#90393cb6b1d739d10b5ae15c6e0fb6603657c56d"
-  integrity sha512-MNGslPLOsurdwOcoo6r0u8mLpw1ADar3hkx67WzwwMqYnem/Ky0aANJC2JvQHPC22mu01gCOukHYyEaUFTxcuw==
+"@rspack/binding-linux-x64-musl@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-linux-x64-musl/-/binding-linux-x64-musl-1.7.3.tgz#8b0f82aa72a67677dc53d74141afdd664833ba4b"
+  integrity sha512-5jnjdODk5HCUFPN6rTaFukynDU4Fn9eCL+4TSp6mqo6YAnfnJEuzDjfetA8t3aQFcAs7WriQfNwvdcA4HvYtbA==
 
-"@rspack/binding-wasm32-wasi@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-wasm32-wasi/-/binding-wasm32-wasi-1.7.0.tgz#dff2883d0de5571e6b578fb891c3b91d954c3495"
-  integrity sha512-eaZzkGpxzVESmaX/UALMiQO+eNppe/i1VWQksGRfdoUu0rILqr/YDjsWFTcpbI9Dt3fg2kshHawBHxfwtxHcZQ==
+"@rspack/binding-wasm32-wasi@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-wasm32-wasi/-/binding-wasm32-wasi-1.7.3.tgz#dd6ec3383deb649baea23f821c19a2ca603ad081"
+  integrity sha512-WLQK0ksUzMkVeGoHAMIxenmeEU5tMvFDK36Aip7VRj7T6vZTcAwvbMwc38QrIAvlG7dqWoxgPQi35ba1igNNDw==
   dependencies:
     "@napi-rs/wasm-runtime" "1.0.7"
 
-"@rspack/binding-win32-arm64-msvc@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-1.7.0.tgz#e0ef4dd6d4225b2580af60555bf877042486c6eb"
-  integrity sha512-XFg4l7sOhupnpG0soOfzYLeF2cgpSJMenmjmdzd9y06CotTyVId0hNoS7y+A7hEP8XGf3YPbdiUL5UDp6+DRBA==
+"@rspack/binding-win32-arm64-msvc@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-arm64-msvc/-/binding-win32-arm64-msvc-1.7.3.tgz#5603a57afdc991a857dc1a9cda94da35cebf215e"
+  integrity sha512-RAetPeY45g2NW6fID46VTV7mwY4Lqyw/flLbvCG28yrVOSkekw1KMCr1k335O3VNeqD+5dZDi1n+mwiAx/KMmA==
 
-"@rspack/binding-win32-ia32-msvc@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-ia32-msvc/-/binding-win32-ia32-msvc-1.7.0.tgz#f93933ed703eabc2f8bfe61c444411e121d0974a"
-  integrity sha512-eWt2XV6la/c0IlU/18RlhQsqwHGShSypwA3kt4s/dpfOK0YB1h4f0fYeUZuvj2X0MIoJQGhMofMrgA35/IcAcw==
+"@rspack/binding-win32-ia32-msvc@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-ia32-msvc/-/binding-win32-ia32-msvc-1.7.3.tgz#425a0f880afc9d5860abcf1d2da19425bcbcfefa"
+  integrity sha512-X3c1B609DxzW++FdWf7kkoXWwsC/DUEJ1N1qots4T0P2G2V+pDQfjdTRSC0YQ75toAvwZqpwGzToQJ9IwQ4Ayw==
 
-"@rspack/binding-win32-x64-msvc@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.7.0.tgz#07ecb955c131aec63cf08719c1ccee97066816ae"
-  integrity sha512-LOL5G8rfbAwlmusx+t98r9QzuGRz+L9Bg+8s5s6K/Qe64iemcNIuxGr5QLVq1jLa0SGNTeog4N21pAzlkWh4jw==
+"@rspack/binding-win32-x64-msvc@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding-win32-x64-msvc/-/binding-win32-x64-msvc-1.7.3.tgz#01eccc8be9e753f559ac55a18f1428034d625d95"
+  integrity sha512-f6AvZbJGIg+7NggHXv0+lyMzvIUfeCxcB5DNbo3H5AalIgwkoFpcBXLBqgMVIbqA0yNyP06eiK98rpzc9ulQQg==
 
-"@rspack/binding@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/binding/-/binding-1.7.0.tgz#cf0f2e88f58b8217d6e242d0cfb0f5cb8331e495"
-  integrity sha512-xO+pZKG2dvU9CuRTTi+DcCc4p+CZhBJlvuYikBja/0a62cTntQV2PWV+/xU1a6Vbo89yNz158LR05nvjtKVwTw==
+"@rspack/binding@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/binding/-/binding-1.7.3.tgz#b11b2a5be7d80bfa4c7a9efe071d3d56386a0598"
+  integrity sha512-N943pbPktJPymiYZWZMZMVX/PeSU42cWGpBly82N+ibNCX/Oo4yKWE0v+TyIJm5JaUFhtF2NpvzRbrjg/6skqw==
   optionalDependencies:
-    "@rspack/binding-darwin-arm64" "1.7.0"
-    "@rspack/binding-darwin-x64" "1.7.0"
-    "@rspack/binding-linux-arm64-gnu" "1.7.0"
-    "@rspack/binding-linux-arm64-musl" "1.7.0"
-    "@rspack/binding-linux-x64-gnu" "1.7.0"
-    "@rspack/binding-linux-x64-musl" "1.7.0"
-    "@rspack/binding-wasm32-wasi" "1.7.0"
-    "@rspack/binding-win32-arm64-msvc" "1.7.0"
-    "@rspack/binding-win32-ia32-msvc" "1.7.0"
-    "@rspack/binding-win32-x64-msvc" "1.7.0"
+    "@rspack/binding-darwin-arm64" "1.7.3"
+    "@rspack/binding-darwin-x64" "1.7.3"
+    "@rspack/binding-linux-arm64-gnu" "1.7.3"
+    "@rspack/binding-linux-arm64-musl" "1.7.3"
+    "@rspack/binding-linux-x64-gnu" "1.7.3"
+    "@rspack/binding-linux-x64-musl" "1.7.3"
+    "@rspack/binding-wasm32-wasi" "1.7.3"
+    "@rspack/binding-win32-arm64-msvc" "1.7.3"
+    "@rspack/binding-win32-ia32-msvc" "1.7.3"
+    "@rspack/binding-win32-x64-msvc" "1.7.3"
 
-"@rspack/core@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@rspack/core/-/core-1.7.0.tgz#9e8abff1a2f271a68b42dd380f0b6efaac353f26"
-  integrity sha512-uDxPQsPh/+2DnOISuKnUiXZ9M0y2G1BOsI0IesxPJGp42ME2QW7axbJfUqD3bwp4bi3RN2zqh56NgxU/XETQvA==
+"@rspack/core@~1.7.1":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@rspack/core/-/core-1.7.3.tgz#059e77d51d0aa7a0419ef0275c6eb17715a94738"
+  integrity sha512-GUiTRTz6+gbfM2g3ixXqrvPSeHmyAFu/qHEZZjbYFeDtZhpy1gVaVAHiZfaaIIm+vRlNi7JmULWFZQFKwpQB9Q==
   dependencies:
     "@module-federation/runtime-tools" "0.22.0"
-    "@rspack/binding" "1.7.0"
+    "@rspack/binding" "1.7.3"
     "@rspack/lite-tapable" "1.1.0"
 
 "@rspack/lite-tapable@1.1.0", "@rspack/lite-tapable@~1.1.0":
@@ -442,9 +442,9 @@ autoprefixer@^10.4.23:
     postcss-value-parser "^4.2.0"
 
 baseline-browser-mapping@^2.9.0:
-  version "2.9.15"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.9.15.tgz#6baaa0069883f50a99cdb31b56646491f47c05d7"
-  integrity sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==
+  version "2.9.17"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.9.17.tgz#9d6019766cd7eba738cb5f32c84b9f937cc87780"
+  integrity sha512-agD0MgJFUP/4nvjqzIB29zRPUuCF7Ge6mEv9s8dHrtYD7QWXRcx75rOADE/d5ah1NI+0vkDl0yorDd5U852IQQ==
 
 browserslist@^4.28.1:
   version "4.28.1"
@@ -703,10 +703,10 @@ prosemirror-trailing-node@^3.0.0:
     "@remirror/core-constants" "3.0.0"
     escape-string-regexp "^4.0.0"
 
-prosemirror-transform@^1.0.0, prosemirror-transform@^1.1.0, prosemirror-transform@^1.10.2, prosemirror-transform@^1.10.5, prosemirror-transform@^1.7.3:
-  version "1.10.5"
-  resolved "https://registry.yarnpkg.com/prosemirror-transform/-/prosemirror-transform-1.10.5.tgz#4cf9fe5dcbdbfebd62499f24386e7cec9bc9979b"
-  integrity sha512-RPDQCxIDhIBb1o36xxwsaeAvivO8VLJcgBtzmOwQ64bMtsVFh5SSuJ6dWSxO1UsHTiTXPCgQm3PDJt7p6IOLbw==
+prosemirror-transform@^1.0.0, prosemirror-transform@^1.1.0, prosemirror-transform@^1.10.2, prosemirror-transform@^1.10.5, prosemirror-transform@^1.11.0, prosemirror-transform@^1.7.3:
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/prosemirror-transform/-/prosemirror-transform-1.11.0.tgz#f5c5050354423dc83c6b083f6f1959ec86a3f9ba"
+  integrity sha512-4I7Ce4KpygXb9bkiPS3hTEk4dSHorfRw8uI0pE8IhxlK2GXsqv5tIA7JUSxtSu7u8APVOTtbUBxTmnHIxVkIJw==
   dependencies:
     prosemirror-model "^1.21.0"
 
@@ -729,10 +729,10 @@ rope-sequence@^1.3.0:
   resolved "https://registry.yarnpkg.com/rope-sequence/-/rope-sequence-1.3.4.tgz#df85711aaecd32f1e756f76e43a415171235d425"
   integrity sha512-UT5EDe2cu2E/6O4igUr5PSFs23nvvukicWHx6GnOPlHAiiYbzNuCRQCuiUdHJQcqKalLKlrYJnjY0ySGsXNQXQ==
 
-rsbuild-plugin-dts@0.19.2:
-  version "0.19.2"
-  resolved "https://registry.yarnpkg.com/rsbuild-plugin-dts/-/rsbuild-plugin-dts-0.19.2.tgz#ae7475a3112692f0bd1628c82769605b04d5d2d7"
-  integrity sha512-neuTRt+H/isd2FDYMigF5TEoLUoR/hF0RKdVv1U7nDz0CfLRUfL+NnxePv9nS7dU2VvM3CYcLH7tZs43ol7g4Q==
+rsbuild-plugin-dts@0.19.3:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/rsbuild-plugin-dts/-/rsbuild-plugin-dts-0.19.3.tgz#59d5e1b23ee676bd19bd97051fdd9039c24b79a2"
+  integrity sha512-TMHNAg+AehA3ERJ7Z3zASsPyyIIoLd7gLFZAFOfyzvttyMH5qEaQ1HtIzC4bKH17dDLVNduh8aCFtwNpUEfJvQ==
   dependencies:
     "@ast-grep/napi" "0.37.0"
 
