@@ -5,6 +5,9 @@ Next version
 ~~~~~~~~~~~~
 
 - Updated the dependencies.
+- Made it possible to configure the available ordered list types, changed the
+  code to emit inline styles. Added a bullet-type ordered list type because
+  this makes nested lists of mixed types easier to create.
 
 
 0.23 (2026-01-13)
