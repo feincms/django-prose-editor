@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.24 (2026-01-30)
+~~~~~~~~~~~~~~~~~
+
 - Updated the dependencies.
 - Made it possible to configure the available ordered list types, changed the
   code to emit inline styles. Added a bullet-type ordered list type because
