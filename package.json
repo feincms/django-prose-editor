@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@rslib/core": "^0.19.3",
+    "@rslib/core": "^0.19.4",
     "@tiptap/core": "^3.18.0",
     "@tiptap/extension-blockquote": "^3.18.0",
     "@tiptap/extension-bold": "^3.18.0",
@@ -31,7 +31,7 @@
     "@tiptap/extension-underline": "^3.18.0",
     "@tiptap/extensions": "^3.18.0",
     "@tiptap/pm": "^3.18.0",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.4.24",
     "postcss": "^8.5.3",
     "prosemirror-dropcursor": "^1.8.2",
     "prosemirror-gapcursor": "^1.4.0",
