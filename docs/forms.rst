@@ -33,7 +33,50 @@ If you're rendering the form in a template you have to include the form media:
 Note that the form media isn't django-prose-editor specific, that's a Django
 feature.
 
-The django-prose-editor CSS uses the following CSS custom properties.
+
+Importmap requirement
+---------------------
+
+**Important**: The ``{{ form.media }}`` tag includes the JavaScript files, but
+you also need to set up the importmap as described in the :doc:`installation`
+documentation. Without this, you'll get errors about bare module specifiers.
+
+Add the context processor to your settings:
+
+.. code-block:: python
+
+    TEMPLATES = [
+        {
+            # ...
+            'OPTIONS': {
+                'context_processors': [
+                    # ... your other context processors
+                    'js_asset.context_processors.importmap',
+                ],
+            },
+        },
+    ]
+
+And add ``{{ importmap }}`` to your base template, **above all other scripts**:
+
+.. code-block:: html+django
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>My Site</title>
+        {{ importmap }}  {# Required for django-prose-editor #}
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+    </html>
+
+
+CSS custom properties
+---------------------
+
+The django-prose-editor CSS uses the following CSS custom properties:
 
 * ``--prose-editor-background``
 * ``--prose-editor-foreground``
