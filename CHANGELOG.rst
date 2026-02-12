@@ -4,6 +4,15 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Updated Tiptap and other dependencies.
+- Removed the custom ``title`` attribute handling from the ``Link`` extension
+  since the latest version of Tiptap's link extension now includes it by
+  default.
+- Expanded the documentation to make the importmap requirement more prominent.
+  Added concrete examples to both the installation and forms documentation to
+  help prevent configuration issues when using the editor outside the Django
+  admin.
+
 0.24 (2026-01-30)
 ~~~~~~~~~~~~~~~~~
 
