@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import sys
 
 import pytest
 from django.contrib.auth.models import User
@@ -91,7 +92,7 @@ def test_prose_editor_formatting(page, live_server):
     editor.type("Format this text")
 
     # Select the text
-    editor.press("Control+a")
+    editor.press("ControlOrMeta+a")
 
     # Make it bold
     bold_button = page.locator(".prose-menubar__button[title='bold']")
@@ -339,9 +340,9 @@ def test_configurable_prose_editor_admin(page, live_server):
     # Test keyboard shortcut for BlueBold
     editor.type("Keyboard shortcut test")
     page.wait_for_timeout(100)  # Wait for typing to complete
-    editor.press("Control+a")  # Select all text
+    editor.press("ControlOrMeta+a")  # Select all text
     page.wait_for_timeout(100)  # Wait for selection
-    editor.press("Control+Shift+b")  # Apply BlueBold with shortcut
+    editor.press("ControlOrMeta+Shift+b")  # Apply BlueBold with shortcut
 
     # Move cursor to end and add new paragraph
     editor.press("End")
@@ -606,7 +607,10 @@ def test_nodeclass_textclass(live_server, page):
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
     page.get_by_text("paragraph: highlight").click()
 
-    page.get_by_role("textbox").press("ControlOrMeta+Shift+ArrowLeft")
+    word_select_left = (
+        "Alt+Shift+ArrowLeft" if sys.platform == "darwin" else "Control+Shift+ArrowLeft"
+    )
+    page.get_by_role("textbox").press(word_select_left)
     page.locator("div").filter(has_text=re.compile(r"^default$")).click()
     page.get_by_text("highlight", exact=True).click()
 
