@@ -5,6 +5,7 @@ Next version
 ~~~~~~~~~~~~
 
 - Updated Tiptap and other dependencies.
+- Exported the Tiptap ``InvisibleCharacters`` extension.
 - Removed the custom ``title`` attribute handling from the ``Link`` extension
   since the latest version of Tiptap's link extension now includes it by
   default.
