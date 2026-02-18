@@ -38,8 +38,8 @@ Importmap requirement
 ---------------------
 
 **Important**: The ``{{ form.media }}`` tag includes the JavaScript files, but
-you also need to set up the importmap as described in the :doc:`installation`
-documentation. Without this, you'll get errors about bare module specifiers.
+you also need to set up the importmap. Without this, you'll get errors about
+bare module specifiers.
 
 Add the context processor to your settings:
 

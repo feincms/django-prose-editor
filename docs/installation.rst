@@ -23,35 +23,8 @@ Add ``django_prose_editor`` to ``INSTALLED_APPS``:
         "django_prose_editor",
     ]
 
-**Important**: Add the importmap by adding the ``js_asset.context_processors.importmap``
-context processor and inserting ``{{ importmap }}`` somewhere in your base
-template, above all other scripts:
-
-.. code-block:: python
-
-    TEMPLATES = [
-        {
-            # ...
-            'OPTIONS': {
-                'context_processors': [
-                    # ... your other context processors
-                    'js_asset.context_processors.importmap',
-                ],
-            },
-        },
-    ]
-
-.. code-block:: html+django
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-        {{ importmap }}  {# Must be above other scripts #}
-    </head>
-    <body>
-        <!-- your content -->
-    </body>
-    </html>
+If you want to use the editor outside the Django admin, see :doc:`forms` for
+the additional setup required.
 
 Replace ``models.TextField`` with ``ProseEditorField`` where appropriate:
 
