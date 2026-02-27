@@ -32,7 +32,7 @@
     "@tiptap/extension-underline": "^3.20.0",
     "@tiptap/extensions": "^3.20.0",
     "@tiptap/pm": "^3.20.0",
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.4.27",
     "postcss": "^8.5.3",
     "prosemirror-changeset": "^2.4.0",
     "prosemirror-dropcursor": "^1.8.2",
