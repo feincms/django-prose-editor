@@ -85,6 +85,10 @@ export default defineConfig({
       opts.postcssOptions.plugins = [require("autoprefixer")()]
     },
     rspack: {
+      output: {
+        devtoolModuleFilenameTemplate: (info) =>
+          info.resourcePath.replace(`${process.cwd()}/`, ""),
+      },
       plugins: [
         {
           apply: (compiler) => {
