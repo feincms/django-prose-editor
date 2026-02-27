@@ -105,9 +105,9 @@ export const Figure = Node.create({
           }
 
           // Get current figure data if we're editing
-          let currentImageSrc = ""
-          let currentImageAlt = ""
-          let currentCaption = ""
+          let imageUrl = ""
+          let altText = ""
+          let caption = ""
 
           if (isEditingFigure) {
             // Get the selected figure node
@@ -116,8 +116,8 @@ export const Figure = Node.create({
               getNodesFromState(state)
 
             if (figureNode && imageNode) {
-              currentImageSrc = imageNode.attrs.src || ""
-              currentImageAlt = imageNode.attrs.alt || ""
+              imageUrl = imageNode.attrs.src || ""
+              altText = imageNode.attrs.alt || ""
 
               if (captionNode) {
                 // Extract caption text
@@ -128,7 +128,7 @@ export const Figure = Node.create({
                   }
                   return true
                 })
-                currentCaption = textContent.join("")
+                caption = textContent.join("")
               }
             }
           }
@@ -159,25 +159,18 @@ export const Figure = Node.create({
             submitText: isEditingFigure ? gettext("Update") : gettext("Insert"),
           }
 
-          // Create initial attrs based on current values
-          const initialAttrs = {
-            imageUrl: currentImageSrc,
-            altText: currentImageAlt,
-            caption: currentCaption,
-          }
-
           // Use the updateAttrsDialog helper
           const dialogFn = updateAttrsDialog(
             figureDialogProperties,
             dialogOptions,
           )
 
-          dialogFn(editor, initialAttrs).then((attrs) => {
+          dialogFn(editor, { imageUrl, altText, caption }).then((attrs) => {
             if (!attrs) return true // Cancelled but command is considered successful
 
             const imageUrl = attrs.imageUrl.trim()
             const imageAlt = attrs.altText.trim()
-            const captionText = attrs.caption.trim()
+            const caption = attrs.caption.trim()
 
             if (imageUrl) {
               if (isEditingFigure) {
@@ -213,10 +206,10 @@ export const Figure = Node.create({
                         })
                     }
 
-                    if (captionText) {
+                    if (caption) {
                       const content = {
                         type: "caption",
-                        content: [{ type: "text", text: captionText }],
+                        content: [{ type: "text", text: caption }],
                       }
                       if (captionPos) {
                         chain = chain
@@ -244,13 +237,13 @@ export const Figure = Node.create({
                     attrs: { src: imageUrl, alt: imageAlt },
                   },
                 ]
-                if (captionText) {
+                if (caption) {
                   content.push({
                     type: "caption",
                     content: [
                       {
                         type: "text",
-                        text: captionText,
+                        text: caption,
                       },
                     ],
                   })
