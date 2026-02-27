@@ -1,6 +1,35 @@
 import { canInsertNode, mergeAttributes, Node } from "@tiptap/core"
 import { gettext, updateAttrsDialog } from "./utils.js"
 
+const getNodesFromState = ({ selection }) => {
+  const { $from } = selection
+
+  // Try to find the figure node in the ancestors
+  let figureNode = null
+  let captionNode = null
+  let imageNode = null
+
+  for (let depth = $from.depth; depth > 0; depth--) {
+    const node = $from.node(depth)
+    if (node.type.name === "figure") {
+      figureNode = node
+
+      // Find the child nodes (image and caption)
+      node.forEach((child, _, _i) => {
+        if (child.type.name === "image") {
+          imageNode = child
+        } else if (child.type.name === "caption") {
+          captionNode = child
+        }
+      })
+
+      break
+    }
+  }
+
+  return { figureNode, captionNode, imageNode }
+}
+
 /**
  * Extension for adding figures with images and captions
  */
@@ -83,31 +112,8 @@ export const Figure = Node.create({
           if (isEditingFigure) {
             // Get the selected figure node
             const { state } = editor
-            const { selection } = state
-            const { $from } = selection
-
-            // Try to find the figure node in the ancestors
-            let figureNode = null
-            let captionNode = null
-            let imageNode = null
-
-            for (let depth = $from.depth; depth > 0; depth--) {
-              const node = $from.node(depth)
-              if (node.type.name === "figure") {
-                figureNode = node
-
-                // Find the child nodes (image and caption)
-                node.forEach((child, _, _i) => {
-                  if (child.type.name === "image") {
-                    imageNode = child
-                  } else if (child.type.name === "caption") {
-                    captionNode = child
-                  }
-                })
-
-                break
-              }
-            }
+            const { figureNode, captionNode, imageNode } =
+              getNodesFromState(state)
 
             if (figureNode && imageNode) {
               currentImageSrc = imageNode.attrs.src || ""
