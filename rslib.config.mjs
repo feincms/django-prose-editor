@@ -6,22 +6,31 @@ import { defineConfig } from "@rslib/core"
 const require = createRequire(import.meta.url)
 const isProduction = process.env.NODE_ENV === "production"
 
-async function removeZeroSizedFiles(distPath) {
+async function removeRuntimeOnlyFiles(distPath) {
   try {
     const files = await fs.readdir(distPath, { withFileTypes: true })
 
     for (const file of files) {
-      if (file.isFile()) {
+      if (file.isFile() && file.name.endsWith(".js")) {
         const filePath = join(distPath, file.name)
-        const stats = await fs.stat(filePath)
-        if (stats.size === 0) {
+        const content = await fs.readFile(filePath, "utf-8")
+        // Remove files that are empty or only contain the inlined webpack runtime
+        // (generated as JS stubs for CSS-only entries)
+        const exports = content.match(/export\{[^}]+\}/g)
+        const isRuntimeOnly =
+          content.trim() === "" ||
+          (exports?.length === 1 &&
+            /^export\{\w+ as __webpack_require__\}$/.test(exports[0]))
+        if (isRuntimeOnly) {
           await fs.unlink(filePath)
-          console.log(`Removed zero-sized file: ${filePath}`)
+          const mapPath = `${filePath}.map`
+          await fs.unlink(mapPath).catch(() => {})
+          console.log(`Removed runtime-only file: ${filePath}`)
         }
       }
     }
   } catch (error) {
-    console.error(`Error removing zero-sized files: ${error.message}`)
+    console.error(`Error removing runtime-only files: ${error.message}`)
   }
 }
 
@@ -29,9 +38,6 @@ const commonConfig = {
   autoExternal: false,
   bundle: true,
   format: "esm",
-  experiments: {
-    advancedEsm: false,
-  },
   syntax: "es6",
   output: {
     distPath: {
@@ -85,6 +91,9 @@ export default defineConfig({
       opts.postcssOptions.plugins = [require("autoprefixer")()]
     },
     rspack: {
+      optimization: {
+        runtimeChunk: false,
+      },
       output: {
         devtoolModuleFilenameTemplate: (info) =>
           info.resourcePath.replace(`${process.cwd()}/`, ""),
@@ -93,9 +102,9 @@ export default defineConfig({
         {
           apply: (compiler) => {
             compiler.hooks.afterDone.tap(
-              "RemoveZeroSizedFilesPlugin",
+              "RemoveRuntimeOnlyFilesPlugin",
               async () => {
-                await removeZeroSizedFiles(commonConfig.output.distPath.root)
+                await removeRuntimeOnlyFiles(commonConfig.output.distPath.root)
               },
             )
           },
