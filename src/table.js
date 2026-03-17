@@ -42,25 +42,25 @@ export const Table = TiptapTable.extend({
       ...this.parent?.(),
       insertTableWithOptions:
         () =>
-          ({ editor }) => {
-            // Show table configuration dialog
-            tableDialog(editor, {
-              rows: "3",
-              cols: "3",
-              withHeaderRow: "No",
-            }).then((attrs) => {
-              if (attrs) {
-                const config = {
-                  rows: Number.parseInt(attrs.rows, 10) || 3,
-                  cols: Number.parseInt(attrs.cols, 10) || 3,
-                  withHeaderRow: attrs.withHeaderRow === "Yes",
-                }
-
-                // Insert table with the configured options
-                editor.chain().focus().insertTable(config).run()
+        ({ editor }) => {
+          // Show table configuration dialog
+          tableDialog(editor, {
+            rows: "3",
+            cols: "3",
+            withHeaderRow: "No",
+          }).then((attrs) => {
+            if (attrs) {
+              const config = {
+                rows: Number.parseInt(attrs.rows, 10) || 3,
+                cols: Number.parseInt(attrs.cols, 10) || 3,
+                withHeaderRow: attrs.withHeaderRow === "Yes",
               }
-            })
-          },
+
+              // Insert table with the configured options
+              editor.chain().focus().insertTable(config).run()
+            }
+          })
+        },
     }
   },
 })
