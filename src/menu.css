@@ -96,18 +96,6 @@
   opacity: 0.3;
 }
 
-/* SVG button styling */
-.prose-menubar__button svg {
-  display: inline-block;
-  vertical-align: middle;
-  width: 20px;
-  height: 20px;
-}
-
-.prose-menubar__button svg * {
-  color: inherit;
-}
-
 .prose-menubar__dropdown {
   display: block;
   position: relative;
@@ -136,6 +124,18 @@
   > * {
     pointer-events: none;
   }
+}
+
+/* SVG button styling */
+.prose-menubar__button svg {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
+.prose-menubar__button svg * {
+  color: inherit;
 }
 
 .prose-menubar__picker:popover-open {
