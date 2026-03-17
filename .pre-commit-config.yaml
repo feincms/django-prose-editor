@@ -25,13 +25,13 @@ repos:
         args: [--unsafe-fixes]
       - id: ruff-format
   - repo: https://github.com/biomejs/pre-commit
-    rev: v2.4.6
+    rev: v2.4.7
     hooks:
       - id: biome-check
         args: [--unsafe]
         verbose: true
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.18.1
+    rev: v2.19.0
     hooks:
       - id: pyproject-fmt
   - repo: https://github.com/abravalheri/validate-pyproject
