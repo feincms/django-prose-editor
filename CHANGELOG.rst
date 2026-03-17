@@ -13,6 +13,7 @@ Next version
   Added concrete examples to both the installation and forms documentation to
   help prevent configuration issues when using the editor outside the Django
   admin.
+- Add a menu button to enable table deletion.
 
 0.24 (2026-01-30)
 ~~~~~~~~~~~~~~~~~
