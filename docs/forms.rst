@@ -34,12 +34,16 @@ Note that the form media isn't django-prose-editor specific, that's a Django
 feature.
 
 
-Importmap requirement
----------------------
+Importmap requirement (custom extensions only)
+-----------------------------------------------
 
-**Important**: The ``{{ form.media }}`` tag includes the JavaScript files, but
-you also need to set up the importmap. Without this, you'll get errors about
-bare module specifiers.
+The core editor works without an importmap — all built-in JavaScript uses
+relative imports, which is compatible with Content Security Policy (CSP)
+without needing ``'unsafe-inline'`` or nonce attributes.
+
+If you use **custom JavaScript extensions** that import from
+``"django-prose-editor/editor"`` (a bare module specifier), you need to set up
+the importmap. Without this, you'll get errors about bare module specifiers.
 
 Add the context processor to your settings:
 
@@ -65,12 +69,18 @@ And add ``{{ importmap }}`` to your base template, **above all other scripts**:
     <html>
     <head>
         <title>My Site</title>
-        {{ importmap }}  {# Required for django-prose-editor #}
+        {{ importmap }}  {# Only needed for custom JS extensions #}
     </head>
     <body>
         {% block content %}{% endblock %}
     </body>
     </html>
+
+.. note::
+
+    In the Django admin, the importmap is automatically included when your
+    widget configuration references custom JavaScript modules
+    (``js_modules``). No extra setup is needed.
 
 
 CSS custom properties

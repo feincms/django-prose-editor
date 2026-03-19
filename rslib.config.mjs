@@ -80,7 +80,7 @@ export default defineConfig({
       output: {
         ...commonConfig.output,
         externals: {
-          "django-prose-editor/editor": "module django-prose-editor/editor",
+          "django-prose-editor/editor": "module ./editor.js",
         },
         chunkLoading: "import",
       },
