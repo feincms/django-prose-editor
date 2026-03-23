@@ -31,7 +31,7 @@ JavaScript source files are in `src/` and get built into `django_prose_editor/st
 
 **IMPORTANT**: After modifying JavaScript files in `src/`, you MUST rebuild with:
 ```bash
-yarn prod
+npm run prod
 ```
 
 The tests run against the compiled JavaScript in `django_prose_editor/static/`, not the source files.
@@ -76,7 +76,7 @@ const isNodeType = (editor, typeName) => {
 ## Testing Workflow
 
 1. Make code changes
-2. **If you modified JavaScript**: Run `yarn prod` to rebuild
+2. **If you modified JavaScript**: Run `npm run prod` to rebuild
 3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
 4. Run tests: `tox -e py313-dj52`
 5. Verify all tests pass (35 tests expected as of 2025-11-04)

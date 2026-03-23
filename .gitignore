@@ -22,6 +22,5 @@
 /vendor
 /venv
 /.vscode
-yarn-error.log
 build
 test-results

@@ -1,4 +1,4 @@
-exclude: ".yarn/|yarn.lock|django_prose_editor/static/"
+exclude: "django_prose_editor/static/"
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
