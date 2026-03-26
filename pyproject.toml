@@ -52,7 +52,7 @@ optional-dependencies.tests = [
   "pytest-playwright",
 ]
 urls.Documentation = "https://django-prose-editor.readthedocs.io/"
-urls.Homepage = "https://github.com/matthiask/django-prose-editor/"
+urls.Homepage = "https://github.com/feincms/django-prose-editor/"
 
 [tool.hatch]
 build.include = [

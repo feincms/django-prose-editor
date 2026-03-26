@@ -51,3 +51,32 @@ To set up pre-commit using uv:
 
 Pre-commit will automatically check your code for style issues when you commit
 changes.
+
+Releasing
+---------
+
+Releases are published to PyPI automatically via GitHub Actions when a tag is
+pushed. The workflow uses `PyPI trusted publishing
+<https://docs.pypi.org/trusted-publishers/>`_ (OIDC) — no API token is needed.
+
+The ``publish`` job is gated by a ``release`` GitHub environment that requires
+manual approval before the package is uploaded.
+
+One-time setup (already done, documented here for reference):
+
+1. On PyPI, go to the project's publishing settings and add a trusted publisher:
+
+   - **Owner**: ``feincms``
+   - **Repository**: ``django-prose-editor``
+   - **Workflow name**: ``publish.yml``
+   - **Environment**: ``release``
+
+2. In the GitHub repository, create a ``release`` environment
+   (Settings → Environments) and add yourself as a required reviewer.
+
+To cut a release, create and push a tag::
+
+    git tag 1.2.3
+    git push origin 1.2.3
+
+Then approve the pending deployment in the GitHub Actions UI.
