@@ -11,7 +11,7 @@ const EXTENSIONS = { ...editorModule }
 const moduleLoadPromises = new Map()
 
 async function loadExtensionModules(moduleUrls) {
-  if (!moduleUrls || !moduleUrls.length) return
+  if (!moduleUrls?.length) return
 
   const loadPromises = moduleUrls.map((url) => {
     if (moduleLoadPromises.has(url)) {
