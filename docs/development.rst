@@ -9,10 +9,10 @@ For the best development experience:
 
        pip install -e /path/to/django-prose-editor
 
-2. Run ``yarn && yarn dev`` in the django-prose-editor directory to watch for
+2. Run ``npm i && npm run dev`` in the django-prose-editor directory to watch for
    asset changes.
 
-When using ``yarn dev``:
+When using ``npm run dev``:
 
 - The watcher will rebuild files automatically when you make changes.
 - Development mode provides faster builds for iteration.
@@ -42,15 +42,28 @@ This project uses pre-commit hooks to enforce coding style guidelines. We use
 Ruff for Python linting and formatting, Biome for JavaScript/TypeScript linting
 and formatting and a few other hooks.
 
-To set up pre-commit using uv:
+To set up prek using uv:
 
 .. code-block:: shell
 
-    uv tool install pre-commit
-    pre-commit install
+    uv tool install prek
+    prek install
 
 Pre-commit will automatically check your code for style issues when you commit
 changes.
+
+(Prek is the friendlier reimplementation of pre-commit in Rust.)
+
+Upgrading dependencies
+----------------------
+
+The easiest way to upgrade dependencies is:
+
+.. code-block:: shell
+
+    mise x -- npx npm-check-updates -u
+    mise x -- npm install
+    mise x -- npm run prod
 
 Releasing
 ---------
