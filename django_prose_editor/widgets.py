@@ -40,9 +40,7 @@ prose_editor_base_media = forms.Media(
     ],
 )
 prose_editor_admin_media = (
-    forms.Media(
-        js=[importmap, prose_editor_js]
-    )  # Sneak the importmap into the admin <head>
+    forms.Media(js=[prose_editor_js])
     + prose_editor_base_media
     + forms.Media(
         css={
@@ -118,7 +116,11 @@ class ProseEditorWidget(forms.Textarea):
 class AdminProseEditorWidget(ProseEditorWidget):
     @property
     def media(self):
+        base = prose_editor_admin_media
+        config = self.get_config()
+        if config.get("js_modules"):
+            base = forms.Media(js=[importmap]) + base
         return prose_editor_media(
-            base=prose_editor_admin_media,
+            base=base,
             preset=self.preset,
         )
