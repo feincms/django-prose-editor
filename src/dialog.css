@@ -100,3 +100,7 @@
   position: relative;
   z-index: 1;
 }
+
+.prose-editor-field-with-picker {
+  display: flex;
+}

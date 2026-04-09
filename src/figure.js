@@ -1,33 +1,31 @@
 import { canInsertNode, mergeAttributes, Node } from "@tiptap/core"
 import { gettext, updateAttrsDialog } from "./utils.js"
 
-const getNodesFromState = ({ selection }) => {
+const getFigureInfo = ({ selection }) => {
   const { $from } = selection
-
-  // Try to find the figure node in the ancestors
-  let figureNode = null
-  let captionNode = null
-  let imageNode = null
 
   for (let depth = $from.depth; depth > 0; depth--) {
     const node = $from.node(depth)
-    if (node.type.name === "figure") {
-      figureNode = node
+    if (node.type.name !== "figure") continue
 
-      // Find the child nodes (image and caption)
-      node.forEach((child, _, _i) => {
-        if (child.type.name === "image") {
-          imageNode = child
-        } else if (child.type.name === "caption") {
-          captionNode = child
-        }
-      })
+    let imageNode = null
+    let imagePos = null
+    const pos = $from.start(depth)
 
-      break
-    }
+    let hasCaption = false
+    node.forEach((child, offset) => {
+      if (child.type.name === "image") {
+        imageNode = child
+        imagePos = pos + offset
+      } else if (child.type.name === "caption") {
+        hasCaption = true
+      }
+    })
+
+    return { imageNode, imagePos, hasCaption }
   }
 
-  return { figureNode, captionNode, imageNode }
+  return null
 }
 
 /**
@@ -39,6 +37,12 @@ export const Figure = Node.create({
   content: "image caption?",
   draggable: true,
   isolating: true,
+
+  addOptions() {
+    return {
+      pickerUrl: null,
+    }
+  },
 
   addAttributes() {
     return {
@@ -91,178 +95,77 @@ export const Figure = Node.create({
       insertFigure:
         () =>
         ({ editor, state, dispatch }) => {
-          const isEditingFigure = editor.isActive("figure")
+          const figureInfo = getFigureInfo(state)
           const nodeType = state.schema.nodes[this.name]
+          const canInsert = figureInfo || canInsertNode(state, nodeType)
 
-          const canInsert = isEditingFigure || canInsertNode(state, nodeType)
+          if (!dispatch) return canInsert
+          if (!canInsert) return false
 
-          if (!dispatch) {
-            return canInsert
-          }
-
-          if (!canInsert) {
-            return false
-          }
-
-          // Get current figure data if we're editing
           let imageUrl = ""
           let altText = ""
-          let caption = ""
 
-          if (isEditingFigure) {
-            // Get the selected figure node
-            const { state } = editor
-            const { figureNode, captionNode, imageNode } =
-              getNodesFromState(state)
-
-            if (figureNode && imageNode) {
-              imageUrl = imageNode.attrs.src || ""
-              altText = imageNode.attrs.alt || ""
-
-              if (captionNode) {
-                // Extract caption text
-                const textContent = []
-                captionNode.descendants((node) => {
-                  if (node.isText) {
-                    textContent.push(node.text)
-                  }
-                  return true
-                })
-                caption = textContent.join("")
-              }
-            }
+          if (figureInfo?.imageNode) {
+            imageUrl = figureInfo.imageNode.attrs.src || ""
+            altText = figureInfo.imageNode.attrs.alt || ""
           }
 
-          // Define dialog properties
-          const figureDialogProperties = {
+          const properties = {
             imageUrl: {
               type: "string",
               title: gettext("Image URL"),
               format: "url",
               required: true,
+              pickerUrl: this.options.pickerUrl,
             },
             altText: {
               type: "string",
               title: gettext("Alternative Text"),
             },
-            caption: {
-              type: "string",
-              title: gettext("Caption"),
-            },
           }
 
-          // Define dialog options
-          const dialogOptions = {
-            title: isEditingFigure
+          updateAttrsDialog(properties, {
+            title: figureInfo
               ? gettext("Edit Figure")
               : gettext("Insert Figure"),
-            submitText: isEditingFigure ? gettext("Update") : gettext("Insert"),
-          }
+            submitText: figureInfo ? gettext("Update") : gettext("Insert"),
+          })(editor, { imageUrl, altText }).then((attrs) => {
+            if (!attrs) return
 
-          // Use the updateAttrsDialog helper
-          const dialogFn = updateAttrsDialog(
-            figureDialogProperties,
-            dialogOptions,
-          )
+            const src = attrs.imageUrl.trim()
+            const alt = attrs.altText.trim()
 
-          dialogFn(editor, { imageUrl, altText, caption }).then((attrs) => {
-            if (!attrs) return true // Cancelled but command is considered successful
+            if (!src) return
 
-            const imageUrl = attrs.imageUrl.trim()
-            const imageAlt = attrs.altText.trim()
-            const caption = attrs.caption.trim()
-
-            if (imageUrl) {
-              if (isEditingFigure) {
-                // Then update the image source - find the image node within the figure
-                const { selection } = state
-                const { $from } = selection
-
-                for (let depth = $from.depth; depth > 0; depth--) {
-                  const node = $from.node(depth)
-                  if (node.type.name === "figure") {
-                    // Find positions of image and caption
-                    let imagePos = null
-                    let captionPos = null
-                    const pos = $from.start(depth)
-
-                    node.forEach((child, offset) => {
-                      if (child.type.name === "image") {
-                        imagePos = pos + offset
-                      } else if (child.type.name === "caption") {
-                        captionPos = pos + offset
-                      }
-                    })
-
-                    let chain = editor.chain()
-
-                    // Update image source
-                    if (imagePos !== null) {
-                      chain = chain
-                        .setNodeSelection(imagePos)
-                        .updateAttributes("image", {
-                          src: imageUrl,
-                          alt: imageAlt,
-                        })
-                    }
-
-                    if (caption) {
-                      const content = {
-                        type: "caption",
-                        content: [{ type: "text", text: caption }],
-                      }
-                      if (captionPos) {
-                        chain = chain
-                          .setNodeSelection(captionPos)
-                          .insertContent(content)
-                      } else {
-                        chain = chain.insertContentAt(imagePos + 1, content)
-                      }
-                    } else if (captionPos) {
-                      chain = chain
-                        .setNodeSelection(captionPos)
-                        .deleteSelection()
-                    }
-
-                    chain.run()
-
-                    break
-                  }
-                }
-              } else {
-                // Insert a new figure
-                const content = [
-                  {
-                    type: "image",
-                    attrs: { src: imageUrl, alt: imageAlt },
-                  },
-                ]
-                if (caption) {
-                  content.push({
-                    type: "caption",
-                    content: [
-                      {
-                        type: "text",
-                        text: caption,
-                      },
-                    ],
-                  })
-                }
-
-                editor
+            if (figureInfo) {
+              const { imagePos, hasCaption } = figureInfo
+              if (imagePos !== null) {
+                let chain = editor
                   .chain()
-                  .focus()
-                  .insertContent({
-                    type: "figure",
-                    content,
+                  .setNodeSelection(imagePos)
+                  .updateAttributes("image", { src, alt })
+                if (!hasCaption) {
+                  chain = chain.insertContentAt(imagePos + 1, {
+                    type: "caption",
                   })
-                  .run()
+                }
+                chain.run()
               }
+            } else {
+              editor
+                .chain()
+                .focus()
+                .insertContent({
+                  type: "figure",
+                  content: [
+                    { type: "image", attrs: { src, alt } },
+                    { type: "caption" },
+                  ],
+                })
+                .run()
             }
-            return true
           })
 
-          // Return true as the dialog is async, and we've already checked permissions
           return true
         },
     }
