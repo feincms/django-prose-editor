@@ -1,8 +1,9 @@
 import { canInsertNode, mergeAttributes, Node } from "@tiptap/core"
 import { BubbleMenu } from "@tiptap/extension-bubble-menu"
+import { TextSelection } from "@tiptap/pm/state"
 import { crel, gettext, updateAttrsDialog } from "./utils.js"
 
-const getFigureInfo = ({ selection }) => {
+const getSelectionInfo = ({ selection }) => {
   const { $from } = selection
 
   for (let depth = $from.depth; depth > 0; depth--) {
@@ -11,9 +12,9 @@ const getFigureInfo = ({ selection }) => {
 
     let imageNode = null
     let imagePos = null
+    const figureStart = $from.before(depth)
     const pos = $from.start(depth)
 
-    let hasCaption = false
     let captionNode = null
     let captionPos = null
     node.forEach((child, offset) => {
@@ -21,13 +22,26 @@ const getFigureInfo = ({ selection }) => {
         imageNode = child
         imagePos = pos + offset
       } else if (child.type.name === "caption") {
-        hasCaption = true
         captionNode = child
         captionPos = pos + offset
       }
     })
 
-    return { imageNode, imagePos, hasCaption, captionNode, captionPos }
+    return {
+      inFigure: true,
+      figureStart,
+      figureNode: node,
+      imageNode,
+      imagePos,
+      captionNode,
+      captionPos,
+    }
+  }
+
+  // Bare image (NodeSelection)
+  const node = selection.node
+  if (node?.type.name === "image") {
+    return { inFigure: false, imageNode: node, imagePos: selection.from }
   }
 
   return null
@@ -97,12 +111,12 @@ export const Figure = Node.create({
 
   addCommands() {
     return {
-      insertFigure:
+      editImage:
         () =>
         ({ editor, state, dispatch }) => {
-          const figureInfo = getFigureInfo(state)
+          const info = getSelectionInfo(state)
           const nodeType = state.schema.nodes[this.name]
-          const canInsert = figureInfo || canInsertNode(state, nodeType)
+          const canInsert = info || canInsertNode(state, nodeType)
 
           if (!dispatch) return canInsert
           if (!canInsert) return false
@@ -110,9 +124,9 @@ export const Figure = Node.create({
           let imageUrl = ""
           let altText = ""
 
-          if (figureInfo?.imageNode) {
-            imageUrl = figureInfo.imageNode.attrs.src || ""
-            altText = figureInfo.imageNode.attrs.alt || ""
+          if (info?.imageNode) {
+            imageUrl = info.imageNode.attrs.src || ""
+            altText = info.imageNode.attrs.alt || ""
           }
 
           const properties = {
@@ -129,11 +143,15 @@ export const Figure = Node.create({
             },
           }
 
+          const title = info?.inFigure
+            ? gettext("Edit Figure")
+            : info
+              ? gettext("Edit Image")
+              : gettext("Insert Figure")
+
           updateAttrsDialog(properties, {
-            title: figureInfo
-              ? gettext("Edit Figure")
-              : gettext("Insert Figure"),
-            submitText: figureInfo ? gettext("Update") : gettext("Insert"),
+            title,
+            submitText: info ? gettext("Update") : gettext("Insert"),
           })(editor, { imageUrl, altText }).then((attrs) => {
             if (!attrs) return
 
@@ -142,15 +160,12 @@ export const Figure = Node.create({
 
             if (!src) return
 
-            if (figureInfo) {
-              const { imagePos } = figureInfo
-              if (imagePos !== null) {
-                editor
-                  .chain()
-                  .setNodeSelection(imagePos)
-                  .updateAttributes("image", { src, alt })
-                  .run()
-              }
+            if (info) {
+              editor
+                .chain()
+                .setNodeSelection(info.imagePos)
+                .updateAttributes("image", { src, alt })
+                .run()
             } else {
               editor
                 .chain()
@@ -166,26 +181,55 @@ export const Figure = Node.create({
           return true
         },
 
+      // Compatibility alias
+      insertFigure:
+        () =>
+        ({ commands }) =>
+          commands.editImage(),
+
       toggleCaption:
         () =>
         ({ state, dispatch }) => {
-          const figureInfo = getFigureInfo(state)
-          if (!figureInfo) return false
+          const info = getSelectionInfo(state)
+          if (!info) return false
 
           if (dispatch) {
-            const { hasCaption, captionPos, captionNode, imagePos, imageNode } =
-              figureInfo
+            const { imageNode, imagePos } = info
 
-            if (hasCaption) {
+            if (info.inFigure && info.captionNode) {
+              // Remove caption and unwrap figure back to a bare image
+              const { figureStart, figureNode } = info
               dispatch(
-                state.tr.delete(captionPos, captionPos + captionNode.nodeSize),
+                state.tr.replaceWith(
+                  figureStart,
+                  figureStart + figureNode.nodeSize,
+                  imageNode,
+                ),
+              )
+            } else if (info.inFigure) {
+              // Already in a figure — add the caption and focus it
+              const captionType = state.schema.nodes.caption
+              const insertPos = imagePos + imageNode.nodeSize
+              const tr = state.tr.insert(insertPos, captionType.create())
+              dispatch(
+                tr.setSelection(
+                  TextSelection.near(tr.doc.resolve(insertPos + 1)),
+                ),
               )
             } else {
+              // Bare image — wrap in figure, add caption, and focus it
+              const figureType = state.schema.nodes.figure
               const captionType = state.schema.nodes.caption
+              const tr = state.tr.replaceWith(
+                imagePos,
+                imagePos + imageNode.nodeSize,
+                figureType.create({}, [imageNode, captionType.create()]),
+              )
+              // figure opening(1) + image(imageNode.nodeSize) + caption opening(1)
+              const captionContentPos = imagePos + 1 + imageNode.nodeSize + 1
               dispatch(
-                state.tr.insert(
-                  imagePos + imageNode.nodeSize,
-                  captionType.create(),
+                tr.setSelection(
+                  TextSelection.near(tr.doc.resolve(captionContentPos)),
                 ),
               )
             }
@@ -202,7 +246,6 @@ export const Figure = Node.create({
       type: "button",
       className: "prose-menubar__button",
     })
-
     button.addEventListener("click", () => {
       editorRef?.chain().focus().toggleCaption().run()
     })
@@ -215,14 +258,15 @@ export const Figure = Node.create({
         pluginKey: "figureMenu",
         shouldShow: ({ editor, state }) => {
           editorRef = editor
-          const isActive = editor.isActive("image") || editor.isActive("figure")
-          if (isActive) {
-            const figureInfo = getFigureInfo(state)
-            button.textContent = figureInfo?.hasCaption
+          const info = getSelectionInfo(state)
+          if (!info) return false
+
+          button.textContent =
+            info.inFigure && info.captionNode
               ? gettext("Remove caption")
               : gettext("Add caption")
-          }
-          return isActive
+
+          return true
         },
       }),
     ]
