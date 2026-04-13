@@ -34,6 +34,8 @@ JavaScript source files are in `src/` and get built into `django_prose_editor/st
 npm run prod
 ```
 
+You might have to prepend `mise x --` for this to work.
+
 The tests run against the compiled JavaScript in `django_prose_editor/static/`, not the source files.
 
 ## Documentation

@@ -1,5 +1,6 @@
 import { canInsertNode, mergeAttributes, Node } from "@tiptap/core"
-import { gettext, updateAttrsDialog } from "./utils.js"
+import { BubbleMenu } from "@tiptap/extension-bubble-menu"
+import { crel, gettext, updateAttrsDialog } from "./utils.js"
 
 const getFigureInfo = ({ selection }) => {
   const { $from } = selection
@@ -13,16 +14,20 @@ const getFigureInfo = ({ selection }) => {
     const pos = $from.start(depth)
 
     let hasCaption = false
+    let captionNode = null
+    let captionPos = null
     node.forEach((child, offset) => {
       if (child.type.name === "image") {
         imageNode = child
         imagePos = pos + offset
       } else if (child.type.name === "caption") {
         hasCaption = true
+        captionNode = child
+        captionPos = pos + offset
       }
     })
 
-    return { imageNode, imagePos, hasCaption }
+    return { imageNode, imagePos, hasCaption, captionNode, captionPos }
   }
 
   return null
@@ -138,18 +143,13 @@ export const Figure = Node.create({
             if (!src) return
 
             if (figureInfo) {
-              const { imagePos, hasCaption } = figureInfo
+              const { imagePos } = figureInfo
               if (imagePos !== null) {
-                let chain = editor
+                editor
                   .chain()
                   .setNodeSelection(imagePos)
                   .updateAttributes("image", { src, alt })
-                if (!hasCaption) {
-                  chain = chain.insertContentAt(imagePos + 1, {
-                    type: "caption",
-                  })
-                }
-                chain.run()
+                  .run()
               }
             } else {
               editor
@@ -157,10 +157,7 @@ export const Figure = Node.create({
                 .focus()
                 .insertContent({
                   type: "figure",
-                  content: [
-                    { type: "image", attrs: { src, alt } },
-                    { type: "caption" },
-                  ],
+                  content: [{ type: "image", attrs: { src, alt } }],
                 })
                 .run()
             }
@@ -168,7 +165,67 @@ export const Figure = Node.create({
 
           return true
         },
+
+      toggleCaption:
+        () =>
+        ({ state, dispatch }) => {
+          const figureInfo = getFigureInfo(state)
+          if (!figureInfo) return false
+
+          if (dispatch) {
+            const { hasCaption, captionPos, captionNode, imagePos, imageNode } =
+              figureInfo
+
+            if (hasCaption) {
+              dispatch(
+                state.tr.delete(captionPos, captionPos + captionNode.nodeSize),
+              )
+            } else {
+              const captionType = state.schema.nodes.caption
+              dispatch(
+                state.tr.insert(
+                  imagePos + imageNode.nodeSize,
+                  captionType.create(),
+                ),
+              )
+            }
+          }
+          return true
+        },
     }
+  },
+
+  addExtensions() {
+    let editorRef = null
+
+    const button = crel("button", {
+      type: "button",
+      className: "prose-menubar__button",
+    })
+
+    button.addEventListener("click", () => {
+      editorRef?.chain().focus().toggleCaption().run()
+    })
+
+    const menu = crel("div", { className: "prose-menubar" }, [button])
+
+    return [
+      BubbleMenu.configure({
+        element: menu,
+        pluginKey: "figureMenu",
+        shouldShow: ({ editor, state }) => {
+          editorRef = editor
+          const isActive = editor.isActive("image") || editor.isActive("figure")
+          if (isActive) {
+            const figureInfo = getFigureInfo(state)
+            button.textContent = figureInfo?.hasCaption
+              ? gettext("Remove caption")
+              : gettext("Add caption")
+          }
+          return isActive
+        },
+      }),
+    ]
   },
 })
 
