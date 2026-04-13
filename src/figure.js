@@ -250,7 +250,11 @@ export const Figure = Node.create({
       editorRef?.chain().focus().toggleCaption().run()
     })
 
-    const menu = crel("div", { className: "prose-menubar" }, [button])
+    const menu = crel(
+      "div",
+      { className: "prose-menubar prose-menubar--floating" },
+      [button],
+    )
 
     return [
       BubbleMenu.configure({
