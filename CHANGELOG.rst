@@ -4,9 +4,12 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
-- Updated the figure extension to no longer show the caption text in the dialog
-  -- the dialog removed all formatting from the caption. Also removed useless
-  styles from captions.
+- Updated the ``Figure`` extension to no longer show the caption text in the
+  dialog -- the dialog removed all formatting from the caption. Also removed
+  useless styles from captions. The extension now also allows adding and
+  removing the caption using a bubble menu. When removing the caption field,
+  the image isn't wrapped by ``<figure>`` anymore, it reverts to a bare
+  ``<img>`` element.
 - Added support for CKEditor 4-style filebrowsers to the ``Figure`` extension.
   If you set the ``pickerUrl`` option you should be able to integrate any file
   management solution which supports this protocol, for example `django-cabinet
