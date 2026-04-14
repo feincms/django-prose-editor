@@ -1,40 +1,6 @@
 // Global counter to support unique IDs for dialog form elements
 let dialogId = 0
 
-let _ckFuncNum = 0
-const _ckCallbacks = new Map()
-let _ckShimInstalled = false
-
-const installCKShim = () => {
-  if (_ckShimInstalled) return
-  _ckShimInstalled = true
-  window.CKEDITOR = window.CKEDITOR || {}
-  window.CKEDITOR.tools = window.CKEDITOR.tools || {}
-  const original = window.CKEDITOR.tools.callFunction
-  window.CKEDITOR.tools.callFunction = (n, url, ...rest) => {
-    original?.call(window.CKEDITOR.tools, n, url, ...rest)
-    const cb = _ckCallbacks.get(+n)
-    if (cb) {
-      cb(url)
-      _ckCallbacks.delete(+n)
-    }
-  }
-}
-
-export const openFilePicker = (pickerUrl) => {
-  installCKShim()
-  return new Promise((resolve) => {
-    const n = ++_ckFuncNum
-    _ckCallbacks.set(n, resolve)
-    const sep = pickerUrl.includes("?") ? "&" : "?"
-    window.open(
-      `${pickerUrl}${sep}CKEditorFuncNum=${n}`,
-      "_blank",
-      "width=800,height=600",
-    )
-  })
-}
-
 export const crel = (tagName, attributes = null, children = []) => {
   const dom = document.createElement(tagName)
   dom.append(...children)
@@ -103,19 +69,25 @@ const formFieldForProperty = (name, config, attrValue, id) => {
 
     const input = crel("input", attrs)
 
-    if (config.pickerUrl) {
-      const browseBtn = crel("button", {
-        type: "button",
-        textContent: gettext("Browse..."),
-      })
-      browseBtn.addEventListener("click", () => {
-        openFilePicker(config.pickerUrl).then((url) => {
-          if (url) input.value = url
+    if (config.picker) {
+      const { fn, label, button } = config.picker
+      if (!button && !label) {
+        throw new Error("prose-editor: picker requires either label or button")
+      }
+      const pickerBtn =
+        button ||
+        crel("button", {
+          type: "button",
+          textContent: label,
+        })
+      pickerBtn.addEventListener("click", () => {
+        fn().then((value) => {
+          if (value) input.value = value
         })
       })
       widget = crel("div", { className: "prose-editor-field-with-picker" }, [
         input,
-        browseBtn,
+        pickerBtn,
       ])
     } else {
       widget = input

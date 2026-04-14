@@ -3,6 +3,40 @@ import { BubbleMenu } from "@tiptap/extension-bubble-menu"
 import { TextSelection } from "@tiptap/pm/state"
 import { crel, gettext, updateAttrsDialog } from "./utils.js"
 
+let _ckFuncNum = 0
+const _ckCallbacks = new Map()
+let _ckShimInstalled = false
+
+const installCKShim = () => {
+  if (_ckShimInstalled) return
+  _ckShimInstalled = true
+  window.CKEDITOR = window.CKEDITOR || {}
+  window.CKEDITOR.tools = window.CKEDITOR.tools || {}
+  const original = window.CKEDITOR.tools.callFunction
+  window.CKEDITOR.tools.callFunction = (n, url, ...rest) => {
+    original?.call(window.CKEDITOR.tools, n, url, ...rest)
+    const cb = _ckCallbacks.get(+n)
+    if (cb) {
+      cb(url)
+      _ckCallbacks.delete(+n)
+    }
+  }
+}
+
+const openFilePicker = (pickerUrl) => {
+  installCKShim()
+  return new Promise((resolve) => {
+    const n = ++_ckFuncNum
+    _ckCallbacks.set(n, resolve)
+    const sep = pickerUrl.includes("?") ? "&" : "?"
+    window.open(
+      `${pickerUrl}${sep}CKEditorFuncNum=${n}`,
+      "_blank",
+      "width=800,height=600",
+    )
+  })
+}
+
 const getSelectionInfo = ({ selection }) => {
   const { $from } = selection
 
@@ -135,7 +169,12 @@ export const Figure = Node.create({
               title: gettext("Image URL"),
               format: "url",
               required: true,
-              pickerUrl: this.options.pickerUrl,
+              picker: this.options.pickerUrl
+                ? {
+                    label: gettext("Browse..."),
+                    fn: () => openFilePicker(this.options.pickerUrl),
+                  }
+                : null,
             },
             altText: {
               type: "string",
