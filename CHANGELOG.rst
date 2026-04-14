@@ -4,6 +4,14 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Updated the figure extension to no longer show the caption text in the dialog
+  -- the dialog removed all formatting from the caption. Also removed useless
+  styles from captions.
+- Added support for CKEditor 4-style filebrowsers to the ``Figure`` extension.
+  If you set the ``pickerUrl`` option you should be able to integrate any file
+  management solution which supports this protocol, for example `django-cabinet
+  <https://django-cabinet.readthedocs.io/>`__.
+
 0.25 (2026-03-17)
 ~~~~~~~~~~~~~~~~~
 
