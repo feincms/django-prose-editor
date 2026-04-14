@@ -26,7 +26,7 @@ const installCKShim = () => {
 const openFilePicker = (pickerUrl) => {
   installCKShim()
   return new Promise((resolve) => {
-    const n = ++_ckFuncNum
+    const n = --_ckFuncNum
     _ckCallbacks.set(n, resolve)
     const sep = pickerUrl.includes("?") ? "&" : "?"
     window.open(
