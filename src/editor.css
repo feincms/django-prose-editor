@@ -67,8 +67,6 @@ label:empty:has(+ .prose-editor) {
 
 .ProseMirror .figure figcaption.figure-caption {
   padding: 0.5rem 0;
-  color: #555;
-  font-style: italic;
   font-size: 0.9rem;
   text-align: center;
   margin-top: 0.5rem;

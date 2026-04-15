@@ -4,6 +4,19 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Rewrote the ``Figure`` extension to handle both figure-wrapped images and
+  standalone bare images. The caption field has been removed from the edit
+  dialog (it stripped all formatting from the caption text). Instead, a
+  floating bubble menu appears whenever an image or figure is selected,
+  offering an "Add caption" / "Remove caption" action. Removing the caption
+  from a ``<figure>`` also removes the ``<figure>`` wrapper, reverting to a
+  bare ``<img>``. The old ``insertFigure`` command is kept as an alias for the
+  new ``editImage`` command.
+- Added a ``pickerUrl`` option to the ``Figure`` extension for integrating
+  CKEditor 4-style filebrowsers. Any file management solution supporting this
+  protocol can be used, for example `django-cabinet
+  <https://django-cabinet.readthedocs.io/>`__.
+
 0.25 (2026-03-17)
 ~~~~~~~~~~~~~~~~~
 

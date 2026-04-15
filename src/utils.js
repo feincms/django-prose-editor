@@ -56,7 +56,6 @@ const formFieldForProperty = (name, config, attrValue, id) => {
       config.enum.map((option) => crel("option", { textContent: option })),
     )
   } else {
-    // Create input with appropriate attributes
     const attrs = {
       id,
       name,
@@ -64,13 +63,33 @@ const formFieldForProperty = (name, config, attrValue, id) => {
       type: config.format || "text",
       size: 50,
     }
-
-    // Add validation attributes if provided
     if (config.min !== undefined) attrs.min = config.min
     if (config.max !== undefined) attrs.max = config.max
     if (config.required) attrs.required = "required"
 
-    widget = crel("input", attrs)
+    const input = crel("input", attrs)
+
+    if (config.picker) {
+      const { handler, label, button } = config.picker
+      if (!button && !label) {
+        throw new Error("prose-editor: picker requires either label or button")
+      }
+      const pickerBtn =
+        button ||
+        crel("button", {
+          type: "button",
+          textContent: label,
+        })
+      pickerBtn.addEventListener("click", () => {
+        handler({ input, config })
+      })
+      widget = crel("div", { className: "prose-editor-field-with-picker" }, [
+        input,
+        pickerBtn,
+      ])
+    } else {
+      widget = input
+    }
   }
 
   return crel("div", { className: "prose-editor-dialog-field" }, [
