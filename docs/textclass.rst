@@ -155,6 +155,14 @@ Best Practices
 4. **Consider Accessibility**: Use sufficient color contrast and don't rely solely on color for meaning
 5. **Document Classes**: Maintain documentation of available classes for content creators
 
+See also
+--------
+
+:doc:`classloom` is a more flexible alternative. Using ``type: "text"`` in a
+ClassLoom group produces the same ``<span class="...">`` marks as TextClass, but
+supports multiple independent groups and requires explicit ``Menu`` configuration
+to surface the dropdown.
+
 Comparison with TextStyle
 -------------------------
 
