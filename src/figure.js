@@ -23,18 +23,19 @@ const installCKShim = () => {
   }
 }
 
-const openFilePicker = (pickerUrl) => {
+const openFilePicker = (pickerUrl, input) => {
   installCKShim()
-  return new Promise((resolve) => {
-    const n = --_ckFuncNum
-    _ckCallbacks.set(n, resolve)
-    const sep = pickerUrl.includes("?") ? "&" : "?"
-    window.open(
-      `${pickerUrl}${sep}CKEditorFuncNum=${n}`,
-      "_blank",
-      "width=800,height=600",
-    )
+
+  const n = --_ckFuncNum
+  _ckCallbacks.set(n, (value) => {
+    input.value = value
   })
+  const sep = pickerUrl.includes("?") ? "&" : "?"
+  window.open(
+    `${pickerUrl}${sep}CKEditorFuncNum=${n}`,
+    "_blank",
+    "width=800,height=600",
+  )
 }
 
 const getSelectionInfo = ({ selection }) => {
@@ -172,7 +173,8 @@ export const Figure = Node.create({
               picker: this.options.pickerUrl
                 ? {
                     label: gettext("Browse..."),
-                    fn: () => openFilePicker(this.options.pickerUrl),
+                    handler: ({ input }) =>
+                      openFilePicker(this.options.pickerUrl, input),
                   }
                 : null,
             },

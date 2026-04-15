@@ -115,6 +115,7 @@ Available extensions include:
 * Structure: ``Blockquote``, ``Heading``, ``HorizontalRule``
 * Links: ``Link``
 * Tables: ``Table``, ``TableRow``, ``TableHeader``, ``TableCell``
+* Images and figures: ``Figure``, ``Caption`` (see below)
 
 Check the source code for more!
 
@@ -172,5 +173,50 @@ You can restrict which URL protocols are allowed:
             "Link": {
                 "protocols": ["http", "https", "mailto"],  # Only allow these protocols
             }
+        }
+    )
+
+**Figures and Images**
+
+The ``Figure`` extension allows inserting images optionally wrapped in a
+``<figure>`` element with a ``<figcaption>``. Enabling it automatically pulls
+in the ``Image`` and ``Caption`` extensions as well.
+
+.. code-block:: python
+
+    content = ProseEditorField(
+        extensions={
+            "Figure": True,
+        }
+    )
+
+A toolbar button opens a dialog for the image URL and alt text. Once an image
+is in the document, a floating bubble menu appears when it is selected,
+offering "Add caption" and "Remove caption" actions. Removing the caption from
+a figure also removes the ``<figure>`` wrapper, leaving a bare ``<img>``.
+
+**Figures with a file browser**
+
+The ``pickerUrl`` option integrates a file browser into the image dialog. A
+"Browse…" button will appear next to the URL field and open the file browser
+in a popup window.
+
+The file browser endpoint must implement the `CKEditor 4 filebrowser protocol
+<https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_browser_api.html>`__:
+the editor appends ``?CKEditorFuncNum=N`` to the URL, and the file browser is
+expected to call ``window.opener.CKEDITOR.tools.callFunction(N, url)`` once a
+file has been selected. Despite the name, no actual CKEditor 4 installation is
+required — this is simply the protocol that many Django file manager packages
+have adopted. Examples include `django-cabinet
+<https://django-cabinet.readthedocs.io/>`__ (``/admin/cabinet/file/``) and
+django-filer.
+
+.. code-block:: python
+
+    content = ProseEditorField(
+        extensions={
+            "Figure": {
+                "pickerUrl": "/admin/cabinet/file/",
+            },
         }
     )

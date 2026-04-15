@@ -70,7 +70,7 @@ const formFieldForProperty = (name, config, attrValue, id) => {
     const input = crel("input", attrs)
 
     if (config.picker) {
-      const { fn, label, button } = config.picker
+      const { handler, label, button } = config.picker
       if (!button && !label) {
         throw new Error("prose-editor: picker requires either label or button")
       }
@@ -81,9 +81,7 @@ const formFieldForProperty = (name, config, attrValue, id) => {
           textContent: label,
         })
       pickerBtn.addEventListener("click", () => {
-        fn().then((value) => {
-          if (value) input.value = value
-        })
+        handler({ input, config })
       })
       widget = crel("div", { className: "prose-editor-field-with-picker" }, [
         input,
