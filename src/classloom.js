@@ -127,7 +127,7 @@ export const ClassLoom = Extension.create({
 
   addOptions() {
     return {
-      groups: [],
+      groups: {},
     }
   },
 
