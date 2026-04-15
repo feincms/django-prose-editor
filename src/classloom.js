@@ -210,6 +210,8 @@ export const ClassLoom = Extension.create({
               class: determineClasses(mark.attrs.class, classes),
             })
           }
+
+          return false
         },
     }
   },
@@ -231,6 +233,17 @@ export const ClassLoom = Extension.create({
           textContent: `${group.title}: default`,
         }),
         active(editor) {
+          if (group.type === "text") {
+            return !editor.state.selection.$from
+              .marks()
+              .some(
+                (mark) =>
+                  mark.type.name === `classLoom:${ident}` &&
+                  cssClasses.some((c) =>
+                    mark.attrs.class?.split(/\s+/)?.includes(c.className),
+                  ),
+              )
+          }
           return cssClasses.every(
             (c) => !isClassActive(editor, group.type, c.className),
           )

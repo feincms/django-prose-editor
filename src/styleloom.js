@@ -54,24 +54,20 @@ export const StyleLoom = Extension.create({
   },
 
   addGlobalAttributes() {
-    const typeMap = new Map()
-
-    for (const [cssProp, config] of Object.entries(this.options.properties)) {
-      for (const type of config.types) {
-        if (!typeMap.has(type)) typeMap.set(type, {})
-        typeMap.get(type)[cssProp] = {
+    const byType = {}
+    for (const [cssProp, { types }] of Object.entries(
+      this.options.properties,
+    )) {
+      for (const type of types) {
+        ;(byType[type] ??= {})[cssProp] = {
           default: null,
-          parseHTML: (element) =>
-            element.style.getPropertyValue(cssProp) || null,
-          renderHTML: (attributes) =>
-            attributes[cssProp]
-              ? { style: `${cssProp}: ${attributes[cssProp]}` }
-              : {},
+          parseHTML: (el) => el.style.getPropertyValue(cssProp) || null,
+          renderHTML: (attrs) =>
+            attrs[cssProp] ? { style: `${cssProp}: ${attrs[cssProp]}` } : {},
         }
       }
     }
-
-    return [...typeMap.entries()].map(([type, attributes]) => ({
+    return Object.entries(byType).map(([type, attributes]) => ({
       types: [type],
       attributes,
     }))
@@ -81,84 +77,79 @@ export const StyleLoom = Extension.create({
     const allProperties = Object.entries(this.options.properties)
     const { contexts } = this.options
 
-    // Types explicitly claimed by contexts that have an explicit `types` array.
     const claimedTypes = new Set(
       Object.values(contexts).flatMap((c) => c.types ?? []),
     )
-
-    // All configured types not claimed by any explicit context — used as the
-    // fallback for contexts without `types`.
     const unclaimedTypes = [
       ...new Set(allProperties.flatMap(([, c]) => c.types)),
     ].filter((t) => !claimedTypes.has(t))
 
-    // Build a resolveContext function for a set of target types.
-    // Finds the deepest ancestor matching any of the node types in the set,
-    // then filters properties to those applicable to the found node type.
-    // "textStyle" in the set is handled separately via text selection.
-    const makeResolveContext = (targetTypes) => (editor) => {
-      const { selection } = editor.state
+    // Returns a resolveContext function for the given target types.
+    // nodeTypes and includesTextStyle are pre-computed once per context.
+    const makeResolveContext = (targetTypes) => {
       const nodeTypes = targetTypes.filter((t) => t !== "textStyle")
       const includesTextStyle = targetTypes.includes("textStyle")
-      const hasTextSelection = !selection.empty && !selection.node
 
-      let ancestor = null
-      if (nodeTypes.length) {
-        if (selection.node && nodeTypes.includes(selection.node.type.name)) {
-          ancestor = {
-            nodeType: selection.node.type.name,
-            pos: selection.from,
-            node: selection.node,
-          }
-        } else {
-          const { $from } = selection
-          for (let depth = $from.depth; depth > 0; depth--) {
-            const node = $from.node(depth)
-            if (nodeTypes.includes(node.type.name)) {
-              ancestor = {
-                nodeType: node.type.name,
-                pos: $from.before(depth),
-                node,
+      return (editor) => {
+        const { selection } = editor.state
+        const hasTextSelection =
+          includesTextStyle && !selection.empty && !selection.node
+
+        let ancestor = null
+        if (nodeTypes.length) {
+          // NodeSelection: $from sits before the node's opening token so the
+          // ancestor walk below would never find the node itself.
+          if (selection.node && nodeTypes.includes(selection.node.type.name)) {
+            ancestor = {
+              nodeType: selection.node.type.name,
+              pos: selection.from,
+              node: selection.node,
+            }
+          } else {
+            const { $from } = selection
+            for (let depth = $from.depth; depth > 0; depth--) {
+              const node = $from.node(depth)
+              if (nodeTypes.includes(node.type.name)) {
+                ancestor = {
+                  nodeType: node.type.name,
+                  pos: $from.before(depth),
+                  node,
+                }
+                break
               }
-              break
             }
           }
         }
-      }
 
-      const props = allProperties.filter(
-        ([, c]) =>
-          (includesTextStyle &&
-            hasTextSelection &&
-            c.types.includes("textStyle")) ||
-          (ancestor && c.types.includes(ancestor.nodeType)),
-      )
-      if (!props.length) return null
-      return {
-        ancestor,
-        props,
-        hasTextSelection: includesTextStyle && hasTextSelection,
+        const props = allProperties.filter(
+          ([, c]) =>
+            (hasTextSelection && c.types.includes("textStyle")) ||
+            (ancestor && c.types.includes(ancestor.nodeType)),
+        )
+        return props.length ? { ancestor, props, hasTextSelection } : null
       }
     }
 
-    const defineItem = (itemName, itemTitle, itemGroups, resolveContext) => {
+    for (const [key, contextConfig] of Object.entries(contexts)) {
+      const resolveContext = makeResolveContext(
+        contextConfig.types ?? unclaimedTypes,
+      )
+      const itemTitle = contextConfig.title ?? key
+
       menu.defineItem({
-        name: itemName,
-        groups: itemGroups,
+        name: `styleLoom:${key}`,
+        groups: contextConfig.groups ?? "marks",
         button: buttons.text(itemTitle),
-        hidden(editor) {
-          return !resolveContext(editor)
-        },
+        hidden: (editor) => !resolveContext(editor),
         active(editor) {
           const ctx = resolveContext(editor)
           if (!ctx) return false
           const { ancestor, props, hasTextSelection } = ctx
-          return props.some(([cssProp, config]) => {
-            if (hasTextSelection && config.types.includes("textStyle"))
-              return !!editor.getAttributes("textStyle")[cssProp]
-            if (ancestor) return !!ancestor.node.attrs[cssProp]
-            return false
-          })
+          return props.some(([cssProp, config]) =>
+            hasTextSelection && config.types.includes("textStyle")
+              ? !!editor.getAttributes("textStyle")[cssProp]
+              : !!ancestor?.node.attrs[cssProp],
+          )
         },
         command(editor) {
           const ctx = resolveContext(editor)
@@ -171,16 +162,13 @@ export const StyleLoom = Extension.create({
               { type: "string", ...config },
             ]),
           )
-
           const initialValues = Object.fromEntries(
-            props.map(([cssProp, config]) => {
-              let value = null
-              if (hasTextSelection && config.types.includes("textStyle"))
-                value = editor.getAttributes("textStyle")[cssProp] ?? null
-              if (!value && ancestor)
-                value = ancestor.node.attrs[cssProp] ?? null
-              return [cssProp, value]
-            }),
+            props.map(([cssProp, config]) => [
+              cssProp,
+              (hasTextSelection && config.types.includes("textStyle")
+                ? editor.getAttributes("textStyle")[cssProp]
+                : ancestor?.node.attrs[cssProp]) ?? null,
+            ]),
           )
 
           updateAttrsDialog(schema, { title: itemTitle })(
@@ -189,58 +177,57 @@ export const StyleLoom = Extension.create({
           ).then((attrs) => {
             if (!attrs) return
 
-            let chain = editor.chain().focus()
-            let hasTextStyleChanges = false
+            const textStyleAttrs = {}
+            const nodeProps = []
 
             for (const [cssProp, config] of props) {
               const value = attrs[cssProp] || null
-
-              if (hasTextSelection && config.types.includes("textStyle")) {
-                chain = chain.setMark("textStyle", { [cssProp]: value })
-                hasTextStyleChanges = true
-              }
-
-              if (ancestor && config.types.includes(ancestor.nodeType)) {
-                chain = chain.command(({ tr, state }) => {
-                  const { ranges } = state.selection
-                  const targetType = ancestor.nodeType
-                  const seen = new Set()
-
-                  for (const range of ranges) {
-                    const { $from } = range
-                    for (let depth = $from.depth; depth > 0; depth--) {
-                      if ($from.node(depth).type.name === targetType) {
-                        const pos = $from.before(depth)
-                        if (!seen.has(pos)) {
-                          seen.add(pos)
-                          tr.setNodeAttribute(pos, cssProp, value)
-                        }
-                        break
-                      }
-                    }
-                  }
-
-                  if (!seen.size)
-                    tr.setNodeAttribute(ancestor.pos, cssProp, value)
-                  return true
-                })
-              }
+              if (hasTextSelection && config.types.includes("textStyle"))
+                textStyleAttrs[cssProp] = value
+              if (ancestor && config.types.includes(ancestor.nodeType))
+                nodeProps.push([cssProp, value])
             }
 
-            if (hasTextStyleChanges) chain = chain.removeEmptyTextStyle()
+            let chain = editor.chain().focus()
+
+            if (Object.keys(textStyleAttrs).length)
+              chain = chain
+                .setMark("textStyle", textStyleAttrs)
+                .removeEmptyTextStyle()
+
+            if (nodeProps.length) {
+              chain = chain.command(({ tr, state }) => {
+                const { ranges } = state.selection
+                const targetType = ancestor.nodeType
+                const seen = new Set()
+
+                for (const range of ranges) {
+                  const { $from } = range
+                  for (let depth = $from.depth; depth > 0; depth--) {
+                    if ($from.node(depth).type.name === targetType) {
+                      const pos = $from.before(depth)
+                      if (!seen.has(pos)) {
+                        seen.add(pos)
+                        for (const [cssProp, value] of nodeProps)
+                          tr.setNodeAttribute(pos, cssProp, value)
+                      }
+                      break
+                    }
+                  }
+                }
+
+                if (!seen.size)
+                  for (const [cssProp, value] of nodeProps)
+                    tr.setNodeAttribute(ancestor.pos, cssProp, value)
+
+                return true
+              })
+            }
+
             chain.run()
           })
         },
       })
-    }
-
-    for (const [key, contextConfig] of Object.entries(contexts)) {
-      defineItem(
-        `styleLoom:${key}`,
-        contextConfig.title ?? key,
-        contextConfig.groups ?? "marks",
-        makeResolveContext(contextConfig.types ?? unclaimedTypes),
-      )
     }
   },
 })
