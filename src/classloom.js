@@ -190,16 +190,18 @@ export const ClassLoom = Extension.create({
           if (state.schema.nodes[type]) {
             const nodes = getSelectionNodes(state, [type])
             if (!nodes?.length) return false
-            for (const { node, pos } of nodes) {
-              commands.command(({ tr }) => {
+
+            return commands.command(({ tr }) => {
+              for (const { node, pos } of nodes) {
                 tr.setNodeAttribute(
                   pos,
                   "class",
                   determineClasses(node.attrs.class, classes),
                 )
-              })
-            }
-            return true
+              }
+
+              return true
+            })
           }
 
           for (const { mark } of getSelectionMarks(state, [type])) {
