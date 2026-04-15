@@ -222,7 +222,7 @@ export const ClassLoom = Extension.create({
       )
 
       menu.defineItem({
-        name: `${this.name}:${groupIdent}:default`,
+        name: `${groupIdent}:default`,
         groups: [this.name, groupIdent, `${this.name}:default`],
         button: buttons.text(group.title),
         option: crel("p", {
@@ -244,7 +244,7 @@ export const ClassLoom = Extension.create({
 
       for (const c of cssClasses) {
         menu.defineItem({
-          name: `${this.name}:${groupIdent}:${c.className}`,
+          name: `${groupIdent}:${c.className}`,
           groups: [this.name, groupIdent],
           button: buttons.text(c.title),
           option: crel("p", { textContent: c.title }),
@@ -359,8 +359,6 @@ const ClassLoomText = Mark.create({
                     determineClasses(existingMark?.attrs?.class, classes),
                     definedClasses,
                   )
-
-                  console.debug({ node, newClass })
 
                   if (newClass) {
                     tr.addMark(
