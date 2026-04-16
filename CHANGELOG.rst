@@ -16,6 +16,14 @@ Next version
   CKEditor 4-style filebrowsers. Any file management solution supporting this
   protocol can be used, for example `django-cabinet
   <https://django-cabinet.readthedocs.io/>`__.
+- The file picker integration (``pickerUrl``) now pre-populates the alt text
+  and caption fields from the picker's response data (``alternative_text`` and
+  ``caption`` attributes).
+- Added a caption field to the "Insert Figure" dialog. If filled in, a
+  ``<figcaption>`` is created alongside the image; if left blank, the figure is
+  inserted without a caption.
+- Removed the ``url`` format constraint from the image URL field so that
+  relative paths are accepted in addition to absolute URLs.
 
 0.25 (2026-03-17)
 ~~~~~~~~~~~~~~~~~
