@@ -13,11 +13,11 @@ const installCKShim = () => {
   window.CKEDITOR = window.CKEDITOR || {}
   window.CKEDITOR.tools = window.CKEDITOR.tools || {}
   const original = window.CKEDITOR.tools.callFunction
-  window.CKEDITOR.tools.callFunction = (n, url, ...rest) => {
-    original?.call(window.CKEDITOR.tools, n, url, ...rest)
+  window.CKEDITOR.tools.callFunction = (n, ...args) => {
+    original?.call(window.CKEDITOR.tools, n, ...args)
     const cb = _ckCallbacks.get(+n)
     if (cb) {
-      cb(url)
+      cb(...args)
       _ckCallbacks.delete(+n)
     }
   }
