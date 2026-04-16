@@ -27,8 +27,16 @@ const openFilePicker = (pickerUrl, input) => {
   installCKShim()
 
   const n = --_ckFuncNum
-  _ckCallbacks.set(n, (value) => {
+  _ckCallbacks.set(n, (value, data) => {
     input.value = value
+    const altText = input.closest("dialog").querySelector("input[name=altText]")
+    const caption = input.closest("dialog").querySelector("input[name=caption]")
+    if (data && altText) {
+      altText.value = data.alternative_text || ""
+    }
+    if (data && caption) {
+      caption.value = data.caption || ""
+    }
   })
   const sep = pickerUrl.includes("?") ? "&" : "?"
   window.open(
