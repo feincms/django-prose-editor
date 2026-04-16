@@ -135,11 +135,12 @@ export const StyleLoom = Extension.create({
         contextConfig.types ?? unclaimedTypes,
       )
       const itemTitle = contextConfig.title ?? key
+      const button = contextConfig.button ?? { type: "text", args: [itemTitle] }
 
       menu.defineItem({
         name: `styleLoom:${key}`,
         groups: contextConfig.groups ?? "marks",
-        button: buttons.text(itemTitle),
+        button: buttons[button.type](...button.args),
         hidden: (editor) => !resolveContext(editor),
         active(editor) {
           const ctx = resolveContext(editor)
@@ -190,10 +191,11 @@ export const StyleLoom = Extension.create({
 
             let chain = editor.chain().focus()
 
-            if (Object.keys(textStyleAttrs).length)
-              chain = chain
-                .setMark("textStyle", textStyleAttrs)
-                .removeEmptyTextStyle()
+            if (Object.keys(textStyleAttrs).length) {
+              chain = chain.setMark("textStyle", textStyleAttrs)
+              if (Object.values(textStyleAttrs).every((v) => v === null))
+                chain = chain.removeEmptyTextStyle()
+            }
 
             if (nodeProps.length) {
               chain = chain.command(({ tr, state }) => {
