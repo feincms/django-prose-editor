@@ -33,6 +33,8 @@ django-prose-editor[sanitize]``) the following should get you started:
    menu
    nodeclass
    textclass
+   classloom
+   styleloom
    presets
    legacy
    forms

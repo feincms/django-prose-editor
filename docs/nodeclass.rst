@@ -499,6 +499,15 @@ Configuration Patterns
         ]
     }
 
+See also
+--------
+
+:doc:`classloom` is a more flexible alternative that supports multiple independent
+class groups, each targeting a different node or mark type and appearing as its own
+menu dropdown. It requires explicit ``Menu`` configuration to surface the dropdowns,
+but is a better fit when you need more than one group or want finer control over
+where the buttons appear.
+
 Comparison with TextClass
 -------------------------
 

@@ -168,6 +168,87 @@ def process_color_highlight(config, shared_config):
     add_tags_and_attributes(shared_config, tags, attributes)
 
 
+def process_class_loom(config, shared_config):
+    """Process ClassLoom extension configuration."""
+    if not isinstance(config, dict) or "groups" not in config:
+        return
+
+    # Map ProseMirror node/mark types to their HTML tags
+    type_tags = {
+        "paragraph": ["p"],
+        "heading": ["h1", "h2", "h3", "h4", "h5", "h6"],
+        "table": ["table"],
+        "tableRow": ["tr"],
+        "tableCell": ["td", "th"],
+        "tableHeader": ["th"],
+        "listItem": ["li"],
+        "bulletList": ["ul"],
+        "orderedList": ["ol"],
+        "blockquote": ["blockquote"],
+        "codeBlock": ["pre"],
+        "italic": ["em"],
+        "bold": ["strong"],
+        "strike": ["s"],
+        "underline": ["u"],
+        "subscript": ["sub"],
+        "superscript": ["sup"],
+        "code": ["code"],
+        "link": ["a"],
+        "highlight": ["mark"],
+        "textStyle": ["span"],
+    }
+
+    for group in config["groups"].values():
+        group_type = group.get("type")
+        if group_type == "text":
+            # ClassLoom text type renders as <span> marks
+            add_tags_and_attributes(shared_config, ["span"], {"span": ["class"]})
+        elif group_type in type_tags:
+            tags = type_tags[group_type]
+            add_tags_and_attributes(shared_config, [], {tag: ["class"] for tag in tags})
+
+
+def process_style_loom(config, shared_config):
+    """Process StyleLoom extension configuration."""
+    if not isinstance(config, dict) or "properties" not in config:
+        return
+
+    # Map ProseMirror node/mark types to their HTML tags
+    type_tags = {
+        "paragraph": ["p"],
+        "heading": ["h1", "h2", "h3", "h4", "h5", "h6"],
+        "table": ["table"],
+        "tableRow": ["tr"],
+        "tableCell": ["td", "th"],
+        "tableHeader": ["th"],
+        "listItem": ["li"],
+        "bulletList": ["ul"],
+        "orderedList": ["ol"],
+        "blockquote": ["blockquote"],
+        "codeBlock": ["pre"],
+        "italic": ["em"],
+        "bold": ["strong"],
+        "strike": ["s"],
+        "underline": ["u"],
+        "subscript": ["sub"],
+        "superscript": ["sup"],
+        "code": ["code"],
+        "link": ["a"],
+        "highlight": ["mark"],
+        "textStyle": ["span"],
+    }
+
+    for prop_config in config["properties"].values():
+        for pm_type in prop_config.get("types", []):
+            if pm_type == "textStyle":
+                add_tags_and_attributes(shared_config, ["span"], {"span": ["style"]})
+            elif pm_type in type_tags:
+                tags = type_tags[pm_type]
+                add_tags_and_attributes(
+                    shared_config, [], {tag: ["style"] for tag in tags}
+                )
+
+
 def process_node_class(config, shared_config):
     """Process NodeClass extension configuration."""
     if not isinstance(config, dict) or "cssClasses" not in config:
@@ -257,7 +338,9 @@ EXTENSION_MAPPING = {
     "Gapcursor": html_tags([]),
     "Menu": html_tags([]),
     "NoSpellCheck": html_tags([]),
+    "ClassLoom": process_class_loom,
     "NodeClass": process_node_class,
+    "StyleLoom": process_style_loom,
     "TextClass": html_tags(["span"], {"span": ["class"]}),
     "Placeholder": html_tags([]),
 }
