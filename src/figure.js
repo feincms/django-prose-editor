@@ -13,11 +13,11 @@ const installCKShim = () => {
   window.CKEDITOR = window.CKEDITOR || {}
   window.CKEDITOR.tools = window.CKEDITOR.tools || {}
   const original = window.CKEDITOR.tools.callFunction
-  window.CKEDITOR.tools.callFunction = (n, url, ...rest) => {
-    original?.call(window.CKEDITOR.tools, n, url, ...rest)
+  window.CKEDITOR.tools.callFunction = (n, ...args) => {
+    original?.call(window.CKEDITOR.tools, n, ...args)
     const cb = _ckCallbacks.get(+n)
     if (cb) {
-      cb(url)
+      cb(...args)
       _ckCallbacks.delete(+n)
     }
   }
@@ -27,8 +27,16 @@ const openFilePicker = (pickerUrl, input) => {
   installCKShim()
 
   const n = --_ckFuncNum
-  _ckCallbacks.set(n, (value) => {
+  _ckCallbacks.set(n, (value, data) => {
     input.value = value
+    const altText = input.closest("dialog").querySelector("input[name=altText]")
+    const caption = input.closest("dialog").querySelector("input[name=caption]")
+    if (data && altText) {
+      altText.value = data.alternative_text || ""
+    }
+    if (data && caption) {
+      caption.value = data.caption || ""
+    }
   })
   const sep = pickerUrl.includes("?") ? "&" : "?"
   window.open(
@@ -168,7 +176,6 @@ export const Figure = Node.create({
             imageUrl: {
               type: "string",
               title: gettext("Image URL"),
-              format: "url",
               required: true,
               picker: this.options.pickerUrl
                 ? {
@@ -184,6 +191,15 @@ export const Figure = Node.create({
             },
           }
 
+          // Show caption field only when inserting — updating via dialog would
+          // strip any rich-text formatting already present in the caption.
+          if (!info) {
+            properties.caption = {
+              type: "string",
+              title: gettext("Caption"),
+            }
+          }
+
           const title = info?.inFigure
             ? gettext("Edit Figure")
             : info
@@ -193,7 +209,7 @@ export const Figure = Node.create({
           updateAttrsDialog(properties, {
             title,
             submitText: info ? gettext("Update") : gettext("Insert"),
-          })(editor, { imageUrl, altText }).then((attrs) => {
+          })(editor, { imageUrl, altText, caption: "" }).then((attrs) => {
             if (!attrs) return
 
             const src = attrs.imageUrl.trim()
@@ -208,12 +224,20 @@ export const Figure = Node.create({
                 .updateAttributes("image", { src, alt })
                 .run()
             } else {
+              const caption = attrs.caption?.trim()
+              const figureContent = [{ type: "image", attrs: { src, alt } }]
+              if (caption) {
+                figureContent.push({
+                  type: "caption",
+                  content: [{ type: "text", text: caption }],
+                })
+              }
               editor
                 .chain()
                 .focus()
                 .insertContent({
                   type: "figure",
-                  content: [{ type: "image", attrs: { src, alt } }],
+                  content: figureContent,
                 })
                 .run()
             }
