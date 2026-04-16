@@ -168,7 +168,6 @@ export const Figure = Node.create({
             imageUrl: {
               type: "string",
               title: gettext("Image URL"),
-              format: "url",
               required: true,
               picker: this.options.pickerUrl
                 ? {
