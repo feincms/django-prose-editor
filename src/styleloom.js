@@ -43,6 +43,52 @@
 import { Extension } from "@tiptap/core"
 import { updateAttrsDialog } from "./utils.js"
 
+// Returns a resolveContext function for the given target types.
+// nodeTypes and includesTextStyle are pre-computed once per context.
+const makeResolveContext = (allProperties, targetTypes) => {
+  const nodeTypes = targetTypes.filter((t) => t !== "textStyle")
+  const includesTextStyle = targetTypes.includes("textStyle")
+
+  return (editor) => {
+    const { selection } = editor.state
+    const hasTextSelection =
+      includesTextStyle && !selection.empty && !selection.node
+
+    let ancestor = null
+    if (nodeTypes.length) {
+      // NodeSelection: $from sits before the node's opening token so the
+      // ancestor walk below would never find the node itself.
+      if (selection.node && nodeTypes.includes(selection.node.type.name)) {
+        ancestor = {
+          nodeType: selection.node.type.name,
+          pos: selection.from,
+          node: selection.node,
+        }
+      } else {
+        const { $from } = selection
+        for (let depth = $from.depth; depth > 0; depth--) {
+          const node = $from.node(depth)
+          if (nodeTypes.includes(node.type.name)) {
+            ancestor = {
+              nodeType: node.type.name,
+              pos: $from.before(depth),
+              node,
+            }
+            break
+          }
+        }
+      }
+    }
+
+    const props = allProperties.filter(
+      ([, c]) =>
+        (hasTextSelection && c.types.includes("textStyle")) ||
+        (ancestor && c.types.includes(ancestor.nodeType)),
+    )
+    return props.length ? { ancestor, props, hasTextSelection } : null
+  }
+}
+
 export const StyleLoom = Extension.create({
   name: "styleLoom",
 
@@ -73,7 +119,7 @@ export const StyleLoom = Extension.create({
     }))
   },
 
-  addMenuItems({ buttons, menu }) {
+  addCommands() {
     const allProperties = Object.entries(this.options.properties)
     const { contexts } = this.options
 
@@ -84,78 +130,28 @@ export const StyleLoom = Extension.create({
       ...new Set(allProperties.flatMap(([, c]) => c.types)),
     ].filter((t) => !claimedTypes.has(t))
 
-    // Returns a resolveContext function for the given target types.
-    // nodeTypes and includesTextStyle are pre-computed once per context.
-    const makeResolveContext = (targetTypes) => {
-      const nodeTypes = targetTypes.filter((t) => t !== "textStyle")
-      const includesTextStyle = targetTypes.includes("textStyle")
+    const resolvers = Object.fromEntries(
+      Object.entries(contexts).map(([key, contextConfig]) => [
+        key,
+        makeResolveContext(
+          allProperties,
+          contextConfig.types ?? unclaimedTypes,
+        ),
+      ]),
+    )
 
-      return (editor) => {
-        const { selection } = editor.state
-        const hasTextSelection =
-          includesTextStyle && !selection.empty && !selection.node
+    return {
+      openStyleLoomDialog:
+        (key) =>
+        ({ editor }) => {
+          const contextConfig = contexts[key]
+          if (!contextConfig) return false
 
-        let ancestor = null
-        if (nodeTypes.length) {
-          // NodeSelection: $from sits before the node's opening token so the
-          // ancestor walk below would never find the node itself.
-          if (selection.node && nodeTypes.includes(selection.node.type.name)) {
-            ancestor = {
-              nodeType: selection.node.type.name,
-              pos: selection.from,
-              node: selection.node,
-            }
-          } else {
-            const { $from } = selection
-            for (let depth = $from.depth; depth > 0; depth--) {
-              const node = $from.node(depth)
-              if (nodeTypes.includes(node.type.name)) {
-                ancestor = {
-                  nodeType: node.type.name,
-                  pos: $from.before(depth),
-                  node,
-                }
-                break
-              }
-            }
-          }
-        }
-
-        const props = allProperties.filter(
-          ([, c]) =>
-            (hasTextSelection && c.types.includes("textStyle")) ||
-            (ancestor && c.types.includes(ancestor.nodeType)),
-        )
-        return props.length ? { ancestor, props, hasTextSelection } : null
-      }
-    }
-
-    for (const [key, contextConfig] of Object.entries(contexts)) {
-      const resolveContext = makeResolveContext(
-        contextConfig.types ?? unclaimedTypes,
-      )
-      const itemTitle = contextConfig.title ?? key
-      const button = contextConfig.button ?? { type: "text", args: [itemTitle] }
-
-      menu.defineItem({
-        name: `styleLoom:${key}`,
-        groups: contextConfig.groups ?? "marks",
-        button: buttons[button.type](...button.args),
-        hidden: (editor) => !resolveContext(editor),
-        active(editor) {
-          const ctx = resolveContext(editor)
+          const ctx = resolvers[key](editor)
           if (!ctx) return false
+
           const { ancestor, props, hasTextSelection } = ctx
-          return props.some(([cssProp, config]) =>
-            hasTextSelection && config.types.includes("textStyle")
-              ? !!editor.getAttributes("textStyle")[cssProp]
-              : !!ancestor?.node.attrs[cssProp],
-          )
-        },
-        command(editor) {
-          const ctx = resolveContext(editor)
-          if (!ctx) return
-          const { ancestor, props, hasTextSelection } = ctx
+          const itemTitle = contextConfig.title ?? key
 
           const schema = Object.fromEntries(
             props.map(([cssProp, { types: _, ...config }]) => [
@@ -228,6 +224,48 @@ export const StyleLoom = Extension.create({
 
             chain.run()
           })
+
+          return true
+        },
+    }
+  },
+
+  addMenuItems({ buttons, menu }) {
+    const allProperties = Object.entries(this.options.properties)
+    const { contexts } = this.options
+
+    const claimedTypes = new Set(
+      Object.values(contexts).flatMap((c) => c.types ?? []),
+    )
+    const unclaimedTypes = [
+      ...new Set(allProperties.flatMap(([, c]) => c.types)),
+    ].filter((t) => !claimedTypes.has(t))
+
+    for (const [key, contextConfig] of Object.entries(contexts)) {
+      const resolveContext = makeResolveContext(
+        allProperties,
+        contextConfig.types ?? unclaimedTypes,
+      )
+      const itemTitle = contextConfig.title ?? key
+      const button = contextConfig.button ?? { type: "text", args: [itemTitle] }
+
+      menu.defineItem({
+        name: `styleLoom:${key}`,
+        groups: contextConfig.groups ?? "marks",
+        button: buttons[button.type](...button.args),
+        hidden: (editor) => !resolveContext(editor),
+        active(editor) {
+          const ctx = resolveContext(editor)
+          if (!ctx) return false
+          const { ancestor, props, hasTextSelection } = ctx
+          return props.some(([cssProp, config]) =>
+            hasTextSelection && config.types.includes("textStyle")
+              ? !!editor.getAttributes("textStyle")[cssProp]
+              : !!ancestor?.node.attrs[cssProp],
+          )
+        },
+        command(editor) {
+          editor.chain().focus().openStyleLoomDialog(key).run()
         },
       })
     }
