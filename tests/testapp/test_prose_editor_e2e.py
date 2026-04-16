@@ -10,6 +10,7 @@ from playwright.sync_api import expect
 from testapp.models import (
     ConfigurableProseEditorModel,
     ProseEditorModel,
+    StyleLoomProseEditorModel,
     TableProseEditorModel,
 )
 
@@ -18,22 +19,19 @@ from testapp.models import (
 os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 
+def _login(page, live_server):
+    User.objects.create_superuser("admin", "admin@example.com", "password")
+    page.goto(f"{live_server.url}/admin/login/")
+    page.fill("#id_username", "admin")
+    page.fill("#id_password", "password")
+    page.click("input[type=submit]")
+
+
 @pytest.mark.django_db
 @pytest.mark.e2e
 def test_prose_editor_admin_form(page, live_server):
     """Test that the prose editor loads and works in the admin."""
-    # Login first
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Visit the login page
-    page.goto(f"{live_server.url}/admin/login/")
-
-    # Fill in the login form
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-
-    # Submit the form
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Wait for the admin index page to load
     page.wait_for_url(f"{live_server.url}/admin/")
@@ -70,18 +68,7 @@ def test_prose_editor_admin_form(page, live_server):
 @pytest.mark.e2e
 def test_prose_editor_formatting(page, live_server):
     """Test formatting functionality in the prose editor."""
-    # Login first
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Visit the login page
-    page.goto(f"{live_server.url}/admin/login/")
-
-    # Fill in the login form
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-
-    # Submit the form
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Go to the add page
     page.goto(f"{live_server.url}/admin/testapp/proseeditormodel/add/")
@@ -111,14 +98,7 @@ def test_prose_editor_formatting(page, live_server):
 @pytest.mark.e2e
 def test_prose_editor_table_creation(page, live_server):
     """Test table insertion in a TableProseEditorModel."""
-    # Login first
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Visit the login page
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Go to the add page for the TableProseEditorModel
     page.goto(f"{live_server.url}/admin/testapp/tableproseeditormodel/add/")
@@ -189,14 +169,7 @@ def test_prose_editor_table_creation(page, live_server):
 @pytest.mark.e2e
 def test_prose_editor_ordered_list_attributes(page, live_server):
     """Test ordered list creation and attribute modification."""
-    # Login first
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Visit the login page and log in
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Go to the add page for the TableProseEditorModel (which has OrderedList extension)
     page.goto(f"{live_server.url}/admin/testapp/tableproseeditormodel/add/")
@@ -279,14 +252,7 @@ def test_prose_editor_ordered_list_attributes(page, live_server):
 @pytest.mark.e2e
 def test_configurable_prose_editor_admin(page, live_server):
     """Test that the configurable prose editor loads in the admin with the BlueBold extension."""
-    # Create superuser for admin access
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Log in to the admin
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Go to the add page for ConfigurableProseEditorModel
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
@@ -414,14 +380,7 @@ def test_configurable_prose_editor_admin(page, live_server):
 @pytest.mark.e2e
 def test_html_extension_edit_and_prettify_button(page, live_server):
     """Test the HTML extension with edit functionality and on-demand prettification button."""
-    # Create superuser for admin access
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    # Log in to the admin
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     # Go to the add page for ConfigurableProseEditorModel (which has HTML and CodeBlock extensions enabled)
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
@@ -585,16 +544,7 @@ def test_html_extension_edit_and_prettify_button(page, live_server):
 @pytest.mark.django_db
 @pytest.mark.e2e
 def test_nodeclass_textclass(live_server, page):
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    page.goto(f"{live_server.url}/admin/login/")
-
-    # Fill in the login form
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-
-    # Submit the form
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
 
@@ -634,12 +584,7 @@ def test_nodeclass_textclass(live_server, page):
 @pytest.mark.e2e
 def test_nodeclass_mark_css_class(live_server, page):
     """Test NodeClass extension with mark CSS classes (e.g., bold with emphasis class)."""
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
 
@@ -670,12 +615,7 @@ def test_nodeclass_mark_css_class(live_server, page):
 @pytest.mark.e2e
 def test_nodeclass_mark_switch_class(live_server, page):
     """Test switching between different CSS classes on the same mark."""
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
 
@@ -709,12 +649,7 @@ def test_nodeclass_mark_switch_class(live_server, page):
 @pytest.mark.e2e
 def test_nodeclass_reset_classes(live_server, page):
     """Test the reset classes functionality for both nodes and marks."""
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
 
@@ -759,12 +694,7 @@ def test_nodeclass_reset_classes(live_server, page):
 @pytest.mark.django_db
 @pytest.mark.e2e
 def test_actually_empty(live_server, page):
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
+    _login(page, live_server)
 
     page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
 
@@ -777,6 +707,147 @@ def test_actually_empty(live_server, page):
     editor.press("ControlOrMeta+a")
     editor.press("Delete")
     expect(element).to_have_value("")
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_styleloom_block_style(live_server, page):
+    """Test StyleLoom applies an inline style to a block node (paragraph)."""
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/styleloomproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Styled paragraph")
+
+    # Block styles button is visible when cursor is inside a paragraph
+    block_button = page.locator(".prose-menubar__button:has-text('Block styles')")
+    expect(block_button).to_be_visible()
+
+    block_button.click()
+
+    dialog = page.locator(".prose-editor-dialog")
+    expect(dialog).to_be_visible()
+    expect(dialog.locator(".prose-editor-dialog-title")).to_have_text("Block styles")
+
+    page.fill("input[name='max-width']", "400px")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    page.click("input[name='_save']")
+
+    model = StyleLoomProseEditorModel.objects.first()
+    assert model is not None
+    assert "max-width: 400px" in model.description
+    assert "Styled paragraph" in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_styleloom_text_style(live_server, page):
+    """Test StyleLoom applies an inline style to a text selection via textStyle mark."""
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/styleloomproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Styled text")
+
+    # Text styles button is hidden until text is selected
+    text_button = page.locator(".prose-menubar__button:has-text('Text styles')")
+    expect(text_button).to_be_hidden()
+
+    editor.press("ControlOrMeta+a")
+    expect(text_button).to_be_visible()
+
+    text_button.click()
+
+    dialog = page.locator(".prose-editor-dialog")
+    expect(dialog).to_be_visible()
+    expect(dialog.locator(".prose-editor-dialog-title")).to_have_text("Text styles")
+
+    page.fill("input[name='font-size']", "18px")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    page.click("input[name='_save']")
+
+    model = StyleLoomProseEditorModel.objects.first()
+    assert model is not None
+    assert "font-size: 18px" in model.description
+    assert "Styled text" in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_styleloom_dialog_shows_current_value(live_server, page):
+    """Test that reopening the StyleLoom dialog shows the previously set value."""
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/styleloomproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Some text")
+
+    # Apply max-width
+    block_button = page.locator(".prose-menubar__button:has-text('Block styles')")
+    block_button.click()
+    dialog = page.locator(".prose-editor-dialog")
+    page.fill("input[name='max-width']", "300px")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    # Button should now be active (style is set)
+    expect(block_button).to_have_class(re.compile(r"\bactive\b"))
+
+    # Reopen and verify the value is pre-filled
+    block_button.click()
+    expect(dialog).to_be_visible()
+    expect(page.locator("input[name='max-width']")).to_have_value("300px")
+
+    # Change it
+    page.fill("input[name='max-width']", "600px")
+    dialog.locator("button[type='submit']").click()
+
+    page.click("input[name='_save']")
+
+    model = StyleLoomProseEditorModel.objects.first()
+    assert model is not None
+    assert "max-width: 600px" in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_styleloom_clear_style(live_server, page):
+    """Test that clearing a StyleLoom property removes the style attribute."""
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/styleloomproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    editor.type("Some text")
+
+    # Apply max-width
+    block_button = page.locator(".prose-menubar__button:has-text('Block styles')")
+    block_button.click()
+    dialog = page.locator(".prose-editor-dialog")
+    page.fill("input[name='max-width']", "200px")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    # Reopen and clear the value
+    block_button.click()
+    expect(dialog).to_be_visible()
+    page.fill("input[name='max-width']", "")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    page.click("input[name='_save']")
+
+    model = StyleLoomProseEditorModel.objects.first()
+    assert model is not None
+    assert "style=" not in model.description
+    assert "Some text" in model.description
 
 
 """

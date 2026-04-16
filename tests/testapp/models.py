@@ -81,3 +81,33 @@ class ConfigurableProseEditorModel(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class StyleLoomProseEditorModel(models.Model):
+    description = ProseEditorField(
+        config={
+            "extensions": {
+                "TextStyle": True,
+                "StyleLoom": {
+                    "contexts": {
+                        "block": {
+                            "title": "Block styles",
+                            "groups": "marks",
+                            "types": ["paragraph"],
+                        },
+                        "styles": {
+                            "title": "Text styles",
+                            "groups": "marks",
+                        },
+                    },
+                    "properties": {
+                        "font-size": {"title": "Font size", "types": ["textStyle"]},
+                        "max-width": {"title": "Max width", "types": ["paragraph"]},
+                    },
+                },
+            }
+        }
+    )
+
+    def __str__(self):
+        return self.description

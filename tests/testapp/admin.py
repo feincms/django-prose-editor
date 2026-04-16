@@ -37,3 +37,8 @@ class TableProseEditorModelAdmin(admin.ModelAdmin):
 @admin.register(models.ConfigurableProseEditorModel)
 class ConfigurableProseEditorModelAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.StyleLoomProseEditorModel)
+class StyleLoomProseEditorModelAdmin(admin.ModelAdmin):
+    pass
