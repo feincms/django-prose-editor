@@ -183,6 +183,15 @@ export const Figure = Node.create({
             },
           }
 
+          // Show caption field only when inserting — updating via dialog would
+          // strip any rich-text formatting already present in the caption.
+          if (!info) {
+            properties.caption = {
+              type: "string",
+              title: gettext("Caption"),
+            }
+          }
+
           const title = info?.inFigure
             ? gettext("Edit Figure")
             : info
@@ -192,7 +201,7 @@ export const Figure = Node.create({
           updateAttrsDialog(properties, {
             title,
             submitText: info ? gettext("Update") : gettext("Insert"),
-          })(editor, { imageUrl, altText }).then((attrs) => {
+          })(editor, { imageUrl, altText, caption: "" }).then((attrs) => {
             if (!attrs) return
 
             const src = attrs.imageUrl.trim()
@@ -207,12 +216,20 @@ export const Figure = Node.create({
                 .updateAttributes("image", { src, alt })
                 .run()
             } else {
+              const caption = attrs.caption?.trim()
+              const figureContent = [{ type: "image", attrs: { src, alt } }]
+              if (caption) {
+                figureContent.push({
+                  type: "caption",
+                  content: [{ type: "text", text: caption }],
+                })
+              }
               editor
                 .chain()
                 .focus()
                 .insertContent({
                   type: "figure",
-                  content: [{ type: "image", attrs: { src, alt } }],
+                  content: figureContent,
                 })
                 .run()
             }
