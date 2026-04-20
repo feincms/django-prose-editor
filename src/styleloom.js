@@ -142,7 +142,7 @@ export const StyleLoom = Extension.create({
     )
 
     return {
-      [`openDialog:${extensionName}`]:
+      [`updateStyles:${extensionName}`]:
         (key) =>
         ({ editor }) => {
           const contextConfig = contexts[key]
@@ -268,7 +268,7 @@ export const StyleLoom = Extension.create({
           )
         },
         command(editor) {
-          editor.chain().focus()[`openDialog:${extensionName}`](key).run()
+          editor.chain().focus()[`updateStyles:${extensionName}`](key).run()
         },
       })
     }
