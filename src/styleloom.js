@@ -122,6 +122,7 @@ export const StyleLoom = Extension.create({
   addCommands() {
     const allProperties = Object.entries(this.options.properties)
     const { contexts } = this.options
+    const extensionName = this.name
 
     const claimedTypes = new Set(
       Object.values(contexts).flatMap((c) => c.types ?? []),
@@ -141,7 +142,7 @@ export const StyleLoom = Extension.create({
     )
 
     return {
-      openStyleLoomDialog:
+      [`openDialog:${extensionName}`]:
         (key) =>
         ({ editor }) => {
           const contextConfig = contexts[key]
@@ -233,6 +234,7 @@ export const StyleLoom = Extension.create({
   addMenuItems({ buttons, menu }) {
     const allProperties = Object.entries(this.options.properties)
     const { contexts } = this.options
+    const extensionName = this.name
 
     const claimedTypes = new Set(
       Object.values(contexts).flatMap((c) => c.types ?? []),
@@ -242,6 +244,7 @@ export const StyleLoom = Extension.create({
     ].filter((t) => !claimedTypes.has(t))
 
     for (const [key, contextConfig] of Object.entries(contexts)) {
+      const namespacedKey = `${extensionName}:${key}`
       const resolveContext = makeResolveContext(
         allProperties,
         contextConfig.types ?? unclaimedTypes,
@@ -250,7 +253,7 @@ export const StyleLoom = Extension.create({
       const button = contextConfig.button ?? { type: "text", args: [itemTitle] }
 
       menu.defineItem({
-        name: `styleLoom:${key}`,
+        name: namespacedKey,
         groups: contextConfig.groups ?? "marks",
         button: buttons[button.type](...button.args),
         hidden: (editor) => !resolveContext(editor),
@@ -265,7 +268,7 @@ export const StyleLoom = Extension.create({
           )
         },
         command(editor) {
-          editor.chain().focus().openStyleLoomDialog(key).run()
+          editor.chain().focus()[`openDialog:${extensionName}`](key).run()
         },
       })
     }
