@@ -191,9 +191,10 @@ export const Figure = Node.create({
             },
           }
 
-          // Show caption field only when inserting — updating via dialog would
-          // strip any rich-text formatting already present in the caption.
-          if (!info) {
+          // Show caption field when inserting, or when no caption exists yet.
+          // Skip it when a caption already exists — editing via this dialog
+          // would strip any rich-text formatting present in the caption node.
+          if (!info?.captionNode) {
             properties.caption = {
               type: "string",
               title: gettext("Caption"),
@@ -218,11 +219,24 @@ export const Figure = Node.create({
             if (!src) return
 
             if (info) {
-              editor
+              let chain = editor
                 .chain()
                 .setNodeSelection(info.imagePos)
                 .updateAttributes("image", { src, alt })
-                .run()
+
+              const caption = attrs.caption?.trim()
+              if (caption && !info.captionNode) {
+                chain = chain.command(({ tr, state }) => {
+                  const captionType = state.schema.nodes.caption
+                  tr.insert(
+                    info.imagePos + info.imageNode.nodeSize,
+                    captionType.create({}, state.schema.text(caption)),
+                  )
+                  return true
+                })
+              }
+
+              chain.run()
             } else {
               const caption = attrs.caption?.trim()
               const figureContent = [{ type: "image", attrs: { src, alt } }]
