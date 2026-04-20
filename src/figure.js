@@ -176,7 +176,7 @@ export const Figure = Node.create({
             imageUrl: {
               type: "string",
               title: gettext("Image URL"),
-              required: true,
+              required: !info,
               picker: this.options.pickerUrl
                 ? {
                     label: gettext("Browse..."),
@@ -215,8 +215,14 @@ export const Figure = Node.create({
 
             const src = attrs.imageUrl.trim()
             const alt = attrs.altText.trim()
+            const caption = attrs.caption?.trim()
 
-            if (!src) return
+            if (!src) {
+              if (!info) return
+              const deletePos = info.inFigure ? info.figureStart : info.imagePos
+              editor.chain().setNodeSelection(deletePos).deleteSelection().run()
+              return
+            }
 
             if (info) {
               let chain = editor
@@ -224,8 +230,7 @@ export const Figure = Node.create({
                 .setNodeSelection(info.imagePos)
                 .updateAttributes("image", { src, alt })
 
-              const caption = attrs.caption?.trim()
-              if (caption && !info.captionNode) {
+              if (caption) {
                 chain = chain.command(({ tr, state }) => {
                   const captionType = state.schema.nodes.caption
                   tr.insert(
@@ -238,7 +243,6 @@ export const Figure = Node.create({
 
               chain.run()
             } else {
-              const caption = attrs.caption?.trim()
               const figureContent = [{ type: "image", attrs: { src, alt } }]
               if (caption) {
                 figureContent.push({
