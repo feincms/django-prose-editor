@@ -34,6 +34,10 @@ jobs:
         playwright install --with-deps chromium
 
     - name: Run tox targets for ${{ matrix.python-version }}
-      run: |
-        ENV_PREFIX=$(tr -C -d "0-9" <<< "${{ matrix.python-version }}")
-        TOXENV=$(tox --listenvs | grep "^py$ENV_PREFIX" | tr '\n' ',') python -m tox
+      uses: nick-fields/retry@v3
+      with:
+        timeout_minutes: 10
+        max_attempts: 2
+        command: |
+          ENV_PREFIX=$(tr -C -d "0-9" <<< "${{ matrix.python-version }}")
+          TOXENV=$(tox --listenvs | grep "^py$ENV_PREFIX" | tr '\n' ',') python -m tox
