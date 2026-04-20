@@ -184,7 +184,7 @@ export const ClassLoom = Extension.create({
   addCommands() {
     return {
       // Update classes on the relevant node/mark type, merging with existing classes
-      updateClasses:
+      editClasses:
         (type, classes) =>
         ({ commands, state }) => {
           if (state.schema.nodes[type]) {
@@ -250,9 +250,9 @@ export const ClassLoom = Extension.create({
         },
         command(editor) {
           if (group.type === "text") {
-            editor.chain().focus()[`updateClasses:${ident}`](clearAll).run()
+            editor.chain().focus()[`editClasses:${ident}`](clearAll).run()
           } else {
-            editor.chain().focus().updateClasses(group.type, clearAll).run()
+            editor.chain().focus().editClasses(group.type, clearAll).run()
           }
         },
       })
@@ -283,7 +283,7 @@ export const ClassLoom = Extension.create({
               editor
                 .chain()
                 .focus()
-                [`updateClasses:${ident}`]({
+                [`editClasses:${ident}`]({
                   ...classes,
                   [c.className]: true,
                 })
@@ -294,7 +294,7 @@ export const ClassLoom = Extension.create({
             editor
               .chain()
               .focus()
-              .updateClasses(
+              .editClasses(
                 group.type,
                 isClassActive(editor, group.type, c.className)
                   ? { [c.className]: false }
@@ -346,7 +346,7 @@ const ClassLoomText = Mark.create({
     const definedClasses = this.options.classes
 
     return {
-      [`updateClasses:${this.options.ident}`]:
+      [`editClasses:${this.options.ident}`]:
         (classes) =>
         ({ commands, state }) => {
           const type = state.schema.marks[extensionName]
