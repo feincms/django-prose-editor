@@ -1,2 +1,3 @@
 [tools]
-node = "lts"
+node = "25"
+npm = "11"
