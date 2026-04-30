@@ -9,10 +9,10 @@ For the best development experience:
 
        pip install -e /path/to/django-prose-editor
 
-2. Run ``npm i && npm run dev`` in the django-prose-editor directory to watch for
+2. Run ``yarn && yarn dev`` in the django-prose-editor directory to watch for
    asset changes.
 
-When using ``npm run dev``:
+When using ``yarn dev``:
 
 - The watcher will rebuild files automatically when you make changes.
 - Development mode provides faster builds for iteration.
@@ -57,13 +57,12 @@ changes.
 Upgrading dependencies
 ----------------------
 
-The easiest way to upgrade dependencies is:
+The easiest way to upgrade dependencies and rebuild the editor is:
 
 .. code-block:: shell
 
-    mise x -- npx npm-check-updates -u
-    mise x -- npm install
-    mise x -- npm run prod
+    yarn upgrade --latest
+    yarn prod
 
 Releasing
 ---------
