@@ -1,0 +1,35 @@
+name: JS Build
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build and verify
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Set up Node.js and Yarn via mise
+      uses: jdx/mise-action@v2
+
+    - name: Cache node_modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: node-modules-${{ hashFiles('yarn.lock') }}
+        restore-keys: node-modules-
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Build
+      run: yarn prod
+
+    - name: Verify no uncommitted changes
+      run: |
+        git diff --exit-code django_prose_editor/static/
