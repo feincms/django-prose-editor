@@ -103,18 +103,26 @@ const createMenuObject = (cssClass, _definedItems, buttons) => {
         buttonWrapper,
         picker,
       ])
+      const optionButtons = new Map()
 
       // Add all items to the picker content initially
       for (const { option, name } of items) {
-        option.dataset.name = name
-        pickerContent.append(option)
+        const optionButton = crel(
+          "button",
+          { type: "button", className: `${cssClass}__option` },
+          [option],
+        )
+
+        optionButton.dataset.name = name
+        optionButtons.set(name, optionButton)
+        pickerContent.append(optionButton)
       }
 
       // Function to update item visibility based on hidden state
       const updateItemVisibility = () => {
         items.forEach((item) => {
           const isHidden = item.hidden(editor)
-          item.option.classList.toggle("hidden", isHidden)
+          optionButtons.get(item.name)?.classList.toggle("hidden", isHidden)
         })
       }
 
@@ -136,8 +144,8 @@ const createMenuObject = (cssClass, _definedItems, buttons) => {
       })
 
       picker.addEventListener("click", (e) => {
-        for (const { option, command, enabled, hidden } of items) {
-          if (option.contains(e.target)) {
+        for (const { command, enabled, hidden, name } of items) {
+          if (optionButtons.get(name)?.contains(e.target)) {
             // Skip hidden items
             if (hidden(editor)) {
               return
@@ -382,7 +390,8 @@ export const Menu = Extension.create({
 
 const buttonsCreator = (cssClass) => {
   const text = (textContent, title = "", style = "") =>
-    crel("span", {
+    crel("button", {
+      type: "button",
       className: `${cssClass}__button`,
       style,
       textContent,
@@ -390,21 +399,24 @@ const buttonsCreator = (cssClass) => {
     })
 
   const material = (textContent, title = "") =>
-    crel("span", {
+    crel("button", {
+      type: "button",
       className: `${cssClass}__button material-icons`,
       textContent,
       title,
     })
 
   const svg = (innerHTML, title = "") =>
-    crel("span", {
+    crel("button", {
+      type: "button",
       className: `${cssClass}__button`,
       innerHTML,
       title,
     })
 
   const heading = (level) =>
-    crel("span", {
+    crel("button", {
+      type: "button",
       className: `${cssClass}__button ${cssClass}__button--heading material-icons`,
       title: `heading ${level}`,
       textContent: "title",
