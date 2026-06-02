@@ -389,30 +389,48 @@ export const Menu = Extension.create({
 })
 
 const buttonsCreator = (cssClass) => {
-  const text = (textContent, title = "", style = "") =>
-    crel("button", {
+  const label = (...values) =>
+    values
+      .map((value) =>
+        String(value ?? "")
+          .replace(/<[^>]+>/g, "")
+          .trim(),
+      )
+      .find(Boolean)
+
+  const text = (textContent, title = "", style = "") => {
+    const ariaLabel = label(title, textContent)
+    return crel("button", {
       type: "button",
       className: `${cssClass}__button`,
       style,
       textContent,
       title,
+      ...(ariaLabel ? { "aria-label": ariaLabel } : {}),
     })
+  }
 
-  const material = (textContent, title = "") =>
-    crel("button", {
+  const material = (textContent, title = "") => {
+    const ariaLabel = label(title, textContent)
+    return crel("button", {
       type: "button",
       className: `${cssClass}__button material-icons`,
       textContent,
       title,
+      ...(ariaLabel ? { "aria-label": ariaLabel } : {}),
     })
+  }
 
-  const svg = (innerHTML, title = "") =>
-    crel("button", {
+  const svg = (innerHTML, title = "") => {
+    const ariaLabel = label(title, innerHTML)
+    return crel("button", {
       type: "button",
       className: `${cssClass}__button`,
       innerHTML,
       title,
+      ...(ariaLabel ? { "aria-label": ariaLabel } : {}),
     })
+  }
 
   const heading = (level) =>
     crel("button", {
@@ -420,6 +438,7 @@ const buttonsCreator = (cssClass) => {
       className: `${cssClass}__button ${cssClass}__button--heading material-icons`,
       title: `heading ${level}`,
       textContent: "title",
+      "aria-label": `heading ${level}`,
       "data-level": level,
     })
 
