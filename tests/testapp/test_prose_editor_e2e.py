@@ -1,30 +1,17 @@
 import json
-import os
 import re
 import sys
 
 import pytest
-from django.contrib.auth.models import User
 from playwright.sync_api import expect
 
+from testapp.e2e_utils import login as _login
 from testapp.models import (
     ConfigurableProseEditorModel,
     ProseEditorModel,
     StyleLoomProseEditorModel,
     TableProseEditorModel,
 )
-
-
-# Set Django async unsafe to allow database operations in tests
-os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
-
-
-def _login(page, live_server):
-    User.objects.create_superuser("admin", "admin@example.com", "password")
-    page.goto(f"{live_server.url}/admin/login/")
-    page.fill("#id_username", "admin")
-    page.fill("#id_password", "password")
-    page.click("input[type=submit]")
 
 
 @pytest.mark.django_db

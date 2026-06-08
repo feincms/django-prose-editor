@@ -1,4 +1,5 @@
-import { Table as TiptapTable } from "@tiptap/extension-table"
+import { getRenderedAttributes, mergeAttributes } from "@tiptap/core"
+import { TableView, Table as TiptapTable } from "@tiptap/extension-table"
 
 import { gettext, updateAttrsDialog } from "./utils.js"
 
@@ -35,6 +36,67 @@ const tableDialog = updateAttrsDialog(
 export const Table = TiptapTable.extend({
   addMenuItems({ editor, buttons, menu }) {
     defineTableMenuItems({ editor, buttons, menu })
+  },
+
+  addNodeView() {
+    // TableView.update() re-renders columns but doesn't re-apply HTMLAttributes
+    // when node attributes change (e.g. a class set via addGlobalAttributes).
+    // We patch update() with a getHTMLAttributes callback until this is fixed upstream:
+    // https://github.com/ueberdosis/tiptap/pull/7925
+    const { cellMinWidth, HTMLAttributes: extensionHTMLAttributes } =
+      this.options
+    const editor = this.editor
+
+    return ({ node, view: editorView, HTMLAttributes }) => {
+      const mergedAttributes = mergeAttributes(
+        extensionHTMLAttributes,
+        HTMLAttributes,
+      )
+      const tableView = new TableView(
+        node,
+        cellMinWidth,
+        editorView,
+        mergedAttributes,
+      )
+
+      const baseUpdate = tableView.update.bind(tableView)
+      tableView.update = (updatedNode) => {
+        if (!baseUpdate(updatedNode)) return false
+
+        const freshHTMLAttributes = mergeAttributes(
+          extensionHTMLAttributes,
+          getRenderedAttributes(
+            updatedNode,
+            editor.extensionManager.attributes.filter(
+              (a) => a.type === updatedNode.type.name,
+            ),
+          ),
+        )
+
+        // Sync non-style attributes; style width/minWidth is managed by updateColumns.
+        for (const [key, value] of Object.entries(freshHTMLAttributes)) {
+          if (key === "style") continue
+          if (value != null) {
+            tableView.table.setAttribute(key, String(value))
+          } else {
+            tableView.table.removeAttribute(key)
+          }
+        }
+        for (const { name } of Array.from(tableView.table.attributes)) {
+          if (name === "style") continue
+          if (
+            !(name in freshHTMLAttributes) ||
+            freshHTMLAttributes[name] == null
+          ) {
+            tableView.table.removeAttribute(name)
+          }
+        }
+
+        return true
+      }
+
+      return tableView
+    }
   },
 
   addCommands() {

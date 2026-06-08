@@ -83,6 +83,57 @@ class ConfigurableProseEditorModel(models.Model):
         return self.description
 
 
+class ClassLoomProseEditorModel(models.Model):
+    description = ProseEditorField(
+        config={
+            "extensions": {
+                "Bold": True,
+                "Italic": True,
+                "Table": True,
+                "TableRow": True,
+                "TableHeader": True,
+                "TableCell": True,
+                "ClassLoom": {
+                    "groups": {
+                        "paragraphColors": {
+                            "title": "Color",
+                            "type": "paragraph",
+                            "classes": [
+                                {"className": "color-red", "title": "Red"},
+                                {"className": "color-blue", "title": "Blue"},
+                                {"className": "color-green", "title": "Green"},
+                            ],
+                        },
+                        "tableLayout": {
+                            "title": "Table layout",
+                            "type": "table",
+                            "combinable": True,
+                            "classes": [
+                                {"className": "table--auto", "title": "Auto layout"},
+                                {
+                                    "className": "table--no-borders",
+                                    "title": "No borders",
+                                },
+                            ],
+                        },
+                    },
+                },
+                "Menu": {
+                    "groups": [
+                        {"group": "classLoom:paragraphColors"},
+                        {"group": "table"},
+                        {"group": "classLoom:tableLayout"},
+                        {"group": "history"},
+                    ],
+                },
+            }
+        }
+    )
+
+    def __str__(self):
+        return self.description
+
+
 class StyleLoomProseEditorModel(models.Model):
     description = ProseEditorField(
         config={

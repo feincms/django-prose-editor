@@ -81,8 +81,42 @@ const isNodeType = (editor, typeName) => {
 2. **If you modified JavaScript**: Run `yarn prod` to rebuild
 3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
 4. Run tests: `tox -e py313-dj52`
-5. Verify all tests pass (35 tests expected as of 2025-11-04)
+5. Verify all tests pass (47 tests expected as of 2026-06-08)
 6. Update documentation if needed
+
+## Test Structure
+
+### E2E Test Files
+
+- `tests/testapp/test_prose_editor_e2e.py` — general editor, formatting, tables, configurable, HTML, NodeClass, StyleLoom tests
+- `tests/testapp/test_classloom_e2e.py` — ClassLoom extension tests (paragraph colors + table layout)
+- `tests/testapp/e2e_utils.py` — shared `login(page, live_server)` helper imported by both e2e files
+
+### Test Models in `tests/testapp/models.py`
+
+- `ProseEditorModel` — bare field
+- `TableProseEditorModel` — includes Table, OrderedList etc.
+- `ConfigurableProseEditorModel` — BlueBold, HTML, NodeClass, TextClass, etc.
+- `StyleLoomProseEditorModel` — StyleLoom with font-size and max-width
+- `ClassLoomProseEditorModel` — ClassLoom with two groups:
+  - `paragraphColors` (non-combinable, type `paragraph`, classes: `color-red`, `color-blue`, `color-green`)
+  - `tableLayout` (combinable, type `table`, classes: `table--auto`, `table--no-borders`)
+
+### TableView Node Attribute Fix
+
+Tiptap's `TableView.update()` only re-renders column widths but does not sync node attribute changes (e.g. `class` set via ClassLoom) back to the `<table>` DOM element. Our `Table` extension in `src/table.js` overrides `addNodeView()` to patch `update()` so it also applies `node.attrs.class` to `tableView.table` after every update. This is worth proposing upstream to `@tiptap/extension-table`.
+
+### ClassLoom E2E Pattern
+
+ClassLoom dropdowns expose picker items with `data-name` attributes (e.g. `classLoom:paragraphColors:color-red`). Tests use these to find and click options without depending on visible text:
+
+```python
+def _apply_classloom_class(page, group_ident, class_name):
+    page.locator(".prose-menubar__dropdown").filter(
+        has=page.locator(f"[data-name='{group_ident}:default']")
+    ).locator(".prose-menubar__selected").click()
+    page.locator(f"[data-name='{group_ident}:{class_name}']").click()
+```
 
 ## Common Tasks
 
