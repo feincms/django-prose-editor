@@ -39,6 +39,7 @@ export const Table = TiptapTable.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
+    // We don't want the colgroup in our table therefore we override renderHTML
     const table = [
       "table",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
