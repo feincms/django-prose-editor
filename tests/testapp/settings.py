@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.messages",
     "django_prose_editor",
+    "cabinet",
     "testapp",
 ]
 

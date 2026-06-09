@@ -38,6 +38,9 @@ dependencies = [
   "django>=4.2",
   "django-js-asset>=3.1.2",
 ]
+optional-dependencies.cabinet = [
+  "django-cabinet>=0.19",
+]
 optional-dependencies.sanitize = [
   "nh3>=0.3",
 ]

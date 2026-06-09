@@ -134,6 +134,21 @@ class ClassLoomProseEditorModel(models.Model):
         return self.description
 
 
+class FigureProseEditorModel(models.Model):
+    description = ProseEditorField(
+        extensions={
+            "Figure": {
+                "pickerUrl": "/admin/cabinet/file/",
+            },
+            "Caption": True,
+            "Image": True,
+        }
+    )
+
+    def __str__(self):
+        return self.description
+
+
 class StyleLoomProseEditorModel(models.Model):
     description = ProseEditorField(
         config={

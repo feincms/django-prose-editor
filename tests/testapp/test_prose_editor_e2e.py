@@ -3,11 +3,14 @@ import re
 import sys
 
 import pytest
+from cabinet.models import File as CabinetFile, Folder
+from django.core.files.base import ContentFile
 from playwright.sync_api import expect
 
 from testapp.e2e_utils import login as _login
 from testapp.models import (
     ConfigurableProseEditorModel,
+    FigureProseEditorModel,
     ProseEditorModel,
     StyleLoomProseEditorModel,
     TableProseEditorModel,
@@ -866,6 +869,57 @@ def test_styleloom_clear_style(live_server, page):
     assert model is not None
     assert "style=" not in model.description
     assert "Some text" in model.description
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_figure_picker_url(page, live_server):
+    """pickerUrl shows a Browse button; selecting a file in the cabinet popup populates the URL."""
+    folder = Folder.objects.create(name="Test")
+    cabinet_file = CabinetFile(folder=folder)
+    cabinet_file.download_file.save(
+        "test-image.png", ContentFile(b"fake png"), save=True
+    )
+
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/figureproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+
+    figure_button = page.locator(".prose-menubar__button[title='figure']")
+    expect(figure_button).to_be_visible()
+    figure_button.click()
+
+    dialog = page.locator(".prose-editor-dialog")
+    expect(dialog).to_be_visible()
+
+    browse_button = dialog.locator("button:has-text('Browse...')")
+    expect(browse_button).to_be_visible()
+
+    with page.expect_popup() as popup_info:
+        browse_button.click()
+    popup = popup_info.value
+    popup.wait_for_load_state()
+
+    assert "/admin/cabinet/file/" in popup.url
+    assert "CKEditorFuncNum=" in popup.url
+
+    popup.locator("a[href*='folder__id__exact']").filter(has_text="Test").click()
+    popup.locator("[data-ckeditor-function]").first.click()
+
+    image_url_input = dialog.locator("input[name='imageUrl']")
+    expect(image_url_input).not_to_have_value("")
+
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    page.click("input[name='_save']")
+
+    model = FigureProseEditorModel.objects.first()
+    assert model is not None
+    assert "<img" in model.description
+    assert "test-image" in model.description
 
 
 """
