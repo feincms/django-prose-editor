@@ -154,6 +154,37 @@ def test_prose_editor_table_creation(page, live_server):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_prose_editor_table_html_output(page, live_server):
+    """Table renderHTML emits clean HTML: no colgroup, no width/min-width styles."""
+    _login(page, live_server)
+
+    page.goto(f"{live_server.url}/admin/testapp/tableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+
+    table_button = page.locator(".prose-menubar__button[title='Insert table']")
+    table_button.click()
+
+    dialog = page.locator(".prose-editor-dialog")
+    dialog.locator("button[type='submit']").click()
+
+    editor.locator("table").wait_for(state="visible", timeout=5000)
+
+    page.click("input[name='_save']")
+
+    model = TableProseEditorModel.objects.first()
+    assert model is not None
+    html = model.description
+
+    assert "colgroup" not in html
+    assert "min-width" not in html
+    # width as an attribute or inline style value should not appear on table cells
+    assert re.search(r"<t[hd][^>]*\bwidth\b", html) is None
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_prose_editor_ordered_list_attributes(page, live_server):
     """Test ordered list creation and attribute modification."""
     _login(page, live_server)
