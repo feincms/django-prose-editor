@@ -38,6 +38,17 @@ export const Table = TiptapTable.extend({
     defineTableMenuItems({ editor, buttons, menu })
   },
 
+  renderHTML({ HTMLAttributes }) {
+    const table = [
+      "table",
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+      ["tbody", 0],
+    ]
+    return this.options.renderWrapper
+      ? ["div", { class: "tableWrapper" }, table]
+      : table
+  },
+
   addNodeView() {
     // TableView.update() re-renders columns but doesn't re-apply HTMLAttributes
     // when node attributes change (e.g. a class set via addGlobalAttributes).

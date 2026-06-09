@@ -75,6 +75,10 @@ const isNodeType = (editor, typeName) => {
 - For marks: Hide when selection is empty or mark type not active
 - For nodes: Hide when node type is not in ancestor chain
 
+## Commit Style
+
+Commit without the `Co-Authored-By` attribution line (no `--co-author` / no `Co-Authored-By: Claude` trailer).
+
 ## Testing Workflow
 
 1. Make code changes
