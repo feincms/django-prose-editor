@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.26 (2026-06-11)
+~~~~~~~~~~~~~~~~~
+
 - **Requires django-js-asset 4.0 or newer.** The editor's import map is now
   carried by the widget and field media and merged through ``js_asset.Media``
   instead of the global ``importmap`` object that django-js-asset 4.0 has
