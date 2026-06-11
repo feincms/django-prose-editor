@@ -34,43 +34,22 @@ Note that the form media isn't django-prose-editor specific, that's a Django
 feature.
 
 
-Importmap requirement
----------------------
+Import maps
+-----------
 
-**Important**: The ``{{ form.media }}`` tag includes the JavaScript files, but
-you also need to set up the importmap. Without this, you'll get errors about
-bare module specifiers.
+The editor uses ES modules with bare specifiers (e.g. ``django-prose-editor/
+editor``), which the browser resolves through an `import map
+<https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap>`__.
+You do **not** have to set anything up for this: the import map is part of the
+widget/field media, so rendering ``{{ form.media }}`` emits it (merged into a
+single ``<script type="importmap">``, before the editor modules) automatically.
 
-Add the context processor to your settings:
+.. note::
 
-.. code-block:: python
-
-    TEMPLATES = [
-        {
-            # ...
-            'OPTIONS': {
-                'context_processors': [
-                    # ... your other context processors
-                    'js_asset.context_processors.importmap',
-                ],
-            },
-        },
-    ]
-
-And add ``{{ importmap }}`` to your base template, **above all other scripts**:
-
-.. code-block:: html+django
-
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>My Site</title>
-        {{ importmap }}  {# Required for django-prose-editor #}
-    </head>
-    <body>
-        {% block content %}{% endblock %}
-    </body>
-    </html>
+   Earlier versions required wiring up the ``js_asset.context_processors.importmap``
+   context processor and adding ``{{ importmap }}`` to your base template. That
+   global import map has been removed -- it is no longer needed, and you can
+   drop both the context processor and the ``{{ importmap }}`` tag.
 
 
 CSS custom properties

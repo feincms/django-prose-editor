@@ -3,7 +3,7 @@ import json
 from django import forms
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from js_asset import JS, importmap, static_lazy
+from js_asset import JS, ImportMap, Media, static_lazy
 
 from django_prose_editor.config import (
     expand_extensions,
@@ -11,7 +11,7 @@ from django_prose_editor.config import (
 )
 
 
-importmap.update(
+importmap = ImportMap(
     {
         "imports": {
             "django-prose-editor/editor": static_lazy("django_prose_editor/editor.js"),
@@ -24,7 +24,7 @@ importmap.update(
 
 #: These three module-level variables are somewhat part of the API.
 prose_editor_js = JS("django_prose_editor/editor.js", {"type": "module"})
-prose_editor_base_media = forms.Media(
+prose_editor_base_media = Media(
     css={
         "all": [
             "django_prose_editor/material-icons.css",
@@ -32,6 +32,12 @@ prose_editor_base_media = forms.Media(
         ]
     },
     js=[
+        # ``js_asset.Media`` merges every ``ImportMap`` it sees into a single
+        # ``<script type="importmap">`` and renders it before any module, no
+        # matter how media objects are combined -- so embedding it here makes
+        # the editor's bare module specifiers resolve everywhere (admin and
+        # frontend alike) without a global importmap or a context processor.
+        importmap,
         # We don't really need this since editor.js will be loaded
         # in default.js (or other presets' modules) anyway, but keeping
         # the tag around helps the browser discover and load this
@@ -39,19 +45,13 @@ prose_editor_base_media = forms.Media(
         prose_editor_js,
     ],
 )
-prose_editor_admin_media = (
-    forms.Media(
-        js=[importmap, prose_editor_js]
-    )  # Sneak the importmap into the admin <head>
-    + prose_editor_base_media
-    + forms.Media(
-        css={
-            "all": [
-                "django_prose_editor/editor.css",  # For the ordering
-                "django_prose_editor/overrides.css",
-            ]
-        }
-    )
+prose_editor_admin_media = prose_editor_base_media + Media(
+    css={
+        "all": [
+            "django_prose_editor/editor.css",  # For the ordering
+            "django_prose_editor/overrides.css",
+        ]
+    }
 )
 
 
@@ -70,10 +70,11 @@ def prose_editor_presets():
 
 def prose_editor_media(*, base=prose_editor_base_media, preset="default"):
     """
-    Utility for returning a ``forms.Media`` instance containing everything you
-    need to initialize a prose editor in the frontend (hopefully!)
+    Utility for returning a ``js_asset.Media`` instance containing everything
+    you need to initialize a prose editor in the frontend (hopefully!) --
+    including the merged import map.
     """
-    return base + forms.Media(js=[prose_editor_js, *prose_editor_presets()[preset]])
+    return base + Media(js=[prose_editor_js, *prose_editor_presets()[preset]])
 
 
 class ProseEditorWidget(forms.Textarea):

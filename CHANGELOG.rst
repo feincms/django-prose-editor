@@ -4,6 +4,14 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- The editor's import map is now carried by the widget and field media and
+  merged through ``js_asset.Media`` instead of the global ``importmap`` object
+  that ``django-js-asset`` has removed. Rendering ``{{ form.media }}`` now emits
+  the ``<script type="importmap">`` automatically -- in the admin **and** in
+  your own frontend templates -- so you can drop the
+  ``js_asset.context_processors.importmap`` context processor and the
+  ``{{ importmap }}`` tag from your templates. Requires the upcoming
+  ``django-js-asset`` release that ships ``js_asset.Media``.
 - Rewrote the ``Figure`` extension to handle both figure-wrapped images and
   standalone bare images. The caption field has been removed from the edit
   dialog (it stripped all formatting from the caption text). Instead, a

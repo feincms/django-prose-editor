@@ -36,7 +36,7 @@ dynamic = [
 ]
 dependencies = [
   "django>=4.2",
-  "django-js-asset>=3.1.2",
+  "django-js-asset>=3.1.2", # FIXME bump once the js_asset.Media release is cut
 ]
 optional-dependencies.cabinet = [
   "django-cabinet>=0.19",

@@ -60,6 +60,7 @@ class Test(test.TestCase):
             == """\
 <link href="/static/django_prose_editor/material-icons.css" media="all" rel="stylesheet">
 <link href="/static/django_prose_editor/editor.css" media="all" rel="stylesheet">
+<script type="importmap">{"imports": {"django-prose-editor/editor": "/static/django_prose_editor/editor.js", "django-prose-editor/configurable": "/static/django_prose_editor/configurable.js"}}</script>
 <script src="/static/django_prose_editor/editor.js" type="module"></script>
 <script src="/static/django_prose_editor/default.js" type="module"></script>"""
         )
@@ -69,6 +70,7 @@ class Test(test.TestCase):
             == """\
 <link href="/static/django_prose_editor/material-icons.css" media="all" rel="stylesheet">
 <link href="/static/django_prose_editor/editor.css" media="all" rel="stylesheet">
+<script type="importmap">{"imports": {"django-prose-editor/editor": "/static/django_prose_editor/editor.js", "django-prose-editor/configurable": "/static/django_prose_editor/configurable.js"}}</script>
 <script src="/static/django_prose_editor/editor.js" type="module"></script>
 <script src="/static/django_prose_editor/configurable.js" type="module"></script>"""
         )
