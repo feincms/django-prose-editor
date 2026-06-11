@@ -1,3 +1,6 @@
+from unittest import skipUnless
+
+import django
 from django import test
 from django.contrib.auth.models import User
 from django.test import Client
@@ -85,3 +88,40 @@ class Test(test.TestCase):
 <script src="/static/django_prose_editor/editor.js" type="module"></script>
 <script src="/static/django_prose_editor/default.js" type="module"></script>"""
         )
+
+
+@skipUnless(
+    django.VERSION >= (6, 0),
+    "CSP nonce support is only verified on newer Django versions",
+)
+class CSPNonceTest(test.SimpleTestCase):
+    """
+    The CSP nonce plumbing lives in ``js_asset.Media`` (which
+    ``prose_editor_media()`` returns); these tests make sure a nonce reaches
+    every tag we render -- the import map, the module scripts and the
+    stylesheets.
+    """
+
+    def test_with_nonce_applies_to_all_tags(self):
+        html = prose_editor_media().with_nonce("r4nd0m").render()
+        assert '<script type="importmap" nonce="r4nd0m">' in html
+        assert (
+            '<script src="/static/django_prose_editor/editor.js"'
+            ' nonce="r4nd0m" type="module"></script>' in html
+        )
+        assert (
+            '<link href="/static/django_prose_editor/material-icons.css"'
+            ' media="all" nonce="r4nd0m" rel="stylesheet">' in html
+        )
+
+    def test_render_nonce_keyword(self):
+        html = prose_editor_media().render(nonce="abc")
+        assert 'nonce="abc"' in html
+
+    def test_render_attrs_nonce(self):
+        # This is exactly what Django 6.2's ``{% csp_nonce_attr %}`` tag calls.
+        html = prose_editor_media().render(attrs={"nonce": "xyz"})
+        assert 'nonce="xyz"' in html
+
+    def test_without_nonce_no_attribute(self):
+        assert "nonce=" not in prose_editor_media().render()
