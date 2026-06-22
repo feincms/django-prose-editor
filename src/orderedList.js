@@ -108,11 +108,14 @@ export const OrderedList = TiptapOrderedList.configure({
 
     return {
       ...this.parent?.(),
+      // TODO we could try removing this; we still would need the data-type to
+      // be rendered, but the parsing could be reused now that Tiptap 3.27 has
+      // added support for the type attribute as well.
       type: {
         default: null,
         parseHTML: (element) => {
           const typeAttribute = element.getAttribute("type"),
-            dataType = element.dataset.type,
+            dataType = element.dataset.type.replace("latin", "alpha"),
             valid_types = listTypes.map(({ type }) => type)
 
           if (dataType && valid_types.includes(dataType)) {
