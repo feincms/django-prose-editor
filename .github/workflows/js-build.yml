@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Set up Node.js and Yarn via mise
       uses: jdx/mise-action@v4
 
     - name: Cache node_modules
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: node_modules
         key: node-modules-${{ hashFiles('yarn.lock') }}
