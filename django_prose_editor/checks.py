@@ -56,21 +56,19 @@ def check_extensions_parameter(app_configs, **kwargs):
     # Check models for fields using deprecated config
     for model in models_to_check:
         for field in model._meta.fields:
-            if isinstance(field, ProseEditorField):
-                # Check if this field is using legacy config (no 'extensions' key)
-                if (
-                    not isinstance(field.config, dict)
-                    or "extensions" not in field.config
-                ):
-                    warnings.append(
-                        Warning(
-                            "This ProseEditorField is using the legacy configuration format which is "
-                            "deprecated and will be removed in a future version. Add the 'extensions' "
-                            "configuration explicitly to use the new configuration format.",
-                            obj=f"{model._meta.label}.{field.name}",
-                            id="django_prose_editor.W001",
-                        )
+            # Check if this field is using legacy config (no 'extensions' key)
+            if isinstance(field, ProseEditorField) and (
+                not isinstance(field.config, dict) or "extensions" not in field.config
+            ):
+                warnings.append(
+                    Warning(
+                        "This ProseEditorField is using the legacy configuration format which is "
+                        "deprecated and will be removed in a future version. Add the 'extensions' "
+                        "configuration explicitly to use the new configuration format.",
+                        obj=f"{model._meta.label}.{field.name}",
+                        id="django_prose_editor.W001",
                     )
+                )
 
     return warnings
 
@@ -203,37 +201,39 @@ def check_sanitization_enabled(app_configs, **kwargs):
     # Check all models for ProseEditorField without sanitization
     for model in models_to_check:
         for field in model._meta.fields:
-            if isinstance(field, ProseEditorField):
-                # Check if sanitization is disabled or set to the identity function
-                if field.sanitize == _actually_empty:
-                    # Different messages based on whether using extensions or legacy config
-                    if isinstance(field.config, dict) and "extensions" in field.config:
-                        message = (
-                            "This ProseEditorField is using extensions without sanitization. "
-                            "For security, it's recommended to enable sanitization with "
-                            "sanitize=True when using extensions."
-                        )
-                        hint = (
-                            "Add sanitize=True to this field definition for proper HTML sanitization "
-                            "that matches your configured extensions."
-                        )
-                    else:
-                        message = (
-                            "This ProseEditorField doesn't have sanitization enabled. "
-                            "For security, it's recommended to enable sanitization."
-                        )
-                        hint = (
-                            "Consider using the newer extensions mechanism with sanitize=True "
-                            "for proper HTML sanitization that matches your editor capabilities."
-                        )
-
-                    warnings.append(
-                        Warning(
-                            message,
-                            hint=hint,
-                            obj=f"{model._meta.label}.{field.name}",
-                            id="django_prose_editor.W004",
-                        )
+            # Check if sanitization is disabled or set to the identity function
+            if (
+                isinstance(field, ProseEditorField)
+                and field.sanitize == _actually_empty
+            ):
+                # Different messages based on whether using extensions or legacy config
+                if isinstance(field.config, dict) and "extensions" in field.config:
+                    message = (
+                        "This ProseEditorField is using extensions without sanitization. "
+                        "For security, it's recommended to enable sanitization with "
+                        "sanitize=True when using extensions."
                     )
+                    hint = (
+                        "Add sanitize=True to this field definition for proper HTML sanitization "
+                        "that matches your configured extensions."
+                    )
+                else:
+                    message = (
+                        "This ProseEditorField doesn't have sanitization enabled. "
+                        "For security, it's recommended to enable sanitization."
+                    )
+                    hint = (
+                        "Consider using the newer extensions mechanism with sanitize=True "
+                        "for proper HTML sanitization that matches your editor capabilities."
+                    )
+
+                warnings.append(
+                    Warning(
+                        message,
+                        hint=hint,
+                        obj=f"{model._meta.label}.{field.name}",
+                        id="django_prose_editor.W004",
+                    )
+                )
 
     return warnings

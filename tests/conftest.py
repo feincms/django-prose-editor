@@ -42,5 +42,5 @@ def pytest_runtest_makereport(item, call):
                 },
                 {"name": "HTML", "content": html_path, "mime_type": "text/html"},
             ]
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Failed to capture artifacts: {e}")

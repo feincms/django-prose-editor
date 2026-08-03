@@ -5,7 +5,7 @@ templates_path = ["_templates"]
 master_doc = "index"
 
 project = "django-prose-editor"
-copyright = f"{datetime.now().year}, the django-prose-editor developers"
+copyright = f"{datetime.now().year}, the django-prose-editor developers"  # noqa: DTZ005
 
 exclude_patterns = ["_build"]
 

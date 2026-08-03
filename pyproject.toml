@@ -114,6 +114,8 @@ lint.extend-ignore = [
   "B905",
   # No line length errors
   "E501",
+  # Django Meta classes use mutable class attributes by convention
+  "RUF012",
 ]
 lint.per-file-ignores."*/migrat*/*" = [
   # Allow using PascalCase model names in migrations
