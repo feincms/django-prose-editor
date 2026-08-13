@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.27 (2026-08-13)
+~~~~~~~~~~~~~~~~~
+
 - Updated Tiptap and ProseMirror dependencies.
 - Changed the bundled ``CodeBlock`` and ``Code`` extension to automatically add
   menu items.
