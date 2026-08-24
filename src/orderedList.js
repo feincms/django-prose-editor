@@ -115,7 +115,7 @@ export const OrderedList = TiptapOrderedList.configure({
         default: null,
         parseHTML: (element) => {
           const typeAttribute = element.getAttribute("type"),
-            dataType = element.dataset.type.replace("latin", "alpha"),
+            dataType = element.dataset.type?.replace("latin", "alpha"),
             valid_types = listTypes.map(({ type }) => type)
 
           if (dataType && valid_types.includes(dataType)) {

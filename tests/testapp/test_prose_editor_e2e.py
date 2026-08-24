@@ -271,6 +271,37 @@ def test_prose_editor_ordered_list_attributes(page, live_server):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_prose_editor_ordered_list_without_type_attribute(page, live_server):
+    """Loading a legacy <ol> without type/data-type attributes must not crash the editor."""
+    _login(page, live_server)
+
+    model = TableProseEditorModel.objects.create(
+        description="<ol><li>First item</li><li>Second item</li></ol>"
+    )
+
+    console_errors = []
+    page.on(
+        "console",
+        lambda msg: console_errors.append(msg.text) if msg.type == "error" else None,
+    )
+    page.on("pageerror", lambda exc: console_errors.append(str(exc)))
+
+    page.goto(
+        f"{live_server.url}/admin/testapp/tableproseeditormodel/{model.id}/change/"
+    )
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    expect(editor).to_be_visible()
+
+    ol_element = editor.locator("ol")
+    expect(ol_element).to_be_visible()
+    expect(ol_element).to_have_attribute("data-type", "decimal")
+
+    assert not console_errors, f"Unexpected console errors: {console_errors}"
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_configurable_prose_editor_admin(page, live_server):
     """Test that the configurable prose editor loads in the admin with the BlueBold extension."""
     _login(page, live_server)

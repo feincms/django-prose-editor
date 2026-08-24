@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Fixed a crash when parsing ``<ol>`` elements without a ``data-type``
+  attribute.
+
 0.27 (2026-08-13)
 ~~~~~~~~~~~~~~~~~
 
