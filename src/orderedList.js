@@ -105,28 +105,32 @@ export const OrderedList = TiptapOrderedList.configure({
 
   addAttributes() {
     const listTypes = this.options.listTypes
+    const valid_types = listTypes.map(({ type }) => type)
+    const parentAttributes = this.parent?.() ?? {}
+    // Tiptap's own parseHTML (as of 3.27) already sniffs the HTML `type`
+    // attribute as well as `list-style-type` CSS on the <ol> and on its
+    // first <li> (the pattern Google Docs pastes use). Reuse it as a
+    // fallback instead of reimplementing that detection ourselves.
+    const parentParseHTML = parentAttributes.type?.parseHTML
 
     return {
-      ...this.parent?.(),
-      // TODO we could try removing this; we still would need the data-type to
-      // be rendered, but the parsing could be reused now that Tiptap 3.27 has
-      // added support for the type attribute as well.
+      ...parentAttributes,
       type: {
         default: null,
         parseHTML: (element) => {
-          const typeAttribute = element.getAttribute("type"),
-            dataType = element.dataset.type?.replace("latin", "alpha"),
-            valid_types = listTypes.map(({ type }) => type)
-
+          // Our own data-type is authoritative when present: it is the only
+          // encoding that survives round-tripping through our renderHTML,
+          // and unlike the HTML `type` attribute it isn't ambiguous under
+          // case-insensitive attribute matching in some browsers (e.g.
+          // between `type="a"` and `type="A"`).
+          const dataType = element.dataset.type?.replace("latin", "alpha")
           if (dataType && valid_types.includes(dataType)) {
             return dataType
           }
 
-          if (
-            typeAttribute &&
-            valid_types.includes(htmlToCssMap[typeAttribute])
-          ) {
-            return htmlToCssMap[typeAttribute]
+          const htmlType = parentParseHTML?.(element)
+          if (htmlType && valid_types.includes(htmlToCssMap[htmlType])) {
+            return htmlToCssMap[htmlType]
           }
 
           return valid_types[0]
