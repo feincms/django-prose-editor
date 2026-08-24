@@ -79,6 +79,8 @@ const isNodeType = (editor, typeName) => {
 
 Commit without the `Co-Authored-By` attribution line (no `--co-author` / no `Co-Authored-By: Claude` trailer).
 
+Committing feature by feature (one focused commit per logical change, rather than one large batched commit) is appreciated.
+
 ## Testing Workflow
 
 1. Make code changes
