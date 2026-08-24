@@ -302,6 +302,48 @@ def test_prose_editor_ordered_list_without_type_attribute(page, live_server):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_prose_editor_ordered_list_html_type_attribute_only(page, live_server):
+    """An <ol type="..."> without data-type (e.g. hand-written HTML) is normalized."""
+    _login(page, live_server)
+
+    model = TableProseEditorModel.objects.create(
+        description='<ol type="A"><li>First item</li></ol>'
+    )
+
+    page.goto(
+        f"{live_server.url}/admin/testapp/tableproseeditormodel/{model.id}/change/"
+    )
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    ol_element = editor.locator("ol")
+    expect(ol_element).to_have_attribute("data-type", "upper-alpha")
+    expect(ol_element).to_have_attribute("type", "A")
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_prose_editor_ordered_list_css_list_style_type_paste(page, live_server):
+    """An <ol> with only CSS list-style-type (typical of Word/Google Docs pastes)
+    is normalized using Tiptap's own upstream parsing, without a data-type attribute."""
+    _login(page, live_server)
+
+    model = TableProseEditorModel.objects.create(
+        description=(
+            '<ol style="list-style-type: upper-roman"><li>First item</li></ol>'
+        )
+    )
+
+    page.goto(
+        f"{live_server.url}/admin/testapp/tableproseeditormodel/{model.id}/change/"
+    )
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    ol_element = editor.locator("ol")
+    expect(ol_element).to_have_attribute("data-type", "upper-roman")
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_configurable_prose_editor_admin(page, live_server):
     """Test that the configurable prose editor loads in the admin with the BlueBold extension."""
     _login(page, live_server)
