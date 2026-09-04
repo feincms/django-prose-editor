@@ -7,6 +7,7 @@ Next version
 - Fixed a crash when parsing ``<ol>`` elements without a ``data-type``
   attribute.
 - Fixed the broken presentation of the editor in Django 6.1.
+- Updated Tiptap.
 
 0.27 (2026-08-13)
 ~~~~~~~~~~~~~~~~~

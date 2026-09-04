@@ -35,11 +35,11 @@ async function removeRuntimeOnlyFiles(distPath) {
 }
 
 const commonConfig = {
-  autoExternal: false,
   bundle: true,
   format: "esm",
   syntax: "es6",
   output: {
+    autoExternal: false,
     distPath: {
       root: "django_prose_editor/static/django_prose_editor/",
       css: "",
