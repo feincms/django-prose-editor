@@ -172,9 +172,7 @@
 }
 
 .ProseMirror table td,
-.ProseMirror table th,
-.ProseMirror table[show_borders="false"]:hover td,
-.ProseMirror table[show_borders="false"]:hover th {
+.ProseMirror table th {
   min-width: 1em;
   border: 2px solid var(--border-color, #ced4da);
   padding: 1px;
@@ -183,15 +181,25 @@
   vertical-align: middle;
 }
 
+.ProseMirror table th {
+  font-weight: bold;
+  text-align: center;
+}
+
 .ProseMirror table[show_borders="false"] td,
 .ProseMirror table[show_borders="false"] th {
   border: none;
   box-sizing: border-box;
 }
 
-.ProseMirror table th {
-  font-weight: bold;
-  text-align: center;
+.ProseMirror table[show_borders="false"]:hover td,
+.ProseMirror table[show_borders="false"]:hover th {
+  min-width: 1em;
+  border: 2px solid var(--border-color, #ced4da);
+  padding: 1px;
+  box-sizing: border-box;
+  position: relative;
+  vertical-align: middle;
 }
 
 .ProseMirror table th p {
