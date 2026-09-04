@@ -8,6 +8,7 @@ Next version
   attribute.
 - Fixed the broken presentation of the editor in Django 6.1.
 - Updated Tiptap.
+- Added testing using Django 6.1.
 
 0.27 (2026-08-13)
 ~~~~~~~~~~~~~~~~~
