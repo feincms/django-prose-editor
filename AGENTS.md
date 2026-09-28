@@ -87,7 +87,7 @@ Committing feature by feature (one focused commit per logical change, rather tha
 2. **If you modified JavaScript**: Run `yarn prod` to rebuild
 3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
 4. Run tests: `tox -e py313-dj52`
-5. Verify all tests pass (47 tests expected as of 2026-06-08)
+5. Verify all tests pass (52 passed, 4 skipped expected as of 2026-09-28)
 6. Update documentation if needed
 
 ## Test Structure
@@ -107,6 +107,11 @@ Committing feature by feature (one focused commit per logical change, rather tha
 - `ClassLoomProseEditorModel` — ClassLoom with two groups:
   - `paragraphColors` (non-combinable, type `paragraph`, classes: `color-red`, `color-blue`, `color-green`)
   - `tableLayout` (combinable, type `table`, classes: `table--auto`, `table--no-borders`)
+
+### E2E Test Stability
+
+- The test DB is a temporary SQLite *file* (see `tests/testapp/settings.py`), and both `NAME` and `TEST.NAME` point to it. With `:memory:`, pytest-django's live server shares one connection across the test thread and all request threads, which caused random `InterfaceError: bad parameter or other API misuse`, session 500s and even segfaults in CI. `NAME` must not be `:memory:` either: the session-scoped live server checks it *before* the test DB is set up. Verify with `live_server.thread.connections_override == {}`.
+- Use `save(page)` from `e2e_utils` instead of clicking `_save` directly: it waits for the admin success message before the test queries the ORM. `login()` likewise waits for the redirect to `/admin/`.
 
 ### TableView Node Attribute Fix
 

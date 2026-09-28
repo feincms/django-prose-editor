@@ -1,11 +1,26 @@
 import os
+import tempfile
 
 from js_asset import static_lazy
 
 from django_prose_editor.config import html_tags
 
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
+# Use a file-based database: with an in-memory database, the live server
+# shares a single connection across all its request threads and the test
+# thread, which causes random InterfaceErrors and even segfaults. NAME itself
+# must not be ":memory:" either, because pytest-django decides whether to share
+# the connection before the test database is set up.
+_DB_PATH = os.path.join(
+    tempfile.gettempdir(), f"django-prose-editor-test-{os.getpid()}.sqlite3"
+)
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": _DB_PATH,
+        "TEST": {"NAME": _DB_PATH},
+    }
+}
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 INSTALLED_APPS = [

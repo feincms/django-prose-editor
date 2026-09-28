@@ -3,7 +3,7 @@ import re
 import pytest
 from playwright.sync_api import expect
 
-from testapp.e2e_utils import login
+from testapp.e2e_utils import login, save
 from testapp.models import ClassLoomProseEditorModel
 
 
@@ -68,7 +68,7 @@ def test_classloom_paragraph_color_apply(live_server, page):
     )
     expect(editor.locator("p.color-red")).to_have_text("Colorful paragraph")
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None
@@ -99,7 +99,7 @@ def test_classloom_paragraph_color_switch(live_server, page):
     expect(editor.locator("p.color-blue")).to_have_text("Switching colors")
     expect(editor.locator("p.color-red")).to_have_count(0)
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None
@@ -128,7 +128,7 @@ def test_classloom_paragraph_color_remove(live_server, page):
     )
     expect(editor.locator("p.color-green")).to_have_count(0)
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None
@@ -161,7 +161,7 @@ def test_classloom_table_combinable_apply_multiple(live_server, page):
     )
     expect(editor.locator("table.table--auto.table--no-borders")).to_have_count(1)
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None
@@ -194,7 +194,7 @@ def test_classloom_table_combinable_toggle_off_one(live_server, page):
     expect(editor.locator("table.table--no-borders")).to_have_count(1)
     expect(editor.locator("table.table--auto")).to_have_count(0)
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None
@@ -225,7 +225,7 @@ def test_classloom_table_combinable_clear_all(live_server, page):
     expect(editor.locator("table.table--auto")).to_have_count(0)
     expect(editor.locator("table.table--no-borders")).to_have_count(0)
 
-    page.click("input[name='_save']")
+    save(page)
 
     model = ClassLoomProseEditorModel.objects.first()
     assert model is not None

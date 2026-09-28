@@ -7,7 +7,7 @@ from cabinet.models import File as CabinetFile, Folder
 from django.core.files.base import ContentFile
 from playwright.sync_api import expect
 
-from testapp.e2e_utils import login as _login
+from testapp.e2e_utils import login as _login, save as _save
 from testapp.models import (
     ConfigurableProseEditorModel,
     FigureProseEditorModel,
@@ -43,7 +43,7 @@ def test_prose_editor_admin_form(page, live_server):
     editor.type("Hello, Playwright!")
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check that we've been redirected to the changelist page
     expect(page).to_have_url(f"{live_server.url}/admin/testapp/proseeditormodel/")
@@ -76,7 +76,7 @@ def test_prose_editor_formatting(page, live_server):
     bold_button.click()
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check the model content contains bold formatting
     model = ProseEditorModel.objects.first()
@@ -136,7 +136,7 @@ def test_prose_editor_table_creation(page, live_server):
     expect(delete_column_button).to_have_count(1)
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check the model content contains a table structure
     model = TableProseEditorModel.objects.first()
@@ -174,7 +174,7 @@ def test_prose_editor_table_html_output(page, live_server):
 
     editor.locator("table").wait_for(state="visible", timeout=5000)
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = TableProseEditorModel.objects.first()
     assert model is not None
@@ -251,7 +251,7 @@ def test_prose_editor_ordered_list_attributes(page, live_server):
     expect(updated_ol).to_have_attribute("start", "5")
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check the model content contains the ordered list with correct attributes
     model = TableProseEditorModel.objects.first()
@@ -421,7 +421,7 @@ def test_configurable_prose_editor_admin(page, live_server):
     page.wait_for_timeout(200)  # Wait for final typing to complete
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Verify the model was created with the content
     model = ConfigurableProseEditorModel.objects.first()
@@ -541,7 +541,7 @@ def test_html_extension_edit_and_prettify_button(page, live_server):
     expect(dialog).not_to_be_visible()
 
     # Save the form
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check that the model was created
     model = ConfigurableProseEditorModel.objects.first()
@@ -654,11 +654,15 @@ def test_nodeclass_textclass(live_server, page):
     word_select_left = (
         "Alt+Shift+ArrowLeft" if sys.platform == "darwin" else "Control+Shift+ArrowLeft"
     )
+    # Refocusing the editor restores its selection asynchronously; move the
+    # caret explicitly and wait for the selection before applying the mark.
+    page.get_by_role("textbox").press("End")
     page.get_by_role("textbox").press(word_select_left)
+    page.wait_for_function("() => window.getSelection().toString() === 'World'")
     page.locator("div").filter(has_text=re.compile(r"^default$")).click()
     page.get_by_text("highlight", exact=True).click()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     # Check that we've been redirected to the changelist page
     expect(page).to_have_url(
@@ -697,7 +701,7 @@ def test_nodeclass_mark_css_class(live_server, page):
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
     page.get_by_text("bold: emphasis").click()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     # Verify saved content
     model = ConfigurableProseEditorModel.objects.first()
@@ -731,7 +735,7 @@ def test_nodeclass_mark_switch_class(live_server, page):
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
     page.get_by_text("bold: important").click()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     # Verify the class was switched to important
     model = ConfigurableProseEditorModel.objects.first()
@@ -772,7 +776,7 @@ def test_nodeclass_reset_classes(live_server, page):
     page.locator("div").filter(has_text=re.compile(r"^Block style$")).click()
     page.get_by_text("bold: default").click()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     # Verify both classes were removed
     model = ConfigurableProseEditorModel.objects.first()
@@ -828,7 +832,7 @@ def test_styleloom_block_style(live_server, page):
     dialog.locator("button[type='submit']").click()
     expect(dialog).not_to_be_visible()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = StyleLoomProseEditorModel.objects.first()
     assert model is not None
@@ -864,7 +868,7 @@ def test_styleloom_text_style(live_server, page):
     dialog.locator("button[type='submit']").click()
     expect(dialog).not_to_be_visible()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = StyleLoomProseEditorModel.objects.first()
     assert model is not None
@@ -903,7 +907,7 @@ def test_styleloom_dialog_shows_current_value(live_server, page):
     page.fill("input[name='max-width']", "600px")
     dialog.locator("button[type='submit']").click()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = StyleLoomProseEditorModel.objects.first()
     assert model is not None
@@ -936,7 +940,7 @@ def test_styleloom_clear_style(live_server, page):
     dialog.locator("button[type='submit']").click()
     expect(dialog).not_to_be_visible()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = StyleLoomProseEditorModel.objects.first()
     assert model is not None
@@ -987,7 +991,7 @@ def test_figure_picker_url(page, live_server):
     dialog.locator("button[type='submit']").click()
     expect(dialog).not_to_be_visible()
 
-    page.click("input[name='_save']")
+    _save(page)
 
     model = FigureProseEditorModel.objects.first()
     assert model is not None
