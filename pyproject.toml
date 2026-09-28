@@ -37,7 +37,7 @@ dynamic = [
 ]
 dependencies = [
   "django>=4.2",
-  "django-js-asset>=4",
+  "django-js-asset>=5.0a1",
 ]
 optional-dependencies.cabinet = [
   "django-cabinet>=0.19",

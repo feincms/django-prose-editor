@@ -3,7 +3,7 @@ import json
 from django import forms
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from js_asset import JS, ImportMap, Media, static_lazy
+from js_asset import JS, ImportMap, Media
 
 from django_prose_editor.config import (
     expand_extensions,
@@ -13,18 +13,15 @@ from django_prose_editor.config import (
 
 importmap = ImportMap(
     {
-        "imports": {
-            "django-prose-editor/editor": static_lazy("django_prose_editor/editor.js"),
-            "django-prose-editor/configurable": static_lazy(
-                "django_prose_editor/configurable.js"
-            ),
-        }
+        "django-prose-editor/editor": "django_prose_editor/editor.js",
+        "django-prose-editor/configurable": "django_prose_editor/configurable.js",
     }
 )
 
 #: These three module-level variables are somewhat part of the API.
 prose_editor_js = JS("django_prose_editor/editor.js", {"type": "module"})
 prose_editor_base_media = Media(
+    importmap=importmap,
     css={
         "all": [
             "django_prose_editor/material-icons.css",
@@ -32,12 +29,6 @@ prose_editor_base_media = Media(
         ]
     },
     js=[
-        # ``js_asset.Media`` merges every ``ImportMap`` it sees into a single
-        # ``<script type="importmap">`` and renders it before any module, no
-        # matter how media objects are combined -- so embedding it here makes
-        # the editor's bare module specifiers resolve everywhere (admin and
-        # frontend alike) without a global importmap or a context processor.
-        importmap,
         # We don't really need this since editor.js will be loaded
         # in default.js (or other presets' modules) anyway, but keeping
         # the tag around helps the browser discover and load this
