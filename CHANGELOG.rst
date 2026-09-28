@@ -4,11 +4,17 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a1 (2026-09-28)
+~~~~~~~~~~~~~~~~~~~
+
 - Fixed a crash when parsing ``<ol>`` elements without a ``data-type``
   attribute.
 - Fixed the broken presentation of the editor in Django 6.1.
 - Updated Tiptap.
 - Added testing using Django 6.1.
+- Updated the media and import map handling for DEP 0022 and django-js-asset
+  5.0a1.
+
 
 0.27 (2026-08-13)
 ~~~~~~~~~~~~~~~~~
