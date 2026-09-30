@@ -10,13 +10,25 @@ Next version
 0.28a1 (2026-09-28)
 ~~~~~~~~~~~~~~~~~~~
 
-- Fixed a crash when parsing ``<ol>`` elements without a ``data-type``
-  attribute.
-- Fixed the broken presentation of the editor in Django 6.1.
-- Updated Tiptap.
-- Added testing using Django 6.1.
 - Updated the media and import map handling for DEP 0022 and django-js-asset
   5.0a1.
+
+0.27.3 (2026-09-21)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap.
+- Added testing using Django 6.1.
+
+0.27.2 (2026-08-27)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed the broken presentation of the editor in Django 6.1.
+
+0.27.1 (2026-08-24)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed a crash when parsing ``<ol>`` elements without a ``data-type``
+  attribute.
 
 0.27 (2026-08-13)
 ~~~~~~~~~~~~~~~~~
@@ -57,8 +69,19 @@ Next version
 - Removed the ``url`` format constraint from the image URL field so that
   relative paths are accepted in addition to absolute URLs.
 
+0.25.1 (2026-03-26)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated dependencies.
+- Set up trusted publishing for releases.
+
 0.25 (2026-03-17)
 ~~~~~~~~~~~~~~~~~
+
+- Add a menu button to enable table deletion.
+
+0.24.1 (2026-02-27)
+~~~~~~~~~~~~~~~~~~~
 
 - Updated Tiptap and other dependencies.
 - Exported the Tiptap ``InvisibleCharacters`` extension.
@@ -69,33 +92,63 @@ Next version
   Added concrete examples to both the installation and forms documentation to
   help prevent configuration issues when using the editor outside the Django
   admin.
-- Add a menu button to enable table deletion.
 
 0.24 (2026-01-30)
 ~~~~~~~~~~~~~~~~~
 
-- Updated the dependencies.
 - Made it possible to configure the available ordered list types, changed the
   code to emit inline styles. Added a bullet-type ordered list type because
   this makes nested lists of mixed types easier to create.
 
+0.23.2 (2026-01-29)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap and ProseMirror.
+
+0.23.1 (2026-01-15)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated the dependencies.
 
 0.23 (2026-01-13)
 ~~~~~~~~~~~~~~~~~
 
-- Fixed the prose editor textarea widget to not use the HTML5 ``required``
-  attribute. Thanks to @undefined-landmark for the report and the help testing
-  the fix!
+- Changed the Django admin table styling overrides to be less opinionated and
+  closer to the defaults. Thanks @mo-we!
+
+0.22.5 (2025-12-29)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap.
+- Added Django 6.0 and Python 3.14 to the CI list.
+- Fixed a bug where the unlink menu button was unavailable.
+
+0.22.4 (2025-12-11)
+~~~~~~~~~~~~~~~~~~~
+
 - Raised the misleading low limits for columns and rows when inserting a new
   table.
 - Started exposing the ``prosemirror-tables`` exports.
 - Added polish translations. Thanks @kgunia!
-- Updated Tiptap.
-- Added Django 6.0 and Python 3.14 to the CI list.
-- Fixed a bug where the unlink menu button was unavailable.
-- Changed the Django admin table styling overrides to be less opinionated and
-  closer to the defaults. Thanks @mo-we!
 
+0.22.3 (2025-12-02)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed the prose editor textarea widget to not use the HTML5 ``required``
+  attribute. Thanks to @undefined-landmark for the report and the help testing
+  the fix!
+
+0.22.2 (2025-11-18)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated dependencies.
+
+0.22.1 (2025-11-17)
+~~~~~~~~~~~~~~~~~~~
+
+- Added ``setNodeClass`` and ``unsetNodeClass`` commands to the
+  ``NodeClass`` extension. Each configured node or mark type now gets its own
+  dropdown in the menu.
 
 0.22 (2025-11-17)
 ~~~~~~~~~~~~~~~~~
@@ -107,6 +160,10 @@ Next version
   frontend code and not the backend code; the backend code already applied the
   same transformation since django-prose-editor 0.4.
 
+0.21.1 (2025-11-13)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap and ProseMirror.
 
 0.21 (2025-11-12)
 ~~~~~~~~~~~~~~~~~
@@ -116,6 +173,10 @@ Next version
   ``list-style-type`` property. This is necessary because Chromium-based
   browsers cannot case sensitively match the ``type`` attribute.
 
+0.20.1 (2025-11-10)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap.
 
 0.20 (2025-11-04)
 ~~~~~~~~~~~~~~~~~
@@ -127,25 +188,45 @@ Next version
   ``updateAttributes()`` command instead of the unsetMark/setMark pattern,
   which automatically preserves other mark attributes.
 
-
 0.19 (2025-10-29)
 ~~~~~~~~~~~~~~~~~
+
+- Added an easier way to define the menu structure without having to go to the
+  low level menu creator function and copy pasting the default menu groups.
+
+0.18.5 (2025-10-21)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap and ProseMirror.
+- Mentioned the licenses of bundled software in the ``LICENSE`` file.
+
+0.18.4 (2025-09-19)
+~~~~~~~~~~~~~~~~~~~
+
+- Added a description to the HTML extension's textarea which explains that the
+  HTML is restricted by the editor schema.
+
+0.18.3 (2025-09-15)
+~~~~~~~~~~~~~~~~~~~
+
+- Refactored the node class extension to use a single function to walk the
+  ancestor list.
+- Changed the CSS overrides so that paragraphs in table header cells inherit
+  the font weight.
+
+0.18.2 (2025-09-10)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed the table style overrides to work better in dark mode.
+
+0.18.1 (2025-09-03)
+~~~~~~~~~~~~~~~~~~~
 
 - Updated the documentation to provide working examples by including the
   necessary dependencies. Thanks @benopotamus and @j4lib!
 - Updated the sanitization documentation to correctly say which HTML tags and
   attributes are actually allowlisted by which extensions.
 - Updated the Tiptap dependency and pre-commit hooks.
-- Fixed the table style overrides to work better in dark mode.
-- Refactored the node class extension to use a single function to walk the
-  ancestor list.
-- Changed the CSS overrides so that paragraphs in table header cells inherit
-  the font weight.
-- Added a description to the HTML extension's textarea which explains that the
-  HTML is restricted by the editor schema.
-- Added an easier way to define the menu structure without having to go to the
-  low level menu creator function and copy pasting the default menu groups.
-
 
 0.18 (2025-08-27)
 ~~~~~~~~~~~~~~~~~
@@ -160,17 +241,11 @@ Next version
   warnings will be removed after a few releases.
 - Added a ``NodeClass`` extension for applying CSS classes to nodes.
 
-
 0.17 (2025-08-25)
 ~~~~~~~~~~~~~~~~~
 
 - Updated Tiptap to 3.0.7. Also updated all ProseMirror packages and added
   explicit ProseMirror dependencies to package.json.
-- Changed the ``.prose-editor-fullscreen`` class to
-  ``.prose-editor.fullscreen`` to match ``.prose-editor.disabled``.
-- Bumped the ``[sanitized]`` extra's nh3 dependency to 0.3 and started taking
-  advantage of the reusable ``Cleaner`` object. This allows us to initialize
-  the cleaner once only.
 - **Rewritten menu system**: The Menu extension now uses an ``items`` creator
   function instead of the deprecated ``addItems`` function. This provides more
   flexibility for custom menu layouts. Added ``createMenuFromGroups`` helper
@@ -198,41 +273,65 @@ Next version
   prettification on demand.
 - Added a maximum width to prose editor dialog elements.
 
+0.16.1 (2025-07-18)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap to 3.0.1. Also updated all ProseMirror packages.
+- Changed the ``.prose-editor-fullscreen`` class to
+  ``.prose-editor.fullscreen`` to match ``.prose-editor.disabled``.
+- Bumped the ``[sanitized]`` extra's nh3 dependency to 0.3 and started taking
+  advantage of the reusable ``Cleaner`` object. This allows us to initialize
+  the cleaner once only.
 
 0.16 (2025-07-11)
 ~~~~~~~~~~~~~~~~~
 
-- Provide the expected context to ``addMenuItems`` so that accessing ``this``
-  actually does the right thing.
 - Updated Tiptap to 3.0.0-beta.29.
-- Changed the contents of ``static`` to all be bundled instead of having a
-  mixture of hand-edited and generated assets.
 - Change the widget implementation and add more easily reusable ``forms.Media``
   objects and helpers.
 
+0.15.2 (2025-07-08)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap to 3.0.0-beta.25, we now also ship the ``enableDevTools``
+  option.
+- Changed the contents of ``static`` to all be bundled instead of having a
+  mixture of hand-edited and generated assets.
+
+0.15.1 (2025-07-07)
+~~~~~~~~~~~~~~~~~~~
+
+- Provide the expected context to ``addMenuItems`` so that accessing ``this``
+  actually does the right thing.
 
 0.15 (2025-07-04)
 ~~~~~~~~~~~~~~~~~
 
-- Dropped the JavaScript-based sticky menubar behavior, the menubar uses
-  ``position: sticky``. Also dropped the ``sticky`` option from the ``Menu``
-  again. Override the behavior with CSS instead.
 - Extensions can now register menu items using the ``addMenuItems`` method,
   which provides a cleaner API for menu integration.
 
+0.14.1 (2025-07-02)
+~~~~~~~~~~~~~~~~~~~
+
+- Dropped the JavaScript-based sticky menubar behavior, the menubar uses
+  ``position: sticky``. Also dropped the ``sticky`` option from the ``Menu``
+  again. Override the behavior with CSS instead.
 
 0.14 (2025-07-02)
 ~~~~~~~~~~~~~~~~~
 
-- Updated the pre-commit hooks.
-- Updated the Tiptap dependency.
-- Actually started dispatching the documented ``prose-editor:ready`` event when
-  using the default preset.
 - Made the ``Menu`` extension more reusable, introduced the ``defaultItems``,
   ``sticky`` and ``cssClass`` options. Started passing a ``buttons`` helper
   into menu item creation functions which automatically uses the correct
   ``cssClass`` prefix when creating menu button DOM elements.
 
+0.13.1 (2025-06-30)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated the pre-commit hooks.
+- Updated the Tiptap dependency.
+- Actually started dispatching the documented ``prose-editor:ready`` event when
+  using the default preset.
 
 0.13 (2025-06-25)
 ~~~~~~~~~~~~~~~~~
@@ -245,30 +344,46 @@ Next version
   selection.
 - Fixed the alignment of small contents in prose menubar buttons.
 
-
 0.12 (2025-05-12)
 ~~~~~~~~~~~~~~~~~
 
+- Changed the prose editor dialog to use ``div.prose-editor-dialog-field``
+  elements to wrap inputs and their labels instead of paragraphs.
+- Allowed callable default values in the ``updateAttrsDialog``.
+
+0.11.4 (2025-05-06)
+~~~~~~~~~~~~~~~~~~~
+
+- Actually included the source maps in the package.
+
+0.11.3 (2025-05-05)
+~~~~~~~~~~~~~~~~~~~
+
 - Updated the Tiptap version to the 3.0 beta to avoid problems with extensions
   sharing storage over multiple editor instances.
-- Fixed the menu to not run commands on click when the command is disabled.
-- Changed the ``addLink`` command to not do anything if the selection is empty
-  or if the selection isn't inside a link mark currently.
-- Fixed the title attribute functionality of link marks. Titles have been
-  inadvertently broken since 0.10 because I missed the fact that the Tiptap
-  link extension doesn't define the attribute in the schema.
+- Started including source maps again.
+- Convert textareas to use autogrow.
+
+0.11.2 (2025-04-28)
+~~~~~~~~~~~~~~~~~~~
+
 - Changed the ordered list menu button to disable itself when an ordered list
   cannot be inserted.
 - Updated the figure menu button to actually check whether figures can be
   inserted or not. Same for the horizontal rule menu button.
 - Added styles to selected nodes so that e.g. selected horizontal rules are
   shown as such.
-- Started including source maps again.
-- Convert textareas to use autogrow.
-- Changed the prose editor dialog to use ``div.prose-editor-dialog-field``
-  elements to wrap inputs and their labels instead of paragraphs.
-- Allowed callable default values in the ``updateAttrsDialog``.
 
+0.11.1 (2025-04-27)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated the Tiptap version to the released 3.0 beta.
+- Fixed the menu to not run commands on click when the command is disabled.
+- Changed the ``addLink`` command to not do anything if the selection is empty
+  or if the selection isn't inside a link mark currently.
+- Fixed the title attribute functionality of link marks. Titles have been
+  inadvertently broken since 0.10 because I missed the fact that the Tiptap
+  link extension doesn't define the attribute in the schema.
 
 0.11 (2025-04-16)
 ~~~~~~~~~~~~~~~~~
@@ -292,12 +407,6 @@ Next version
   type="module">``) instead of deferred scripts. Sorry for the churn. Also
   check the import locations, ProseMirror functions have been moved into the
   ``pm.*`` namespace.
-- Fixed a bug where the link mark wasn't applied correctly. The buggy 0.10.0
-  package has been yanked.
-- Applied the ``--prose-editor-background`` and ``--prose-editor-foreground``
-  CSS variables to the ProseMirror editing area.
-- Fixed the django-content-editor support tweak where an empty label would make
-  the editor move to the left border.
 - Updated Tiptap to the 3.0.0 pre-release. This was the easiest way to ensure
   that extensions all get their unique storage per editor instance instead of
   (unexpectedly!) shared storage without resorting to hacks.
@@ -328,6 +437,31 @@ Next version
   called last). If the ``create_sanitizer`` function is included, it's
   automatically used to build a sanitizer for the configured editor extensions.
 
+0.10.4 (2025-02-26)
+~~~~~~~~~~~~~~~~~~~
+
+- Updated Tiptap.
+
+0.10.3 (2025-01-21)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed the django-content-editor support tweak where an empty label would make
+  the editor move to the left border.
+- Updated Tiptap.
+- Added Django 5.2a1.
+
+0.10.2 (2024-12-20)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed a bug where the link mark wasn't applied correctly. The buggy 0.10.0
+  package has been yanked.
+- Applied the ``--prose-editor-background`` and ``--prose-editor-foreground``
+  CSS variables to the ProseMirror editing area.
+
+0.10.1 (2024-12-17)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixed the link mark not being set when adding links.
 
 0.10 (2024-12-17)
 ~~~~~~~~~~~~~~~~~
@@ -353,37 +487,36 @@ Next version
 - Updated the bundled material icons font.
 - Made the ESBuild watch mode report build successes again.
 
-
 0.9 (2024-10-30)
 ~~~~~~~~~~~~~~~~
 
-- Updated the ProseMirror dependencies.
 - Added Python 3.13 to the CI matrix.
 - Disable interactions and the menubar on the editor when the textarea is
   ``disabled``.
 
+0.8.1 (2024-09-11)
+~~~~~~~~~~~~~~~~~~
+
+- Updated the ProseMirror dependencies.
 
 0.8 (2024-08-26)
 ~~~~~~~~~~~~~~~~
 
-- Made the link button only active when the cursor is inside a link.
-- Added docs on read the docs.
 - Updated the ProseMirror dependencies.
 - Added extremely hacky german translations for the dialogs.
 - Added Django 5.1 to the CI matrix.
 - Allowed specifying the heading levels for the menu. The schema itself supports
   all heading levels (1-6) as before.
 
+0.7.1 (2024-08-02)
+~~~~~~~~~~~~~~~~~~
+
+- Made the link button only active when the cursor is inside a link.
+- Added docs on read the docs.
 
 0.7 (2024-08-02)
 ~~~~~~~~~~~~~~~~
 
-- Added the ``django-prose-editor[sanitize]`` extra which automatically
-  installs the ``nh3`` dependency. Thanks @plenaerts!
-- Properly restored the textarea element when destroying the editor.
-- Added more unittesting.
-- Supported using the ``ProseEditorFormField`` with widget instances, not just
-  with widget classes.
 - Documented the CSS custom properties. Thanks @carltongibson!
 - Converted the block type dropdown back to a button group.
 - Changed the CSS so that block type buttons look active instead of disabled
@@ -392,49 +525,120 @@ Next version
   not active, just enabled.
 - Improved the styles of the dialog a bit.
 
+0.6.3 (2024-08-01)
+~~~~~~~~~~~~~~~~~~
+
+- Added more unittesting.
+- Supported using the ``ProseEditorFormField`` with widget instances, not just
+  with widget classes.
+
+0.6.2 (2024-07-30)
+~~~~~~~~~~~~~~~~~~
+
+- Properly restored the textarea element when destroying the editor.
+
+0.6.1 (2024-07-30)
+~~~~~~~~~~~~~~~~~~
+
+- Added the ``django-prose-editor[sanitize]`` extra which automatically
+  installs the ``nh3`` dependency. Thanks @plenaerts!
 
 0.6 (2024-07-26)
 ~~~~~~~~~~~~~~~~
 
-- Added support for highlighting soft hyphens.
 - Updated all dependencies.
 - Moved the Django administration interface CSS overrides into their own file,
   and only load them if necessary so that using the editor outside the admin
   requires using  less ``!important`` overrides.
 
+0.5.1 (2024-07-11)
+~~~~~~~~~~~~~~~~~~
+
+- Added support for highlighting soft hyphens.
 
 0.5 (2024-07-08)
 ~~~~~~~~~~~~~~~~
 
-- Updated all dependencies.
-- Stopped putting anything into the global scope in ``init.js``.
-- Added support for showing typographic characters.
+- Enabled showing typographic characters by default.
 - Changed the editor initialization to make the initial ``textarea`` a child of
   the ``.prose-editor`` div, and changed the CSS to ``display: none
   !important;`` so that the ``textarea`` is only shown in exceptional
   circumstances, when people really really want it.
 
+0.4.7 (2024-07-08)
+~~~~~~~~~~~~~~~~~~
+
+- Fixed a typo in the ``typographic`` configuration key which made it
+  impossible to enable showing typographic characters.
+
+0.4.6 (2024-07-07)
+~~~~~~~~~~~~~~~~~~
+
+- Fixed the typographic characters plugin adding more and more decorations
+  on each edit.
+
+0.4.5 (2024-07-06)
+~~~~~~~~~~~~~~~~~~
+
+- Improved the performance of the typographic characters plugin with large
+  documents.
+- Improved the display of non-breaking spaces.
+
+0.4.4 (2024-07-05)
+~~~~~~~~~~~~~~~~~~
+
+- Added optional support for showing typographic characters.
+
+0.4.3 (2024-06-21)
+~~~~~~~~~~~~~~~~~~
+
+- Stopped putting anything into the global scope in ``init.js``.
+
+0.4.2 (2024-06-10)
+~~~~~~~~~~~~~~~~~~
+
+- Stopped keeping marks when splitting list items.
+- Added a list of supported node and mark types to the README.
+
+0.4.1 (2024-06-08)
+~~~~~~~~~~~~~~~~~~
+
+- Updated all dependencies.
 
 0.4 (2024-05-26)
 ~~~~~~~~~~~~~~~~
 
-- Allowed installing the package in Python 3.10 environments too.
-- Tweaked the cleaning methods of ``ProseEditorField`` and
-  ``SanitizedProseEditorField`` to produce empty strings when no content is
-  entered. Previously they would produce an empty paragraph (``<p></p>``) since
-  our ProseMirror schema says that there exists always one or more block nodes.
-- Stopped setting a black color on the ``.ProseMirror`` class by default.
 - Dropped the dependency on ``admin/js/jquery.init.js``. We're using our own
   DOM-ready handler and therefore can still access ``django.jQuery`` to hook up
   the inline events handler if running inside the Django admin.
 - Moved the paragraph formats into a popover.
 
+0.3.4 (2024-04-26)
+~~~~~~~~~~~~~~~~~~
+
+- Stopped setting a black color on the ``.ProseMirror`` class by default.
+
+0.3.3 (2024-04-18)
+~~~~~~~~~~~~~~~~~~
+
+- Fixed the default configuration handling to actually work as documented.
+
+0.3.2 (2024-04-18)
+~~~~~~~~~~~~~~~~~~
+
+- Tweaked the cleaning methods of ``ProseEditorField`` and
+  ``SanitizedProseEditorField`` to produce empty strings when no content is
+  entered. Previously they would produce an empty paragraph (``<p></p>``) since
+  our ProseMirror schema says that there exists always one or more block nodes.
+
+0.3.1 (2024-04-11)
+~~~~~~~~~~~~~~~~~~
+
+- Allowed installing the package in Python 3.10 environments too.
 
 0.3 (2024-04-09)
 ~~~~~~~~~~~~~~~~
 
-- Made the editor usable in dark mode.
-- Changed the cancel buttons in dialogs to not validate the form.
 - Switched the ``SanitizedProseEditorField`` from html-sanitizer (which at the
   moment uses the problematic lxml HTML cleaner under the hood) with `nh3
   <https://nh3.readthedocs.io/en/latest/>`__. html-sanitizer is still a good
@@ -442,17 +646,39 @@ Next version
   don't have to clean up strange HTML.
 - Added customization options to the fields and widgets.
 
+0.2.1 (2024-03-15)
+~~~~~~~~~~~~~~~~~~
+
+- Made the editor usable in dark mode.
+- Changed the cancel buttons in dialogs to not validate the form.
 
 0.2 (2024-03-12)
 ~~~~~~~~~~~~~~~~
 
-- Extended the README.
-- Fixed the initialization in Django admin inlines.
-- Added a server-side sanitization callback to the ``ProseEditorField``, and
-  added ``django_prose_editor.sanitized.SanitizedProseEditorField`` which
+- Added client side validation to dialogs.
+- Upgraded esbuild.
+
+0.1.5 (2024-03-12)
+~~~~~~~~~~~~~~~~~~
+
+- Added material icons for the format bar.
+
+0.1.4 (2024-03-12)
+~~~~~~~~~~~~~~~~~~
+
+- Rebuilt the bundled static assets.
+
+0.1.3 (2024-03-12)
+~~~~~~~~~~~~~~~~~~
+
+- Added ``django_prose_editor.sanitized.SanitizedProseEditorField`` which
   automatically does the right thing.
-- Automatically added a ``get_*_excerpt`` model method to models using the
-  ``ProseEditorField`` as a convenience.
+- Added a button to the menu to insert horizontal rules.
+
+0.1.2 (2024-03-12)
+~~~~~~~~~~~~~~~~~~
+
+- Extended the README.
 - Cleaned up the styles.
 - Added a maximum width to the editor.
 - Started hiding labels for prose editor fields in the Django admin if the
@@ -461,11 +687,14 @@ Next version
 - Added a button for editing the raw HTML. This is sometimes useful.
 - Stopped generating source maps unless in dev mode. I like source maps a lot
   in general, but the files are really big in this case.
-- Added a button to the menu to insert horizontal rules.
-- Added material icons for the format bar.
-- Added client side validation to dialogs.
-- Upgraded esbuild.
 
+0.1.1 (2024-03-11)
+~~~~~~~~~~~~~~~~~~
+
+- Fixed the initialization in Django admin inlines.
+- Added a server-side sanitization callback to the ``ProseEditorField``.
+- Automatically added a ``get_*_excerpt`` model method to models using the
+  ``ProseEditorField`` as a convenience.
 
 0.1 (2024-03-11)
 ~~~~~~~~~~~~~~~~
