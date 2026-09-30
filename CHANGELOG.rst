@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a2 (2026-09-30)
+~~~~~~~~~~~~~~~~~~~
+
 - Fixed the flaky integration tests in CI (hopefully).
 - Updated dependencies.
 - Backfilled the CHANGELOG to contain patch releases.
