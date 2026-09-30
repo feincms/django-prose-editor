@@ -6,6 +6,7 @@ Next version
 
 - Fixed the flaky integration tests in CI (hopefully).
 - Updated dependencies.
+- Backfilled the CHANGELOG to contain patch releases.
 
 0.28a1 (2026-09-28)
 ~~~~~~~~~~~~~~~~~~~
