@@ -50,6 +50,22 @@ class TableProseEditorModel(models.Model):
         return self.description
 
 
+class TableWrapperProseEditorModel(models.Model):
+    description = ProseEditorField(
+        config={
+            "extensions": {
+                "Table": {"renderWrapper": True},
+                "TableRow": True,
+                "TableHeader": True,
+                "TableCell": True,
+            }
+        },
+    )
+
+    def __str__(self):
+        return self.description
+
+
 class ConfigurableProseEditorModel(models.Model):
     description = ProseEditorField(
         config={

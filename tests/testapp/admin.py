@@ -34,6 +34,11 @@ class TableProseEditorModelAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(models.TableWrapperProseEditorModel)
+class TableWrapperProseEditorModelAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(models.ConfigurableProseEditorModel)
 class ConfigurableProseEditorModelAdmin(admin.ModelAdmin):
     pass

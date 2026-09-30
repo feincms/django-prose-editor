@@ -14,6 +14,7 @@ from testapp.models import (
     ProseEditorModel,
     StyleLoomProseEditorModel,
     TableProseEditorModel,
+    TableWrapperProseEditorModel,
 )
 
 
@@ -173,6 +174,7 @@ def test_prose_editor_table_html_output(page, live_server):
     dialog.locator("button[type='submit']").click()
 
     editor.locator("table").wait_for(state="visible", timeout=5000)
+    expect(editor.locator("div.tableWrapper > table")).to_have_count(1)
 
     _save(page)
 
@@ -182,8 +184,69 @@ def test_prose_editor_table_html_output(page, live_server):
 
     assert "colgroup" not in html
     assert "min-width" not in html
+    # Only the editor DOM (TableView) has a wrapper without renderWrapper.
+    assert "tableWrapper" not in html
     # width as an attribute or inline style value should not appear on table cells
     assert re.search(r"<t[hd][^>]*\bwidth\b", html) is None
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_prose_editor_table_render_wrapper(page, live_server):
+    """renderWrapper saves exactly one tableWrapper, also when saving again."""
+    _login(page, live_server)
+
+    page.goto(f"{live_server.url}/admin/testapp/tablewrapperproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.click()
+    page.locator(".prose-menubar__button[title='Insert table']").click()
+    page.locator(".prose-editor-dialog button[type='submit']").click()
+    editor.locator("table").wait_for(state="visible", timeout=5000)
+
+    _save(page)
+
+    model = TableWrapperProseEditorModel.objects.get()
+    assert model.description.count('<div class="tableWrapper"><table') == 1
+    assert model.description.count("tableWrapper") == 1
+
+    page.goto(
+        f"{live_server.url}/admin/testapp/tablewrapperproseeditormodel/{model.pk}/change/"
+    )
+    editor.locator("table").wait_for(state="visible", timeout=5000)
+    editor.locator("td").first.click()
+    page.keyboard.press("End")
+    page.keyboard.type("Cell")
+    _save(page)
+
+    model.refresh_from_db()
+    assert "Cell" in model.description
+    assert model.description.count('<div class="tableWrapper"><table') == 1
+    assert model.description.count("tableWrapper") == 1
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
+def test_prose_editor_table_render_wrapper_legacy_content(page, live_server):
+    """Tables saved without a wrapper get one when they are saved again."""
+    model = TableWrapperProseEditorModel.objects.create(
+        description="<table><tbody><tr><td><p>Old</p></td></tr></tbody></table>"
+    )
+    _login(page, live_server)
+
+    page.goto(
+        f"{live_server.url}/admin/testapp/tablewrapperproseeditormodel/{model.pk}/change/"
+    )
+    editor = page.locator(".prose-editor > .ProseMirror")
+    editor.locator("td").first.click()
+    page.keyboard.press("End")
+    page.keyboard.type(" and new")
+    _save(page)
+
+    model.refresh_from_db()
+    assert "Old and new" in model.description
+    assert model.description.count('<div class="tableWrapper"><table') == 1
+    assert model.description.count("tableWrapper") == 1
 
 
 @pytest.mark.django_db
