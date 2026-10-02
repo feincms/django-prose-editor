@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a3 (2026-10-02)
+~~~~~~~~~~~~~~~~~~~
+
 - Updated dependencies.
 - The ``js`` entries of ``DJANGO_PROSE_EDITOR_EXTENSIONS`` no longer have to be
   wrapped in ``static_lazy()``; plain static paths are resolved using
