@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Updated dependencies.
+
 0.28a2 (2026-09-30)
 ~~~~~~~~~~~~~~~~~~~
 
