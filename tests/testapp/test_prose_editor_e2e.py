@@ -1,3 +1,4 @@
+import contextlib
 import json
 import re
 import sys
@@ -5,7 +6,7 @@ import sys
 import pytest
 from cabinet.models import File as CabinetFile, Folder
 from django.core.files.base import ContentFile
-from playwright.sync_api import expect
+from playwright.sync_api import Error as PlaywrightError, expect
 
 from testapp.e2e_utils import login as _login, save as _save
 from testapp.models import (
@@ -1046,7 +1047,10 @@ def test_figure_picker_url(page, live_server):
     assert "CKEditorFuncNum=" in popup.url
 
     popup.locator("a[href*='folder__id__exact']").filter(has_text="Test").click()
-    popup.locator("[data-ckeditor-function]").first.click()
+    # Selecting a file closes the popup, possibly before click() returns. A
+    # click which really fails still fails the test since the popup won't close.
+    with popup.expect_event("close"), contextlib.suppress(PlaywrightError):
+        popup.locator("[data-ckeditor-function]").first.click()
 
     image_url_input = dialog.locator("input[name='imageUrl']")
     expect(image_url_input).not_to_have_value("")
