@@ -87,7 +87,7 @@ Committing feature by feature (one focused commit per logical change, rather tha
 2. **If you modified JavaScript**: Run `yarn prod` to rebuild
 3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
 4. Run tests: `tox -e py313-dj52`
-5. Verify all tests pass (52 passed, 4 skipped expected as of 2026-09-28)
+5. Verify all tests pass (54 passed, 4 skipped expected as of 2026-10-02)
 6. Update documentation if needed
 
 ## Test Structure

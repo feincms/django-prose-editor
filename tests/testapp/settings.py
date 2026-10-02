@@ -1,8 +1,6 @@
 import os
 import tempfile
 
-from js_asset import static_lazy
-
 from django_prose_editor.config import html_tags
 
 
@@ -52,7 +50,7 @@ DJANGO_PROSE_EDITOR_PRESETS = {}
 
 DJANGO_PROSE_EDITOR_EXTENSIONS = [
     {
-        "js": [static_lazy("testapp/blue-bold.js")],
+        "js": ["testapp/blue-bold.js"],
         "extensions": {
             "BlueBold": html_tags(
                 tags=["strong"], attributes={"strong": ["style", "class"]}

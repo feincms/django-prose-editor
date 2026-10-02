@@ -5,6 +5,10 @@ Next version
 ~~~~~~~~~~~~
 
 - Updated dependencies.
+- The ``js`` entries of ``DJANGO_PROSE_EDITOR_EXTENSIONS`` no longer have to be
+  wrapped in ``static_lazy()``; plain static paths are resolved using
+  ``static()`` when rendering the editor, consistent with import maps.
+  ``static_lazy()`` values and absolute URLs continue to work.
 
 0.28a2 (2026-09-30)
 ~~~~~~~~~~~~~~~~~~~

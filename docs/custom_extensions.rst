@@ -147,12 +147,14 @@ Configurable Extensions
 The configurable preset allows you to add custom Tiptap extensions without
 having to create a custom preset. You can define extension groups in your
 Django settings, with each group containing related extensions that share the
-same JavaScript assets:
+same JavaScript assets. The JavaScript modules are given as static file paths
+which are resolved using Django's ``static()`` when the editor is rendered;
+URLs (``https://...``, ``/...``, ``./...``) and ``static_lazy()`` values are
+used as-is:
 
 .. code-block:: python
 
     # In settings.py
-    from js_asset import static_lazy
     from django_prose_editor.config import html_tags
 
     # Define your custom extensions with their processors
@@ -160,7 +162,7 @@ same JavaScript assets:
         # Blue bold extension group
         {
             "js": [
-                static_lazy("myapp/extensions/blue-bold.js")
+                "myapp/extensions/blue-bold.js"
             ],
             "extensions": {
                 "BlueBold": html_tags(
@@ -173,7 +175,7 @@ same JavaScript assets:
         # Complex extension group with multiple related extensions
         {
             "js": [
-                static_lazy("myapp/extensions/table/table.js")
+                "myapp/extensions/table/table.js"
             ],
             "extensions": {
                 "Table": "myapp.extensions.process_table",
@@ -279,14 +281,13 @@ The base case of a hardcoded list of tags and attributes is handled by the
         add_tags_and_attributes(nh3_config, tags, attributes)
 
     # Then in settings.py, register your processor by its dotted path:
-    from js_asset import static_lazy
     from django_prose_editor.config import html_tags
 
     DJANGO_PROSE_EDITOR_EXTENSIONS = [
         # Complex extension group
         {
             "js": [
-                static_lazy("myapp/extensions/complex-extension.js")
+                "myapp/extensions/complex-extension.js"
             ],
             "extensions": {
                 "ComplexExtension": "myapp.extensions.process_complex_extension"
@@ -296,7 +297,7 @@ The base case of a hardcoded list of tags and attributes is handled by the
         # Simple extension group
         {
             "js": [
-                static_lazy("myapp/extensions/simple-extension.js")
+                "myapp/extensions/simple-extension.js"
             ],
             "extensions": {
                 "SimpleExtension": html_tags(

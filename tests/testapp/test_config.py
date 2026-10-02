@@ -74,15 +74,16 @@ class ConfigFunctionsTestCase(TestCase):
     @override_settings(
         DJANGO_PROSE_EDITOR_EXTENSIONS=[
             {
-                "js": [static_lazy("testapp/blue-bold.js")],
+                "js": ["testapp/blue-bold.js"],
                 "extensions": {
                     "CustomExt": html_tags(tags=["div"], attributes={"div": ["class"]})
                 },
             },
             {
                 "js": [
+                    # static_lazy and absolute URLs still work
                     static_lazy("testapp/other.js"),
-                    static_lazy("testapp/another.js"),
+                    "https://example.com/another.js",
                 ],
                 "extensions": {
                     "OtherExt": html_tags(
@@ -107,9 +108,11 @@ class ConfigFunctionsTestCase(TestCase):
         assert isinstance(js_modules, list)
 
         # Should contain the custom extensions' JS modules
-        assert static_lazy("testapp/blue-bold.js") in js_modules
-        assert static_lazy("testapp/other.js") in js_modules
-        assert static_lazy("testapp/another.js") in js_modules
+        assert js_modules == [
+            "/static/testapp/blue-bold.js",
+            "/static/testapp/other.js",
+            "https://example.com/another.js",
+        ]
 
         # Test with dependencies
         extensions = {
