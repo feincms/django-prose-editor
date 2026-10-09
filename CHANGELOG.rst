@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Added French translations.
+
 0.28a3 (2026-10-02)
 ~~~~~~~~~~~~~~~~~~~
 
