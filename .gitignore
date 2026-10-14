@@ -21,6 +21,7 @@
 .tox
 /vendor
 /venv
+/.venv
 /.vscode
 build
 test-results
