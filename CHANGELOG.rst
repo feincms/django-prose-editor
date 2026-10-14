@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a5 (2026-10-14)
+~~~~~~~~~~~~~~~~~~~
+
 - Reverted resolving the ``js`` entries of ``DJANGO_PROSE_EDITOR_EXTENSIONS``
   through ``static()``: It's impossible to distinguish static paths from
   module specifiers mapped by an import map, and the latter crashed when using
