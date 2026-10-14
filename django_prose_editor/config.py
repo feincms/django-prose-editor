@@ -5,12 +5,10 @@ This module provides a way to define editor extensions and generate
 corresponding sanitization rules for server-side HTML cleaning.
 """
 
-import re
 import warnings
 from typing import Any
 
 from django.conf import settings
-from django.templatetags.static import static
 from django.utils.module_loading import import_string
 
 
@@ -444,23 +442,6 @@ def check_legacy_dependencies(extensions: dict[str, Any]) -> list[str]:
     return warnings
 
 
-_URL_WITH_SCHEME = re.compile(r"^[a-z]+:")
-_UNRESOLVED_PREFIXES = ("/", "./", "../")
-
-
-def _module_url(path):
-    """
-    Resolve a JavaScript module path like django-js-asset resolves import map
-    paths: URLs with a scheme and absolute or relative URLs (including already
-    resolved ``static_lazy`` values) are used as-is, everything else is passed
-    through ``static()``.
-    """
-    path = str(path)  # Resolves lazy strings such as ``static_lazy`` paths.
-    if _URL_WITH_SCHEME.match(path) or path.startswith(_UNRESOLVED_PREFIXES):
-        return path
-    return static(path)
-
-
 def js_from_extensions(
     extensions: dict[str, Any],
 ) -> list[str]:
@@ -479,7 +460,8 @@ def js_from_extensions(
     extensions = getattr(settings, "DJANGO_PROSE_EDITOR_EXTENSIONS", [])
     for group in extensions:
         if (js := group.get("js")) and expanded & group["extensions"].keys():
-            js_modules.update((_module_url(path), None) for path in js)
+            # str() resolves lazy strings such as ``static_lazy`` paths.
+            js_modules.update((str(path), None) for path in js)
 
     return list(js_modules)
 

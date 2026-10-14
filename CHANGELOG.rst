@@ -4,6 +4,12 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Reverted resolving the ``js`` entries of ``DJANGO_PROSE_EDITOR_EXTENSIONS``
+  through ``static()``: It's impossible to distinguish static paths from
+  module specifiers mapped by an import map, and the latter crashed when using
+  the manifest static files storage. The entries are passed to ``import()``
+  as-is again; wrap static files in ``static_lazy()``.
+
 0.28a4 (2026-10-14)
 ~~~~~~~~~~~~~~~~~~~
 
@@ -17,7 +23,8 @@ Next version
 - The ``js`` entries of ``DJANGO_PROSE_EDITOR_EXTENSIONS`` no longer have to be
   wrapped in ``static_lazy()``; plain static paths are resolved using
   ``static()`` when rendering the editor, consistent with import maps.
-  ``static_lazy()`` values and absolute URLs continue to work.
+  ``static_lazy()`` values and absolute URLs continue to work. (Reverted again
+  after 0.28a4, static files have to be wrapped in ``static_lazy()``.)
 
 0.28a2 (2026-09-30)
 ~~~~~~~~~~~~~~~~~~~

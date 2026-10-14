@@ -174,7 +174,7 @@ def check_custom_extensions_configuration(app_configs, **kwargs):
                 errors.append(
                     Error(
                         f"The 'js' key in extension group at index {i} must be a list.",
-                        hint="The 'js' key should be a list of JavaScript module paths or URLs.",
+                        hint="The 'js' key should be a list of JavaScript module URLs or import map specifiers.",
                         obj=settings,
                         id="django_prose_editor.E008",
                     )
