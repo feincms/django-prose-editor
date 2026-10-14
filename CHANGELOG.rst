@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a4 (2026-10-14)
+~~~~~~~~~~~~~~~~~~~
+
 - Added French translations. Thanks @iliyasalve!
 - Updated dependencies.
 
