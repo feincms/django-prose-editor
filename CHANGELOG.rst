@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a6 (2026-10-17)
+~~~~~~~~~~~~~~~~~~~
+
 - Images chosen through the ``Figure`` extension's file picker (``pickerUrl``)
   store a reference to the file as a ``data-file`` attribute, set from the
   ``id`` passed by the file browser (django-cabinet 0.20.1 or newer). The
