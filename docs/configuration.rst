@@ -220,3 +220,29 @@ django-filer.
             },
         }
     )
+
+.. code-block:: javascript
+
+    Figure.configure({
+      pickerUrl: "/admin/cabinet/file/",
+    })
+
+The file browser may pass an object as a third argument to ``callFunction``.
+The dialog fills the alternative text and caption fields from its
+``alternative_text`` and ``caption`` keys, and stores its ``id`` key as a
+``data-file`` attribute on the image:
+
+.. code-block:: html
+
+    <figure class="figure">
+      <img src="/media/cabinet/2026/10/image.jpg" alt="..." data-file="42">
+      <figcaption class="figure-caption">...</figcaption>
+    </figure>
+
+This allows resolving the file on the server later, e.g. to generate fresh
+URLs, other sizes or zoom views, even after the file has been replaced or
+renamed. django-cabinet passes the file's primary key since version 0.20.1.
+The attribute is removed when the image URL is changed by hand afterwards, so
+it never refers to a different file than ``src``. The sanitizer allows
+``data-file`` on ``img`` when the ``Image`` or ``Figure`` extension is
+enabled.

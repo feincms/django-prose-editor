@@ -4,6 +4,14 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Images chosen through the ``Figure`` extension's file picker (``pickerUrl``)
+  store a reference to the file as a ``data-file`` attribute, set from the
+  ``id`` passed by the file browser (django-cabinet 0.20.1 or newer). The
+  attribute is allowed by the sanitizer and dropped when the image URL is
+  changed by hand.
+- Raised the minimum version of django-cabinet in the ``cabinet`` extra to
+  0.20.1.
+
 0.28a5 (2026-10-14)
 ~~~~~~~~~~~~~~~~~~~
 

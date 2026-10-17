@@ -23,12 +23,13 @@ const installCKShim = () => {
   }
 }
 
-const openFilePicker = (pickerUrl, input) => {
+const openFilePicker = (pickerUrl, input, onPick) => {
   installCKShim()
 
   const n = --_ckFuncNum
   _ckCallbacks.set(n, (value, data) => {
     input.value = value
+    onPick(value, data)
     const altText = input.closest("dialog").querySelector("input[name=altText]")
     const caption = input.closest("dialog").querySelector("input[name=caption]")
     if (data && altText) {
@@ -166,10 +167,16 @@ export const Figure = Node.create({
 
           let imageUrl = ""
           let altText = ""
+          // The picked file and the URL it was picked with; the reference is
+          // dropped if the URL is changed by hand afterwards.
+          let file = null
+          let fileSrc = null
 
           if (info?.imageNode) {
             imageUrl = info.imageNode.attrs.src || ""
             altText = info.imageNode.attrs.alt || ""
+            file = info.imageNode.attrs.file
+            fileSrc = imageUrl.trim()
           }
 
           const properties = {
@@ -181,7 +188,14 @@ export const Figure = Node.create({
                 ? {
                     label: gettext("Browse..."),
                     handler: ({ input }) =>
-                      openFilePicker(this.options.pickerUrl, input),
+                      openFilePicker(
+                        this.options.pickerUrl,
+                        input,
+                        (value, data) => {
+                          file = data?.id != null ? String(data.id) : null
+                          fileSrc = value.trim()
+                        },
+                      ),
                   }
                 : null,
             },
@@ -216,6 +230,7 @@ export const Figure = Node.create({
             const src = attrs.imageUrl.trim()
             const alt = attrs.altText.trim()
             const caption = attrs.caption?.trim()
+            if (src !== fileSrc) file = null
 
             if (!src) {
               if (!info) return
@@ -228,7 +243,7 @@ export const Figure = Node.create({
               let chain = editor
                 .chain()
                 .setNodeSelection(info.imagePos)
-                .updateAttributes("image", { src, alt })
+                .updateAttributes("image", { src, alt, file })
 
               if (caption) {
                 chain = chain.command(({ tr, state }) => {
@@ -243,7 +258,9 @@ export const Figure = Node.create({
 
               chain.run()
             } else {
-              const figureContent = [{ type: "image", attrs: { src, alt } }]
+              const figureContent = [
+                { type: "image", attrs: { src, alt, file } },
+              ]
               if (caption) {
                 figureContent.push({
                   type: "caption",

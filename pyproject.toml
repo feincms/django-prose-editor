@@ -40,7 +40,7 @@ dependencies = [
   "django-js-asset>=5.0a1",
 ]
 optional-dependencies.cabinet = [
-  "django-cabinet>=0.19",
+  "django-cabinet>=0.20.1",
 ]
 optional-dependencies.sanitize = [
   "nh3>=0.3",

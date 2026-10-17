@@ -116,7 +116,7 @@ def process_figure(config, shared_config):
     # Prepare tags and attributes
     tags = ["figure", "figcaption", "img"]
     attributes = {
-        "img": ["src", "alt", "width", "height"],
+        "img": ["src", "alt", "width", "height", "data-file"],
         "figure": ["class"],
     }
 
@@ -129,7 +129,7 @@ def process_image(config, shared_config):
     # Prepare tags and attributes
     tags = ["img"]
     attributes = {
-        "img": ["src", "alt", "width", "height"],
+        "img": ["src", "alt", "width", "height", "data-file"],
     }
 
     # Add tags and attributes to the shared config

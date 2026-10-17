@@ -1,3 +1,4 @@
+import base64
 import contextlib
 import json
 import re
@@ -1019,7 +1020,15 @@ def test_figure_picker_url(page, live_server):
     folder = Folder.objects.create(name="Test")
     cabinet_file = CabinetFile(folder=folder)
     cabinet_file.download_file.save(
-        "test-image.png", ContentFile(b"fake png"), save=True
+        "test-image.png",
+        # 1x1 PNG, so that the image is visible and clickable in the editor
+        ContentFile(
+            base64.b64decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8"
+                "z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg=="
+            )
+        ),
+        save=True,
     )
 
     _login(page, live_server)
@@ -1064,6 +1073,24 @@ def test_figure_picker_url(page, live_server):
     assert model is not None
     assert "<img" in model.description
     assert "test-image" in model.description
+    assert f'data-file="{cabinet_file.pk}"' in model.description
+
+    # Changing the URL by hand drops the file reference
+    page.goto(
+        f"{live_server.url}/admin/testapp/figureproseeditormodel/{model.pk}/change/"
+    )
+    editor.locator("img").click()
+    page.locator(".prose-menubar__button[title='figure']").click()
+    expect(dialog).to_be_visible()
+    image_url_input.fill("/media/elsewhere.png")
+    dialog.locator("button[type='submit']").click()
+    expect(dialog).not_to_be_visible()
+
+    _save(page)
+
+    model.refresh_from_db()
+    assert "/media/elsewhere.png" in model.description
+    assert "data-file" not in model.description
 
 
 """

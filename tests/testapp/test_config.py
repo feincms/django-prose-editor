@@ -10,6 +10,7 @@ from django_prose_editor.config import (
     html_tags,
     js_from_extensions,
 )
+from django_prose_editor.fields import create_sanitizer
 
 
 class ConfigFunctionsTestCase(TestCase):
@@ -226,3 +227,11 @@ class ConfigFunctionsTestCase(TestCase):
         allowlist = allowlist_from_extensions(extensions)
         assert "strong" in allowlist["tags"]  # Bold
         assert "em" not in allowlist["tags"]  # Italic should be excluded
+
+    def test_image_data_file(self):
+        """The file reference of picked images survives sanitization."""
+        html = '<img src="/media/a.png" alt="A" data-file="42">'
+
+        for extensions in [{"Image": True}, {"Figure": True}]:
+            sanitize = create_sanitizer(extensions)
+            assert 'data-file="42"' in sanitize(html)
