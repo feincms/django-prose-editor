@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28a8 (2026-10-19)
+~~~~~~~~~~~~~~~~~~~
+
 - The sanitizer keeps the ``<div class="tableWrapper">`` which the ``Table``
   extension's ``renderWrapper`` option adds, and no other classes on ``<div>``.
   The wrapper was stripped before, so the option had no effect on sanitized
