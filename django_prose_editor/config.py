@@ -57,6 +57,18 @@ def html_tags(tags, attributes=None):
     return processor
 
 
+def add_allowed_classes(shared_config, classes):
+    """
+    Allow individual class values on tags, using nh3's ``allowed_classes``.
+
+    Narrower than allowing the ``class`` attribute as a whole, which accepts
+    any value.
+    """
+    allowed_classes = shared_config.setdefault("allowed_classes", {})
+    for tag, values in classes.items():
+        allowed_classes.setdefault(tag, set()).update(values)
+
+
 def process_heading(config, shared_config):
     """Process Heading extension configuration."""
     levels = (
@@ -122,6 +134,23 @@ def process_figure(config, shared_config):
 
     # Add tags and attributes to the shared config
     add_tags_and_attributes(shared_config, tags, attributes)
+
+
+def process_table(config, shared_config):
+    """Process Table extension configuration."""
+    tags = ["table", "tbody", "thead", "tr", "th", "td"]
+    attributes = {
+        "th": ["rowspan", "colspan"],
+        "td": ["rowspan", "colspan"],
+    }
+
+    add_tags_and_attributes(shared_config, tags, attributes)
+
+    # renderWrapper wraps the table in <div class="tableWrapper">; allow that
+    # class only, not arbitrary classes on any div.
+    if isinstance(config, dict) and config.get("renderWrapper"):
+        add_tags_and_attributes(shared_config, ["div"], None)
+        add_allowed_classes(shared_config, {"div": ["tableWrapper"]})
 
 
 def process_image(config, shared_config):
@@ -318,13 +347,7 @@ EXTENSION_MAPPING = {
     "Caption": html_tags(["figcaption"]),
     # Advanced extensions
     "Link": process_link,
-    "Table": html_tags(
-        ["table", "tbody", "thead", "tr", "th", "td"],
-        {
-            "th": ["rowspan", "colspan"],
-            "td": ["rowspan", "colspan"],
-        },
-    ),
+    "Table": process_table,
     "TableRow": html_tags([]),
     "TableHeader": html_tags([]),
     "TableCell": html_tags([]),
@@ -506,5 +529,12 @@ def allowlist_from_extensions(
         if isinstance(processor, str):
             processors[extension] = import_string(extension)
         processor(config, nh3_config)
+
+    # nh3 panics when a tag's class attribute is both allowed outright and
+    # restricted to some values. Allowing it outright already covers them.
+    if allowed_classes := nh3_config.get("allowed_classes"):
+        for tag, attributes in nh3_config["attributes"].items():
+            if "class" in attributes:
+                allowed_classes.pop(tag, None)
 
     return nh3_config

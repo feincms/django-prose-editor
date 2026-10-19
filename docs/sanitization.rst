@@ -89,7 +89,8 @@ Blockquote     <blockquote>            -
 HorizontalRule <hr>                    -
 Link           <a>                     href, title, target, rel
 Table          <table>, <tr>,          rowspan, colspan
-               <th>, <td>
+               <th>, <td>,             class="tableWrapper" on
+               <div> (renderWrapper)   <div> (renderWrapper)
 ============== ======================= ============================
 
 Custom Sanitization

@@ -72,6 +72,53 @@ class ConfigFunctionsTestCase(TestCase):
         assert "https" in allowlist["url_schemes"]
         assert "mailto" in allowlist["url_schemes"]
 
+    def test_table_render_wrapper_survives_sanitization(self):
+        """The wrapper div is only allowed when renderWrapper is enabled."""
+        table = "<table><tbody><tr><td><p>1</p></td></tr></tbody></table>"
+        wrapped = f'<div class="tableWrapper">{table}</div>'
+        rows_and_cells = {"TableRow": True, "TableHeader": True, "TableCell": True}
+
+        sanitize = create_sanitizer(
+            {"Table": {"renderWrapper": True}, **rows_and_cells}
+        )
+        assert sanitize(wrapped) == wrapped
+
+        sanitize = create_sanitizer({"Table": True, **rows_and_cells})
+        assert sanitize(wrapped) == table
+
+        sanitize = create_sanitizer(
+            {"Table": {"renderWrapper": True}, **rows_and_cells}
+        )
+        assert (
+            sanitize(
+                f'<div class="tableWrapper other">{table}</div><div class="x">y</div>'
+            )
+            == f'{wrapped}<div class="">y</div>'
+        )
+
+    @override_settings(
+        DJANGO_PROSE_EDITOR_EXTENSIONS=[
+            {
+                "js": [],
+                "extensions": {
+                    "CustomExt": html_tags(tags=["div"], attributes={"div": ["class"]})
+                },
+            }
+        ]
+    )
+    def test_table_render_wrapper_with_div_classes_allowed_elsewhere(self):
+        """A class allowed outright on divs takes precedence over tableWrapper."""
+        sanitize = create_sanitizer(
+            {
+                "Table": {"renderWrapper": True},
+                "TableRow": True,
+                "TableHeader": True,
+                "TableCell": True,
+                "CustomExt": True,
+            }
+        )
+        assert sanitize('<div class="custom">x</div>') == '<div class="custom">x</div>'
+
     @override_settings(
         DJANGO_PROSE_EDITOR_EXTENSIONS=[
             {
