@@ -7,6 +7,8 @@ Next version
 0.28a7 (2026-10-17)
 ~~~~~~~~~~~~~~~~~~~
 
+- Actually transpiled the JavaScript.
+
 0.28a6 (2026-10-17)
 ~~~~~~~~~~~~~~~~~~~
 
