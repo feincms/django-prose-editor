@@ -6,11 +6,11 @@ additional assets to load:
 
 .. code-block:: python
 
-    from js_asset import JS
+    from js_asset import Script
 
     DJANGO_PROSE_EDITOR_PRESETS = {
         "announcements": [
-            JS("prose-editors/announcements.js", {"type": "module"}),
+            Script("prose-editors/announcements.js", type="module"),
         ],
     }
 

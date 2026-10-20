@@ -3,7 +3,7 @@ import json
 from django import forms
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from js_asset import JS, ImportMap, Media
+from js_asset import ImportMap, Media, Script
 
 from django_prose_editor.config import (
     expand_extensions,
@@ -19,7 +19,7 @@ importmap = ImportMap(
 )
 
 #: These three module-level variables are somewhat part of the API.
-prose_editor_js = JS("django_prose_editor/editor.js", {"type": "module"})
+prose_editor_js = Script("django_prose_editor/editor.js", type="module")
 prose_editor_base_media = Media(
     importmap=importmap,
     css={
@@ -50,11 +50,11 @@ def prose_editor_presets():
     return getattr(settings, "DJANGO_PROSE_EDITOR_PRESETS", {}) | {
         "default": [
             prose_editor_js,
-            JS("django_prose_editor/default.js", {"type": "module"}),
+            Script("django_prose_editor/default.js", type="module"),
         ],
         "configurable": [
             prose_editor_js,
-            JS("django_prose_editor/configurable.js", {"type": "module"}),
+            Script("django_prose_editor/configurable.js", type="module"),
         ],
     }
 
