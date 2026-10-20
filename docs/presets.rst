@@ -6,13 +6,17 @@ additional assets to load:
 
 .. code-block:: python
 
-    from js_asset import Script
+    from django.forms import Script
 
     DJANGO_PROSE_EDITOR_PRESETS = {
         "announcements": [
             Script("prose-editors/announcements.js", type="module"),
         ],
     }
+
+``django.forms.Script`` is available since Django 5.2. On older versions of
+Django, use ``from js_asset import Script`` instead; django-js-asset provides
+a backport.
 
 The preset can be selected when instantiating the field:
 
