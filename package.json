@@ -34,7 +34,7 @@
     "@tiptap/extensions": "^3.32.0",
     "@tiptap/pm": "^3.32.0",
     "autoprefixer": "^10.6.1",
-    "postcss": "^8.5.30",
+    "postcss": "^8.5.31",
     "prosemirror-changeset": "^2.4.4",
     "prosemirror-commands": "^1.7.2",
     "prosemirror-dropcursor": "^1.8.4",
