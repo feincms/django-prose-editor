@@ -15,7 +15,14 @@ export const SpecialCharacters = Extension.create({
 
 // Deprecated alias, the extension has been renamed to avoid confusion with
 // Tiptap's Typography extension.
-export const Typographic = SpecialCharacters
+export const Typographic = SpecialCharacters.extend({
+  onBeforeCreate() {
+    console.warn(
+      "django-prose-editor: The Typographic extension has been renamed to SpecialCharacters. Typographic is deprecated and will be removed in a future version.",
+    )
+    this.parent?.()
+  },
+})
 
 // https://discuss.prosemirror.net/t/efficiently-finding-changed-nodes/4280/5
 // Helper for iterating through the nodes in a document that changed
