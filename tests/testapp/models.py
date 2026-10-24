@@ -79,6 +79,7 @@ class ConfigurableProseEditorModel(models.Model):
                 "Heading": {"levels": [1, 2, 3]},  # Limit to h1, h2, h3
                 "BlueBold": True,
                 "HTML": True,
+                "SpecialCharacters": True,
                 "CodeBlock": True,
                 "BulletList": True,
                 "OrderedList": True,

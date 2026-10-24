@@ -874,6 +874,25 @@ def test_actually_empty(live_server, page):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_special_characters(live_server, page):
+    """Non-breaking spaces and soft hyphens are decorated, not changed."""
+    _login(page, live_server)
+
+    page.goto(f"{live_server.url}/admin/testapp/configurableproseeditormodel/add/")
+
+    editor = page.locator(".prose-editor > .ProseMirror")
+    element = page.locator("#id_description")
+
+    editor.click()
+    editor.type("a\u00a0b\u00adc")
+
+    expect(editor.locator(".prose-editor-nbsp")).to_have_count(1)
+    expect(editor.locator(".prose-editor-shy")).to_have_count(1)
+    expect(element).to_have_value("<p>a&nbsp;b\u00adc</p>")
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_styleloom_block_style(live_server, page):
     """Test StyleLoom applies an inline style to a block node (paragraph)."""
     _login(page, live_server)
