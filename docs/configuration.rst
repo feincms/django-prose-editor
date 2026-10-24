@@ -91,7 +91,7 @@ want to enable in your editor:
                 # Editor capabilities
                 "History": True,       # Enables undo/redo
                 "HTML": True,          # Allows HTML view
-                "Typographic": True,   # Enables typographic chars
+                "SpecialCharacters": True,  # Shows nbsp and soft hyphens
             }
         )
 

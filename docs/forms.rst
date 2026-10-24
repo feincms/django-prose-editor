@@ -74,5 +74,7 @@ are defined in the Django admin's CSS:
 You should set these properties with appropriate values to use
 django-prose-editor outside the admin in your site.
 
-In addition, you may optionally set a ``--prose-editor-typographic`` property
-to control the color of typographic characters when shown.
+In addition, you may optionally set a ``--prose-editor-special-characters``
+property to control the color of special characters (non-breaking spaces and
+soft hyphens) when shown by the ``SpecialCharacters`` extension. The old
+``--prose-editor-typographic`` property is still supported as a fallback.

@@ -1,17 +1,21 @@
-// Plugin which shows typographic characters (currently only non-breaking spaces)
+// Plugin which shows special characters (non-breaking spaces and soft hyphens)
 
 import { Extension } from "@tiptap/core"
 
 import { Plugin } from "@tiptap/pm/state"
 import { Decoration, DecorationSet } from "@tiptap/pm/view"
 
-export const Typographic = Extension.create({
-  name: "typographic",
+export const SpecialCharacters = Extension.create({
+  name: "specialCharacters",
 
   addProseMirrorPlugins() {
-    return [typographicPlugin]
+    return [specialCharactersPlugin]
   },
 })
+
+// Deprecated alias, the extension has been renamed to avoid confusion with
+// Tiptap's Typography extension.
+export const Typographic = SpecialCharacters
 
 // https://discuss.prosemirror.net/t/efficiently-finding-changed-nodes/4280/5
 // Helper for iterating through the nodes in a document that changed
@@ -42,7 +46,7 @@ const classes = {
   "\u00AD": "prose-editor-shy",
 }
 
-const typographicDecorationsForNode = (node, position) => {
+const specialCharactersDecorationsForNode = (node, position) => {
   const decorations = []
   if (node.text) {
     for (const match of node.text.matchAll(/(\u00A0|\u00AD)/g)) {
@@ -57,29 +61,32 @@ const typographicDecorationsForNode = (node, position) => {
   return decorations
 }
 
-const typographicDecorations = (doc) => {
+const specialCharactersDecorations = (doc) => {
   const decorations = []
   doc.descendants((node, position) => {
-    decorations.push(typographicDecorationsForNode(node, position))
+    decorations.push(specialCharactersDecorationsForNode(node, position))
   })
   return DecorationSet.create(doc, decorations.flat())
 }
 
-const typographicPlugin = new Plugin({
+const specialCharactersPlugin = new Plugin({
   state: {
     init(_, { doc }) {
-      return typographicDecorations(doc)
+      return specialCharactersDecorations(doc)
     },
     apply(tr, set, oldState) {
       // I fear that's not very performant. Maybe improve this "later".
-      // return tr.docChanged ? typographicDecorations(tr.doc) : set
+      // return tr.docChanged ? specialCharactersDecorations(tr.doc) : set
 
       let newSet = set.map(tr.mapping, tr.doc)
       changedDescendants(oldState.doc, tr.doc, 0, (node, offset) => {
         // First, remove our inline decorations for the current node
         newSet = newSet.remove(newSet.find(offset, offset + node.content.size))
         // Then, add decorations (including the new content)
-        newSet = newSet.add(tr.doc, typographicDecorationsForNode(node, offset))
+        newSet = newSet.add(
+          tr.doc,
+          specialCharactersDecorationsForNode(node, offset),
+        )
       })
 
       return newSet
@@ -87,7 +94,7 @@ const typographicPlugin = new Plugin({
   },
   props: {
     decorations(state) {
-      return typographicPlugin.getState(state)
+      return specialCharactersPlugin.getState(state)
     },
   },
 })

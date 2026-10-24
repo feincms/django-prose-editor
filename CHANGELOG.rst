@@ -4,6 +4,12 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Renamed the ``Typographic`` extension to ``SpecialCharacters`` to avoid
+  confusion with Tiptap's ``Typography`` extension, which does something
+  different. ``Typographic`` still works as a deprecated alias, both in Python
+  and in JavaScript. The ``--prose-editor-special-characters`` CSS property
+  replaces ``--prose-editor-typographic``, which is still used as a fallback.
+
 0.28a9 (2026-10-20)
 ~~~~~~~~~~~~~~~~~~~
 

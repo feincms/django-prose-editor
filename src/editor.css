@@ -19,7 +19,10 @@
   --_r: var(--prose-editor-border-color, var(--border-color, #ccc));
   --_a: var(--prose-editor-active-color, var(--primary, #79aec8));
   --_d: var(--prose-editor-disabled-color, var(--border-color, #ccc));
-  --_t: var(--prose-editor-typographic, var(--border-color, #ccc));
+  --_t: var(
+    --prose-editor-special-characters,
+    var(--prose-editor-typographic, var(--border-color, #ccc))
+  );
 }
 
 [data-django-prose-editor] {

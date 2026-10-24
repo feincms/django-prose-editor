@@ -19,6 +19,7 @@ import {
   NoSpellCheck,
   OrderedList,
   Paragraph,
+  SpecialCharacters,
   Strike,
   Subscript,
   Superscript,
@@ -27,7 +28,6 @@ import {
   TableHeader,
   TableRow,
   Text,
-  Typographic,
   Underline,
 } from "django-prose-editor/editor"
 
@@ -76,7 +76,7 @@ function createEditor(textarea, config = null) {
     Menu,
     config.html && HTML,
     NoSpellCheck,
-    config.typographic && Typographic,
+    config.typographic && SpecialCharacters,
     // Nodes and marks
     isTypeEnabled("Blockquote") && Blockquote,
     isTypeEnabled("Bold", "strong") && Bold,

@@ -354,7 +354,8 @@ EXTENSION_MAPPING = {
     # Special extensions (these don't produce HTML elements)
     "History": html_tags([]),
     "HTML": html_tags([]),
-    "Typographic": html_tags([]),
+    "SpecialCharacters": html_tags([]),
+    "Typographic": html_tags([]),  # Deprecated alias of SpecialCharacters
     "Document": html_tags([]),
     "Text": html_tags([]),
     "Dropcursor": html_tags([]),
