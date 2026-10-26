@@ -3,7 +3,7 @@ name: JS Build
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
 
 concurrency:
@@ -16,24 +16,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
-    - name: Set up Node.js and Yarn via mise
-      uses: jdx/mise-action@v4
+      - name: Set up Node.js and Yarn via mise
+        uses: jdx/mise-action@v4
 
-    - name: Cache node_modules
-      uses: actions/cache@v6
-      with:
-        path: node_modules
-        key: node-modules-${{ hashFiles('yarn.lock') }}
-        restore-keys: node-modules-
+      - name: Cache node_modules
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node-modules-
 
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-    - name: Build
-      run: yarn prod
+      - name: Build
+        run: yarn prod
 
-    - name: Verify no uncommitted changes
-      run: |
-        git diff --exit-code django_prose_editor/static/
+      - name: Verify no uncommitted changes
+        run: |
+          git diff --exit-code django_prose_editor/static/
