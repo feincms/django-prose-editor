@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.28 (2026-10-26)
+~~~~~~~~~~~~~~~~~
+
 - Renamed the ``Typographic`` extension to ``SpecialCharacters`` to avoid
   confusion with Tiptap's ``Typography`` extension, which does something
   different. ``Typographic`` still works as a deprecated alias, both in Python
