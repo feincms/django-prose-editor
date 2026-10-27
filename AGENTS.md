@@ -110,7 +110,7 @@ Committing feature by feature (one focused commit per logical change, rather tha
 
 ### E2E Test Stability
 
-- The test DB is a temporary SQLite *file* (see `tests/testapp/settings.py`), and both `NAME` and `TEST.NAME` point to it. With `:memory:`, pytest-django's live server shares one connection across the test thread and all request threads, which caused random `InterfaceError: bad parameter or other API misuse`, session 500s and even segfaults in CI. `NAME` must not be `:memory:` either: the session-scoped live server checks it *before* the test DB is set up. Verify with `live_server.thread.connections_override == {}`.
+- The test DB is a temporary SQLite _file_ (see `tests/testapp/settings.py`), and both `NAME` and `TEST.NAME` point to it. With `:memory:`, pytest-django's live server shares one connection across the test thread and all request threads, which caused random `InterfaceError: bad parameter or other API misuse`, session 500s and even segfaults in CI. `NAME` must not be `:memory:` either: the session-scoped live server checks it _before_ the test DB is set up. Verify with `live_server.thread.connections_override == {}`.
 - Use `save(page)` from `e2e_utils` instead of clicking `_save` directly: it waits for the admin success message before the test queries the ORM. `login()` likewise waits for the redirect to `/admin/`.
 
 ### TableView Node Attribute Fix
@@ -157,13 +157,15 @@ Keep both configuration methods documented and in sync.
 
 ```javascript
 // ✅ CORRECT - Updates only the specified attribute, preserves others
-editor.chain()
+editor
+  .chain()
   .extendMarkRange(typeName)
-  .updateAttributes(typeName, { class: 'newValue' })
+  .updateAttributes(typeName, { class: "newValue" })
   .run()
 
 // To remove an attribute, set it to null
-editor.chain()
+editor
+  .chain()
   .extendMarkRange(typeName)
   .updateAttributes(typeName, { class: null })
   .run()
@@ -176,9 +178,10 @@ This automatically preserves other attributes like `href` on links, `src` on ima
 When working with marks at a collapsed selection (cursor position), use `extendMarkRange()` to select the entire mark:
 
 ```javascript
-editor.chain()
-  .extendMarkRange('bold')  // Selects entire bold region
-  .setMark('bold', { class: 'emphasis' })
+editor
+  .chain()
+  .extendMarkRange("bold") // Selects entire bold region
+  .setMark("bold", { class: "emphasis" })
   .run()
 ```
 
@@ -191,7 +194,7 @@ const { state } = editor
 const { $from } = state.selection
 const markType = state.schema.marks[typeName]
 const marks = $from.marks()
-const hasMark = marks.some(mark => mark.type === markType)
+const hasMark = marks.some((mark) => mark.type === markType)
 ```
 
 The `isActive()` method can be unreliable at mark boundaries or with collapsed selections.
