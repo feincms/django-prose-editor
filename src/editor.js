@@ -36,6 +36,14 @@ export { ClassLoom } from "./classloom.js"
 export { Code } from "./code.js"
 export { CodeBlock } from "./codeblock.js"
 export { Caption, Figure } from "./figure.js"
+export {
+  Footnote,
+  FootnoteItem,
+  FootnoteList,
+  FootnoteReference,
+  referenceDomId,
+  syncFootnotes,
+} from "./footnote.js"
 export { Fullscreen } from "./fullscreen.js"
 export * from "./history.js"
 export { HTML } from "./html.js"

@@ -165,6 +165,26 @@ def process_image(config, shared_config):
     add_tags_and_attributes(shared_config, tags, attributes)
 
 
+def process_footnote(config, shared_config):
+    """Process Footnote extension configuration."""
+    tags = ["sup", "a", "ol", "li", "span"]
+    attributes = {
+        "sup": ["id", "data-footnote-id"],
+        "a": ["href"],
+        "li": ["id", "data-footnote-id"],
+    }
+    add_tags_and_attributes(shared_config, tags, attributes)
+    add_allowed_classes(
+        shared_config,
+        {
+            "sup": ["footnote-ref"],
+            "a": ["footnote-backref"],
+            "ol": ["footnotes"],
+            "span": ["footnote-content"],
+        },
+    )
+
+
 def process_text_align(config, shared_config):
     """Process TextAlign extension configuration."""
     # Text align typically uses classes, not new tags
@@ -345,6 +365,7 @@ EXTENSION_MAPPING = {
     "Image": process_image,
     "Figure": process_figure,
     "Caption": html_tags(["figcaption"]),
+    "Footnote": process_footnote,
     # Advanced extensions
     "Link": process_link,
     "Table": process_table,
