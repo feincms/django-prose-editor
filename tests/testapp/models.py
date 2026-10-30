@@ -194,3 +194,16 @@ class StyleLoomProseEditorModel(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class FootnoteProseEditorModel(models.Model):
+    description = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Footnote": True,
+        },
+        sanitize=True,
+    )
+
+    def __str__(self):
+        return self.description

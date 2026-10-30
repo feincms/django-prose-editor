@@ -57,3 +57,8 @@ class FigureProseEditorModelAdmin(admin.ModelAdmin):
 @admin.register(models.StyleLoomProseEditorModel)
 class StyleLoomProseEditorModelAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.FootnoteProseEditorModel)
+class FootnoteProseEditorModelAdmin(admin.ModelAdmin):
+    pass

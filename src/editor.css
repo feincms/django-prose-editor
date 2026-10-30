@@ -81,6 +81,35 @@ label:empty:has(+ .prose-editor) {
   height: auto;
 }
 
+/* Footnote extension styling */
+.prose-editor .footnote-ref {
+  cursor: pointer;
+}
+
+.prose-editor .footnote-ref a,
+.prose-editor .footnote-backref {
+  color: var(--_a);
+  text-decoration: none;
+}
+
+.prose-editor .footnote-ref.ProseMirror-selectednode {
+  outline: 2px solid var(--_a);
+  border-radius: 2px;
+}
+
+.prose-editor ol.footnotes {
+  margin-top: 1.5rem;
+  padding-top: 0.5rem;
+  padding-left: 2em;
+  border-top: 1px solid var(--_r);
+  font-size: 0.9em;
+}
+
+.prose-editor .footnote-backref {
+  cursor: pointer;
+  user-select: none;
+}
+
 /* Autogrowing textareas */
 .prose-editor-grow-wrap {
   display: grid;
@@ -106,4 +135,12 @@ label:empty:has(+ .prose-editor) {
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+.prose-editor .footnote-backrefs {
+  user-select: none;
+}
+
+.prose-editor .footnote-backrefs .footnote-backref {
+  margin-left: 0.25em;
 }
