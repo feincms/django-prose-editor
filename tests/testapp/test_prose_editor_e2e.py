@@ -1074,7 +1074,9 @@ def test_figure_picker_url(page, live_server):
     assert "/admin/cabinet/file/" in popup.url
     assert "CKEditorFuncNum=" in popup.url
 
-    popup.locator("a[href*='folder__id__exact']").filter(has_text="Test").click()
+    popup.get_by_role("navigation", name="Folders").get_by_role(
+        "link", name="Test"
+    ).click()
     # Selecting a file closes the popup, possibly before click() returns. A
     # click which really fails still fails the test since the popup won't close.
     with popup.expect_event("close"), contextlib.suppress(PlaywrightError):

@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Raised the minimum version of django-cabinet in the ``cabinet`` extra to
+  0.22.
+
 0.28 (2026-10-26)
 ~~~~~~~~~~~~~~~~~
 
