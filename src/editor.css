@@ -39,6 +39,10 @@
   color: var(--_f);
   border: 1px solid var(--_r);
   border-radius: 4px;
+  /* Resize grabber */
+  resize: vertical;
+  overflow: auto;
+  min-height: 10em;
 }
 
 /* content editor support */
