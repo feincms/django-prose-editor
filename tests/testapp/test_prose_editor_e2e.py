@@ -345,10 +345,14 @@ def test_prose_editor_ordered_list_without_type_attribute(page, live_server):
     )
 
     console_errors = []
-    page.on(
-        "console",
-        lambda msg: console_errors.append(msg.text) if msg.type == "error" else None,
-    )
+
+    def on_console(msg):
+        # Django < 6.1's RelatedObjectLookups.js registers an ``unload``
+        # listener, which recent Chromium versions block by default.
+        if msg.type == "error" and "unload is not allowed" not in msg.text:
+            console_errors.append(msg.text)
+
+    page.on("console", on_console)
     page.on("pageerror", lambda exc: console_errors.append(str(exc)))
 
     page.goto(
