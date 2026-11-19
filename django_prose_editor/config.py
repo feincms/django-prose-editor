@@ -533,7 +533,7 @@ def allowlist_from_extensions(
     for extension, config in expanded.items():
         processor = processors[extension]
         if isinstance(processor, str):
-            processors[extension] = import_string(extension)
+            processor = processors[extension] = import_string(processor)
         processor(config, nh3_config)
 
     # nh3 panics when a tag's class attribute is both allowed outright and

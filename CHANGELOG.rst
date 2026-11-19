@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Fixed processors given as dotted paths in ``DJANGO_PROSE_EDITOR_EXTENSIONS``;
+  the extension's name was imported instead of the path.
 - Fixed the sanitization of the ``Highlight`` extension, which removed its
   ``<mark>`` elements.
 - Stopped warning that ``TextAlign`` and ``Highlight`` require ``TextStyle``;

@@ -122,6 +122,19 @@ class ConfigFunctionsTestCase(TestCase):
     @override_settings(
         DJANGO_PROSE_EDITOR_EXTENSIONS=[
             {
+                "js": [],
+                "extensions": {"PathExt": "testapp.test_config.process_path_ext"},
+            }
+        ]
+    )
+    def test_processor_dotted_path(self):
+        """Processors can be given as dotted paths."""
+        sanitize = create_sanitizer({"PathExt": True})
+        assert sanitize("<p><kbd>x</kbd></p>") == "<p><kbd>x</kbd></p>"
+
+    @override_settings(
+        DJANGO_PROSE_EDITOR_EXTENSIONS=[
+            {
                 "js": [static_lazy("testapp/blue-bold.js")],
                 "extensions": {
                     "CustomExt": html_tags(tags=["div"], attributes={"div": ["class"]})
@@ -303,3 +316,6 @@ class ConfigFunctionsTestCase(TestCase):
         for extensions in [{"Image": True}, {"Figure": True}]:
             sanitize = create_sanitizer(extensions)
             assert 'data-file="42"' in sanitize(html)
+
+
+process_path_ext = html_tags(tags=["kbd"])
