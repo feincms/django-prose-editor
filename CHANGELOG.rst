@@ -12,6 +12,7 @@ Next version
   only ``Color`` does.
 - Raised the minimum version of django-cabinet in the ``cabinet`` extra to
   0.22.
+- Updated Tiptap.
 
 0.28 (2026-10-26)
 ~~~~~~~~~~~~~~~~~
