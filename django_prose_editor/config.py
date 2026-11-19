@@ -376,9 +376,7 @@ LEGACY_EXTENSION_DEPENDENCIES = {
     "OrderedList": ["ListItem"],
     "Table": ["TableRow", "TableHeader", "TableCell"],
     "Figure": ["Caption", "Image"],
-    "TextAlign": ["TextStyle"],
     "Color": ["TextStyle"],
-    "Highlight": ["TextStyle"],
 }
 
 

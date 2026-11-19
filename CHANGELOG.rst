@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Stopped warning that ``TextAlign`` and ``Highlight`` require ``TextStyle``;
+  only ``Color`` does.
 - Raised the minimum version of django-cabinet in the ``cabinet`` extra to
   0.22.
 

@@ -237,6 +237,18 @@ class ConfigFunctionsTestCase(TestCase):
         # Should not warn about Bold (no dependencies)
         assert not any("Bold" in warning for warning in warnings)
 
+    def test_check_legacy_dependencies_text_align_and_highlight(self):
+        """TextAlign and Highlight work without TextStyle, Color doesn't."""
+        warnings = check_legacy_dependencies(
+            {"TextAlign": True, "Highlight": True, "Color": True}
+        )
+        assert warnings == [
+            (
+                "Extension 'Color' typically requires 'TextStyle' to function properly. "
+                "Consider adding 'TextStyle': True to your configuration."
+            )
+        ]
+
     def test_check_legacy_dependencies_with_explicit_deps(self):
         """Test that no warnings are generated when dependencies are explicitly included."""
         extensions = {
