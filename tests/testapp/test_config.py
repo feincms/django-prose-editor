@@ -249,6 +249,15 @@ class ConfigFunctionsTestCase(TestCase):
             )
         ]
 
+    def test_highlight_sanitization(self):
+        """Highlight renders <mark>, with a color when using multicolor."""
+        sanitize = create_sanitizer({"Highlight": True})
+        html = (
+            '<p><mark data-color="#ff0" style="background-color: #ff0;'
+            ' color: inherit">x</mark></p>'
+        )
+        assert sanitize(html) == html
+
     def test_check_legacy_dependencies_with_explicit_deps(self):
         """Test that no warnings are generated when dependencies are explicitly included."""
         extensions = {

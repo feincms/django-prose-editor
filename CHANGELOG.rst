@@ -4,6 +4,8 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Fixed the sanitization of the ``Highlight`` extension, which removed its
+  ``<mark>`` elements.
 - Stopped warning that ``TextAlign`` and ``Highlight`` require ``TextStyle``;
   only ``Color`` does.
 - Raised the minimum version of django-cabinet in the ``cabinet`` extra to

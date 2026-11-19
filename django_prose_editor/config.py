@@ -197,6 +197,13 @@ def process_color_highlight(config, shared_config):
     add_tags_and_attributes(shared_config, tags, attributes)
 
 
+def process_highlight(config, shared_config):
+    """Process Highlight extension configuration."""
+    # Tiptap's Highlight is a mark of its own; with multicolor, it renders
+    # data-color and a background-color style.
+    add_tags_and_attributes(shared_config, ["mark"], {"mark": ["style", "data-color"]})
+
+
 def process_class_loom(config, shared_config):
     """Process ClassLoom extension configuration."""
     if not isinstance(config, dict) or "groups" not in config:
@@ -329,7 +336,7 @@ EXTENSION_MAPPING = {
     "CodeBlock": process_code_block,
     # Text styling
     "Color": process_color_highlight,
-    "Highlight": process_color_highlight,
+    "Highlight": process_highlight,
     "TextAlign": process_text_align,
     "TextStyle": process_color_highlight,
     # Structure
