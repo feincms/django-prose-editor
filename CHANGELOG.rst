@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.29 (2026-11-19)
+~~~~~~~~~~~~~~~~~
+
 - Fixed processors given as dotted paths in ``DJANGO_PROSE_EDITOR_EXTENSIONS``;
   the extension's name was imported instead of the path.
 - Fixed the sanitization of the ``Highlight`` extension, which removed its
