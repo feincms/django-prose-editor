@@ -23,6 +23,7 @@ Tests include both unit tests and Playwright E2E tests. The test suite will auto
 ## JavaScript Development
 
 The project uses:
+
 - **Tiptap** for the rich text editor
 - **rslib** for building JavaScript modules
 - **prek** for linting and formatting (Rust-based pre-commit alternative, runs Biome and other tools)
@@ -30,6 +31,7 @@ The project uses:
 JavaScript source files are in `src/` and get built into `django_prose_editor/static/`.
 
 **IMPORTANT**: After modifying JavaScript files in `src/`, you MUST rebuild with:
+
 ```bash
 yarn prod
 ```
@@ -43,6 +45,7 @@ The tests run against the compiled JavaScript in `django_prose_editor/static/`, 
 Documentation is written in ReStructuredText (`.rst`) format in the `docs/` directory.
 
 When modifying extensions or features:
+
 1. Update the relevant `.rst` file in `docs/`
 2. Include code examples in both Python and JavaScript
 3. Document configuration options, usage patterns, and HTML output
@@ -59,6 +62,7 @@ When modifying extensions or features:
 ### Key Patterns
 
 **Distinguishing Nodes vs Marks:**
+
 ```javascript
 const isNodeType = (editor, typeName) => {
   return !!editor.state.schema.nodes[typeName]
@@ -66,10 +70,12 @@ const isNodeType = (editor, typeName) => {
 ```
 
 **Getting Applicable Items:**
+
 - For nodes: Walk up the document tree from the selection
 - For marks: Check marks at the current selection position
 
 **Menu Items:**
+
 - Use `active()` to determine if option should be highlighted
 - Use `hidden()` to determine if option should be shown
 - For marks: Hide when selection is empty or mark type not active
@@ -144,6 +150,7 @@ When an extension needs to support both nodes and marks:
 ### Configuration Options
 
 Extensions are configured in two ways:
+
 - **Python**: Via `ProseEditorField(extensions={...})`
 - **JavaScript**: Via `Extension.configure({...})`
 
