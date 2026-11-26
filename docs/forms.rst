@@ -92,9 +92,17 @@ surrounding admin UI, e.g. the plugin headers of django-content-editor:
   where the sticky menubar sticks, e.g. the height of another sticky bar above
   it. Defaults to ``0``.
 
+* ``--prose-editor-menubar-idle-opacity``: The opacity of the menubar while
+  the editor doesn't have focus. Defaults to ``1``. Set it to ``0`` to only
+  show the menubar while the editor has focus (or while the pointer is over
+  the menubar), which helps on long pages with many editors. The menubar keeps
+  its space, so the layout doesn't jump, and its buttons stay reachable with
+  the keyboard.
+
 .. code-block:: css
 
     :root {
+      --prose-editor-menubar-idle-opacity: 0;
       --prose-editor-menubar-bg: var(--darkened-bg);
       --prose-editor-menubar-border: var(--border-color);
       --prose-editor-menubar-shadow: none;

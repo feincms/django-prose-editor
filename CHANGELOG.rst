@@ -9,6 +9,9 @@ Next version
   stuck to the top of the viewport. The new ``--prose-editor-menubar-bg``,
   ``--prose-editor-menubar-border``, ``--prose-editor-menubar-shadow`` and
   ``--prose-editor-menubar-top`` CSS properties customize it.
+- Added the opt-in ``--prose-editor-menubar-idle-opacity`` CSS property;
+  setting it to ``0`` only shows the menubar while the editor has focus,
+  without the layout jumping.
 - Fixed the sticky menubar in the Django admin, where the ``overflow: hidden``
   of ``.form-row`` kept it from sticking.
 

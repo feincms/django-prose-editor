@@ -43,6 +43,20 @@
   }
 }
 
+/* Opt-in: setting --prose-editor-menubar-idle-opacity to 0 shows the menubar
+ * only while the editor has focus (or the pointer is over the menubar). The
+ * menubar keeps its space so that the layout doesn't jump, and its buttons
+ * stay reachable with the keyboard. */
+.prose-editor:not(:focus-within) > .prose-menubar:not(:hover) {
+  opacity: var(--prose-editor-menubar-idle-opacity, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .prose-editor > .prose-menubar {
+    transition: opacity 0.15s;
+  }
+}
+
 .prose-menubar--floating:not(:empty) {
   position: absolute;
   width: max-content;

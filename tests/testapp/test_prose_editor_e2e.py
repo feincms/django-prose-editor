@@ -117,6 +117,33 @@ def test_prose_editor_menubar_sticks(page, live_server):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_prose_editor_menubar_idle_opacity(page, live_server):
+    """--prose-editor-menubar-idle-opacity hides the menubar without focus."""
+    _login(page, live_server)
+    page.goto(f"{live_server.url}/admin/testapp/proseeditormodel/add/")
+
+    menubar = page.locator(".prose-editor > .prose-menubar")
+    expect(menubar).to_have_css("opacity", "1")
+
+    page.add_style_tag(content=":root { --prose-editor-menubar-idle-opacity: 0 }")
+    page.get_by_role("heading", name="Add prose editor model").click()
+    expect(menubar).to_have_css("opacity", "0")
+    height = menubar.evaluate("el => el.offsetHeight")
+    assert height > 0
+
+    page.locator(".prose-editor > .ProseMirror").click()
+    expect(menubar).to_have_css("opacity", "1")
+    assert menubar.evaluate("el => el.offsetHeight") == height
+
+    # Keyboard users can still reach the buttons
+    page.get_by_role("heading", name="Add prose editor model").click()
+    expect(menubar).to_have_css("opacity", "0")
+    menubar.locator("button").first.focus()
+    expect(menubar).to_have_css("opacity", "1")
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_prose_editor_table_creation(page, live_server):
     """Test table insertion in a TableProseEditorModel."""
     _login(page, live_server)
