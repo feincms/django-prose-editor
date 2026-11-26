@@ -20,6 +20,8 @@ Next version
 - The table buttons use ``currentColor`` and the new
   ``--prose-editor-icon-add-color`` and ``--prose-editor-icon-remove-color``
   CSS properties instead of fixed colours.
+- Corner radii use the ``--admin-radius`` CSS property shared by admin themes,
+  defaulting to ``4px``.
 - Fixed the sticky menubar in the Django admin, where the ``overflow: hidden``
   of ``.form-row`` kept it from sticking.
 

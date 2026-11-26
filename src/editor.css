@@ -46,7 +46,7 @@
   background: var(--_b);
   color: var(--_f);
   border: 1px solid var(--_r);
-  border-radius: 4px;
+  border-radius: var(--admin-radius, 4px);
 }
 
 /* Django's admin sets overflow: hidden on .form-row, which makes the row the

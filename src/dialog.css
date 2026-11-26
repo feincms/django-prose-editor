@@ -2,7 +2,7 @@
   background: var(--_b);
   color: var(--_f);
   border: 1px solid var(--_r);
-  border-radius: 4px;
+  border-radius: var(--admin-radius, 4px);
   padding: 1em;
   min-width: 300px;
   max-width: min(800px, 90vw);
@@ -48,7 +48,7 @@
   width: 100%;
   padding: 0.5em;
   border: 1px solid var(--_r);
-  border-radius: 4px;
+  border-radius: var(--admin-radius, 4px);
   margin-top: 0.5em;
   margin-bottom: 0;
   transition:
@@ -77,7 +77,7 @@
   background: var(--_b);
   color: var(--_f);
   border: 1px solid var(--_r);
-  border-radius: 4px;
+  border-radius: var(--admin-radius, 4px);
   text-align: center;
   display: inline-flex;
   position: relative;
