@@ -89,6 +89,34 @@ def test_prose_editor_formatting(page, live_server):
 
 @pytest.mark.django_db
 @pytest.mark.e2e
+def test_prose_editor_menubar_sticks(page, live_server):
+    """The menubar sticks to the top of the viewport, also inside .form-row."""
+    paragraphs = "".join(f"<p>Paragraph {i}</p>" for i in range(80))
+    obj = ProseEditorModel.objects.create(description=paragraphs)
+    _login(page, live_server)
+    page.set_viewport_size({"width": 1100, "height": 600})
+    page.goto(f"{live_server.url}/admin/testapp/proseeditormodel/{obj.pk}/change/")
+
+    menubar = page.locator(".prose-editor > .prose-menubar")
+    expect(menubar).to_be_visible()
+    assert menubar.evaluate("el => el.getBoundingClientRect().top") > 50
+    # No shadow at rest
+    assert menubar.evaluate("el => getComputedStyle(el, '::after').boxShadow") == "none"
+
+    page.locator(".prose-editor > .ProseMirror p").nth(40).scroll_into_view_if_needed()
+    page.wait_for_function(
+        "() => document.querySelector('.prose-menubar').getBoundingClientRect().top === 0"
+    )
+    # Shadow while stuck
+    page.wait_for_function(
+        """() => getComputedStyle(
+            document.querySelector('.prose-menubar'), '::after'
+        ).boxShadow !== 'none'"""
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.e2e
 def test_prose_editor_table_creation(page, live_server):
     """Test table insertion in a TableProseEditorModel."""
     _login(page, live_server)
