@@ -4,6 +4,9 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+0.30 (2026-11-26)
+~~~~~~~~~~~~~~~~~
+
 - Made the menubar quieter and themeable: it uses the admin's
   ``--hairline-color`` for its bottom line and only shows a shadow while it is
   stuck to the top of the viewport. The new ``--prose-editor-menubar-bg``,
