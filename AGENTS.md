@@ -93,7 +93,7 @@ Committing feature by feature (one focused commit per logical change, rather tha
 2. **If you modified JavaScript**: Run `yarn prod` to rebuild
 3. Run linting/formatting: `prek run --all-files` (or let it run on commit)
 4. Run tests: `tox -e py313-dj52`
-5. Verify all tests pass (58 passed, 4 skipped expected as of 2026-10-24)
+5. Verify all tests pass (63 passed, 4 skipped expected as of 2026-11-26)
 6. Update documentation if needed
 
 ## Test Structure
@@ -118,6 +118,23 @@ Committing feature by feature (one focused commit per logical change, rather tha
 
 - The test DB is a temporary SQLite _file_ (see `tests/testapp/settings.py`), and both `NAME` and `TEST.NAME` point to it. With `:memory:`, pytest-django's live server shares one connection across the test thread and all request threads, which caused random `InterfaceError: bad parameter or other API misuse`, session 500s and even segfaults in CI. `NAME` must not be `:memory:` either: the session-scoped live server checks it _before_ the test DB is set up. Verify with `live_server.thread.connections_override == {}`.
 - Use `save(page)` from `e2e_utils` instead of clicking `_save` directly: it waits for the admin success message before the test queries the ORM. `login()` likewise waits for the redirect to `/admin/`.
+
+### Admin Theme and CSS Variables
+
+The editor CSS follows the shared admin theme contract (see the "Admin Theme"
+journal note, 2026-11-26): every colour comes from Django's admin variables
+(with fallbacks) or a `--prose-editor-*` variable documented in
+`docs/forms.rst`. Internal shorthands (`--_b`, `--_mb`, `--_ia`, ...) are
+defined in `src/editor.css`. Don't add literal colours.
+
+- Django's admin sets `overflow: hidden` on `.form-row`, which breaks the
+  sticky menubar; `src/editor.css` switches rows containing an editor to
+  `overflow: clip` plus `display: flow-root`.
+- The menubar shadow only shows while stuck, via a `scroll-state(stuck: top)`
+  container query on the menubar's `::after` (Chromium only, progressive).
+- Before/after screenshots: a throwaway Playwright test in
+  `tests/testapp/` using `page.emulate_media(color_scheme="dark")` works;
+  don't commit it.
 
 ### TableView Node Attribute Fix
 
