@@ -108,6 +108,13 @@ surrounding admin UI, e.g. the plugin headers of django-content-editor:
       --prose-editor-menubar-shadow: none;
     }
 
+Code blocks use ``--prose-editor-code-block-bg`` and
+``--prose-editor-code-block-fg`` (light text on a dark background by default).
+Everything else, e.g. placeholders, blockquotes, horizontal rules and table
+selections, takes its colours from the admin's variables listed above and
+``--hairline-color`` and ``--body-quiet-color``, so it also works in the admin's
+dark mode.
+
 In addition, you may optionally set a ``--prose-editor-special-characters``
 property to control the color of special characters (non-breaking spaces and
 soft hyphens) when shown by the ``SpecialCharacters`` extension. The old

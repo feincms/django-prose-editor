@@ -63,7 +63,11 @@
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: #a8a8a8;
+  color: color-mix(
+    in srgb,
+    var(--body-quiet-color, #666) 60%,
+    var(--body-bg, #fff)
+  );
   pointer-events: none;
   height: 0;
 }
@@ -131,15 +135,15 @@
 }
 
 .ProseMirror pre {
-  background: #0d0d0d !important;
-  color: #fff !important;
+  background: var(--prose-editor-code-block-bg, #0d0d0d) !important;
+  color: var(--prose-editor-code-block-fg, #fff) !important;
   font-family: "JetBrainsMono", monospace !important;
   padding: 0.75rem 1rem !important;
   border-radius: 0.5rem !important;
 }
 
 .ProseMirror pre code {
-  color: #fff !important;
+  color: var(--prose-editor-code-block-fg, #fff) !important;
   padding: 0 !important;
   background: none !important;
   font-size: 0.8rem !important;
@@ -152,12 +156,12 @@
 
 .ProseMirror blockquote {
   padding-left: 1rem;
-  border-left: 2px solid rgba(13, 13, 13, 0.1);
+  border-left: 2px solid var(--hairline-color, #e8e8e8);
 }
 
 .ProseMirror hr {
   border: none;
-  border-top: 2px solid rgba(13, 13, 13, 0.1);
+  border-top: 2px solid var(--hairline-color, #e8e8e8);
   margin: 2rem 0 !important;
 }
 
@@ -214,7 +218,11 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(200, 200, 255, 0.4);
+  background: color-mix(
+    in srgb,
+    var(--_a, var(--primary, #79aec8)) 50%,
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -224,7 +232,7 @@
   top: 0;
   bottom: -2px;
   width: 4px;
-  background-color: #adf;
+  background-color: var(--_a, var(--primary, #79aec8));
   pointer-events: none;
 }
 
@@ -252,7 +260,7 @@
 }
 
 .ProseMirror-selectednode {
-  outline: 2px solid var(--_a, #8cf);
+  outline: 2px solid var(--_a, var(--primary, #79aec8));
 }
 
 /* Make sure li selections wrap around markers */
@@ -268,6 +276,6 @@ li.ProseMirror-selectednode:after {
   right: -2px;
   top: -2px;
   bottom: -2px;
-  border: 2px solid #8cf;
+  border: 2px solid var(--_a, var(--primary, #79aec8));
   pointer-events: none;
 }

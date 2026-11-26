@@ -62,7 +62,7 @@
 .prose-editor-dialog textarea:focus {
   outline: none;
   border-color: var(--_a);
-  box-shadow: 0 0 0 2px rgba(121, 174, 200, 0.25);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--_a) 25%, transparent);
 }
 
 .prose-editor-dialog input[type="number"] {
@@ -87,7 +87,7 @@
 
 .prose-editor-dialog button:hover {
   filter: brightness(1.1);
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: color-mix(in srgb, var(--_f) 5%, transparent);
 }
 
 .prose-editor-dialog button:active {

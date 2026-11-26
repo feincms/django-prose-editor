@@ -12,6 +12,11 @@ Next version
 - Added the opt-in ``--prose-editor-menubar-idle-opacity`` CSS property;
   setting it to ``0`` only shows the menubar while the editor has focus,
   without the layout jumping.
+- Replaced the remaining literal colours in the editor and dialog CSS with the
+  admin's variables, so that blockquotes, horizontal rules, placeholders, focus
+  rings and table selections follow dark mode and admin themes. Code blocks use
+  the new ``--prose-editor-code-block-bg`` and ``--prose-editor-code-block-fg``
+  properties.
 - Fixed the sticky menubar in the Django admin, where the ``overflow: hidden``
   of ``.form-row`` kept it from sticking.
 
