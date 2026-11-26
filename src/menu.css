@@ -188,6 +188,16 @@
   color: inherit;
 }
 
+.prose-menubar__button svg .prose-editor-icon-add {
+  fill: var(--_ia);
+  stroke: var(--_ia);
+}
+
+.prose-menubar__button svg .prose-editor-icon-remove {
+  fill: var(--_ir);
+  stroke: var(--_ir);
+}
+
 .prose-menubar__picker:popover-open {
   all: initial;
   position: absolute;

@@ -23,6 +23,8 @@
     --prose-editor-special-characters,
     var(--prose-editor-typographic, var(--border-color, #ccc))
   );
+  --_ia: var(--prose-editor-icon-add-color, #4caf50);
+  --_ir: var(--prose-editor-icon-remove-color, var(--error-fg, #ba2121));
   --_mb: var(--prose-editor-menubar-bg, var(--_b));
   --_mr: var(--prose-editor-menubar-border, var(--hairline-color, #e8e8e8));
   --_ms: var(

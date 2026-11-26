@@ -108,6 +108,10 @@ surrounding admin UI, e.g. the plugin headers of django-content-editor:
       --prose-editor-menubar-shadow: none;
     }
 
+The table buttons mark adding rows and columns with
+``--prose-editor-icon-add-color`` (defaults to green) and removing them with
+``--prose-editor-icon-remove-color`` (defaults to the admin's ``--error-fg``).
+
 Code blocks use ``--prose-editor-code-block-bg`` and
 ``--prose-editor-code-block-fg`` (light text on a dark background by default).
 Everything else, e.g. placeholders, blockquotes, horizontal rules and table

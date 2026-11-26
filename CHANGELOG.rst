@@ -17,6 +17,9 @@ Next version
   rings and table selections follow dark mode and admin themes. Code blocks use
   the new ``--prose-editor-code-block-bg`` and ``--prose-editor-code-block-fg``
   properties.
+- The table buttons use ``currentColor`` and the new
+  ``--prose-editor-icon-add-color`` and ``--prose-editor-icon-remove-color``
+  CSS properties instead of fixed colours.
 - Fixed the sticky menubar in the Django admin, where the ``overflow: hidden``
   of ``.form-row`` kept it from sticking.
 
