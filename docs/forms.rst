@@ -74,6 +74,32 @@ are defined in the Django admin's CSS:
 You should set these properties with appropriate values to use
 django-prose-editor outside the admin in your site.
 
+The menubar has its own properties. Their defaults keep it quieter than the
+surrounding admin UI, e.g. the plugin headers of django-content-editor:
+
+* ``--prose-editor-menubar-bg``: The background of the menubar. Defaults to
+  ``--prose-editor-background``.
+* ``--prose-editor-menubar-border``: The line below the menubar. Defaults to
+  the admin's ``--hairline-color``.
+* ``--prose-editor-menubar-shadow``: The ``box-shadow`` of the menubar. The
+  menubar has no shadow at rest; the shadow is only shown while the menubar
+  sticks to the top of the viewport (in browsers supporting `scroll-state
+  container queries
+  <https://developer.mozilla.org/en-US/docs/Web/CSS/@container#scroll-state_container_descriptors>`__),
+  and on floating menubars. Defaults to a soft shadow derived from
+  ``--body-fg``.
+* ``--prose-editor-menubar-top``: The offset from the top of the viewport
+  where the sticky menubar sticks, e.g. the height of another sticky bar above
+  it. Defaults to ``0``.
+
+.. code-block:: css
+
+    :root {
+      --prose-editor-menubar-bg: var(--darkened-bg);
+      --prose-editor-menubar-border: var(--border-color);
+      --prose-editor-menubar-shadow: none;
+    }
+
 In addition, you may optionally set a ``--prose-editor-special-characters``
 property to control the color of special characters (non-breaking spaces and
 soft hyphens) when shown by the ``SpecialCharacters`` extension. The old

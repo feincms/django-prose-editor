@@ -4,6 +4,14 @@ Change log
 Next version
 ~~~~~~~~~~~~
 
+- Made the menubar quieter and themeable: it uses the admin's
+  ``--hairline-color`` for its bottom line and only shows a shadow while it is
+  stuck to the top of the viewport. The new ``--prose-editor-menubar-bg``,
+  ``--prose-editor-menubar-border``, ``--prose-editor-menubar-shadow`` and
+  ``--prose-editor-menubar-top`` CSS properties customize it.
+- Fixed the sticky menubar in the Django admin, where the ``overflow: hidden``
+  of ``.form-row`` kept it from sticking.
+
 0.29 (2026-11-19)
 ~~~~~~~~~~~~~~~~~
 

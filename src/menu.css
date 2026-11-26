@@ -15,21 +15,39 @@
   align-items: stretch;
   gap: 8px;
   flex-wrap: wrap;
-  background: var(--_b);
+  background: var(--_mb);
   padding: 4px;
   width: 100%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid var(--_r);
+  border-bottom: 1px solid var(--_mr);
   box-sizing: border-box;
   z-index: 10;
   position: sticky;
-  top: 0;
+  top: var(--prose-editor-menubar-top, 0);
+  /* Lets the ::after below find out whether the menubar is stuck */
+  container-type: scroll-state;
+}
+
+/* No shadow at rest; only while the sticky menubar is stuck to the top of
+ * the viewport (in browsers supporting scroll-state container queries) */
+.prose-menubar:not(:empty)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@container scroll-state(stuck: top) {
+  .prose-menubar:not(:empty)::after {
+    box-shadow: var(--_ms);
+  }
 }
 
 .prose-menubar--floating:not(:empty) {
   position: absolute;
   width: max-content;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--_ms);
+  border: 1px solid var(--_mr);
   border-radius: 4px;
 }
 

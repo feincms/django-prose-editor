@@ -23,6 +23,12 @@
     --prose-editor-special-characters,
     var(--prose-editor-typographic, var(--border-color, #ccc))
   );
+  --_mb: var(--prose-editor-menubar-bg, var(--_b));
+  --_mr: var(--prose-editor-menubar-border, var(--hairline-color, #e8e8e8));
+  --_ms: var(
+    --prose-editor-menubar-shadow,
+    0 1px 3px color-mix(in srgb, var(--_f) 25%, transparent)
+  );
 }
 
 [data-django-prose-editor] {
@@ -39,6 +45,15 @@
   color: var(--_f);
   border: 1px solid var(--_r);
   border-radius: 4px;
+}
+
+/* Django's admin sets overflow: hidden on .form-row, which makes the row the
+ * scroll container of the sticky menubar, so the menubar never sticks.
+ * overflow: clip clips the same way without creating a scroll container and
+ * flow-root still contains the floats. */
+.form-row:has(.prose-editor) {
+  overflow: clip;
+  display: flow-root;
 }
 
 /* content editor support */
